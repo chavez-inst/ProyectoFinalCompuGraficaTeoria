@@ -7,10 +7,9 @@ Las imagenes estan en `docs/evidencias/<fase>/`.
 
 ## Fase 1 - Escenario base
 
-Plaza con textura, calle del circuito (dos rectas unidas por dos semicirculos) y bloques de color
-provisionales en el lugar de Santo Domingo, el kiosco, la fuente y las casas. El skybox todavia es el de prueba.
+Plaza con su textura, calle del circuito y bloques de color que se usan provisionalmente en el lugar de Santo Domingo, el kiosco, la fuente y las casas.
 
-| Vista inicial | Santo Domingo (nave y dos torres) |
+| Vista inicial | Santo Domingo |
 |---|---|
 | ![Vista inicial](docs/evidencias/fase1/01_vista_inicial.png) | ![Santo Domingo](docs/evidencias/fase1/02_santo_domingo.png) |
 | **Kiosco (curva oeste)** | **Calle del circuito desde arriba** |
