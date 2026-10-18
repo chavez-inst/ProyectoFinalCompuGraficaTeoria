@@ -28,6 +28,7 @@ Si al compilar sale `Falta la carpeta Librerias...` es que el paso 2 no quedo bi
 |-------------|------------------------------|
 | W A S D     | Mover la camara              |
 | Mouse       | Voltear la camara            |
+| N           | Cambiar entre atardecer y noche |
 | ESC         | Cerrar                       |
 
 Capturas de cada fase del proyecto: [EVIDENCIAS.md](EVIDENCIAS.md).
@@ -249,7 +250,7 @@ Agregar > Elemento existente. Si se usa "Agregar > Clase", cambiar la ubicacion 
 - No subir nada de `Librerias/` ni `build/` (ya esta en el `.gitignore`).
 - GitHub no acepta archivos de mas de 100 MB. Mantener modelos y texturas ligeros
   (texturas de 1024 o 2048 px estan bien).
-- Si alguien agrega una libreria nueva, se actualiza `Librerias.zip` y se le pasa a todos.
+- Si alguien agrega una libreria nueva, se actualiza `Librerias.zip` y se sube al repo.
 
 ---
 

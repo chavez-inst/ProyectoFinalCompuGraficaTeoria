@@ -1,6 +1,0 @@
-# material de prueba: la textura se busca en la carpeta Textures
-newmtl prueba
-Ka 1.000 1.000 1.000
-Kd 1.000 1.000 1.000
-Ks 0.000 0.000 0.000
-map_Kd prueba.png

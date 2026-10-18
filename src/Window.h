@@ -15,6 +15,7 @@ public:
 	GLfloat getXChange();
 	GLfloat getYChange();
 	GLfloat getmuevex() { return muevex; }
+	bool getesNoche() { return esNoche; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -34,6 +35,8 @@ private:
 	//valor que cambia con Y/U
 	//para agregar otro: la variable aqui, su getter arriba, darle valor en los constructores y la tecla en ManejaTeclado
 	GLfloat muevex;
+	//false: atardecer, true: noche; cambia con la tecla N
+	bool esNoche;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);

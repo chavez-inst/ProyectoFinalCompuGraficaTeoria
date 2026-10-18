@@ -2,7 +2,7 @@
 Proyecto Final - Computacion Grafica
 Calenda de Oaxaca frente al Templo de Santo Domingo
 Escenario: plaza, calle del circuito y bloques provisionales de los edificios
-Controles: WASD y mouse mueven la camara, ESC cierra
+Controles: WASD y mouse mueven la camara, N cambia entre atardecer y noche, ESC cierra
 
 Como esta acomodado este archivo (busquen los bloques ===):
  1. variables globales (texturas, modelos, materiales, luces)
@@ -53,7 +53,9 @@ Texture plazaTexture;
 Texture calleTexture;
 Texture plainTexture; //blanca: el objeto se ve solo con el color que se le pase
 
-Skybox skybox;
+//un cielo para la tarde y otro para la noche, se dibuja uno u otro segun la tecla N
+Skybox skyboxTarde;
+Skybox skyboxNoche;
 
 //materiales
 Material Material_brillante;
@@ -63,8 +65,9 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
-//luz direccional (el "sol", solo hay una)
-DirectionalLight mainLight;
+//luz direccional (el "sol"): una de tarde y otra de noche, al shader se manda solo una segun la tecla N
+DirectionalLight luzTarde;
+DirectionalLight luzNoche;
 //arreglos de luces, el maximo de cada una esta en CommonValues.h
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
@@ -351,14 +354,23 @@ int main()
 
 	//skybox: las 6 caras van en este orden: rt, lf, dn, up, bk, ft
 	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/prueba_rt.png");
-	skyboxFaces.push_back("Textures/Skybox/prueba_lf.png");
-	skyboxFaces.push_back("Textures/Skybox/prueba_dn.png");
-	skyboxFaces.push_back("Textures/Skybox/prueba_up.png");
-	skyboxFaces.push_back("Textures/Skybox/prueba_bk.png");
-	skyboxFaces.push_back("Textures/Skybox/prueba_ft.png");
+	skyboxFaces.push_back("Textures/Skybox/tarde_rt.jpg");
+	skyboxFaces.push_back("Textures/Skybox/tarde_lf.jpg");
+	skyboxFaces.push_back("Textures/Skybox/tarde_dn.jpg");
+	skyboxFaces.push_back("Textures/Skybox/tarde_up.jpg");
+	skyboxFaces.push_back("Textures/Skybox/tarde_bk.jpg");
+	skyboxFaces.push_back("Textures/Skybox/tarde_ft.jpg");
+	skyboxTarde = Skybox(skyboxFaces);
 
-	skybox = Skybox(skyboxFaces);
+	//se vacia la lista para reusarla con las caras de la noche
+	skyboxFaces.clear();
+	skyboxFaces.push_back("Textures/Skybox/noche_rt.jpg");
+	skyboxFaces.push_back("Textures/Skybox/noche_lf.jpg");
+	skyboxFaces.push_back("Textures/Skybox/noche_dn.jpg");
+	skyboxFaces.push_back("Textures/Skybox/noche_up.jpg");
+	skyboxFaces.push_back("Textures/Skybox/noche_bk.jpg");
+	skyboxFaces.push_back("Textures/Skybox/noche_ft.jpg");
+	skyboxNoche = Skybox(skyboxFaces);
 
 	//materiales: Material(intensidad especular, shininess)
 	Material_brillante = Material(4.0f, 256);
@@ -371,38 +383,55 @@ int main()
 	//PointLight(r, g, b, ambiental, difusa, posicion x, y, z, constante, lineal, exponente)
 	//SpotLight(r, g, b, ambiental, difusa, posicion x, y, z, direccion x, y, z, constante, lineal, exponente, angulo del cono)
 
-	//luz direccional: solo hay 1 y siempre tiene que existir
-	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
-		0.2f, 0.4f,
-		0.0f, -1.0f, -1.0f);
+	//luz direccional: siempre tiene que haber una
+	//tarde: sol naranja y bajo que viene del oeste, asi le pega de frente a la fachada de Santo Domingo
+	luzTarde = DirectionalLight(1.0f, 0.75f, 0.5f,
+		0.35f, 0.5f,
+		1.0f, -0.4f, 0.3f);
+	//noche: luz azul tenue casi desde arriba, como la luna
+	luzNoche = DirectionalLight(0.4f, 0.45f, 0.7f,
+		0.12f, 0.15f,
+		0.2f, -1.0f, 0.3f);
 
-	//contador de luces puntuales (no puede pasar de MAX_POINT_LIGHTS)
+	//farolas en la orilla exterior del circuito: 3 en cada recta y 1 en cada curva
+	//la calle esta a 15 m del centro y mide 6 de ancho, asi que su orilla exterior queda a 18 m
+	const int numFarolas = 8; //no debe pasar de MAX_POINT_LIGHTS
+	const float altoPoste = 4.5f;
+	glm::vec3 posicionFarolas[numFarolas] = {
+		glm::vec3(-25.0f, 0.0f, 19.0f), glm::vec3(0.0f, 0.0f, 19.0f), glm::vec3(25.0f, 0.0f, 19.0f),
+		glm::vec3(-25.0f, 0.0f, -19.0f), glm::vec3(0.0f, 0.0f, -19.0f), glm::vec3(25.0f, 0.0f, -19.0f),
+		glm::vec3(44.0f, 0.0f, 0.0f), glm::vec3(-44.0f, 0.0f, 0.0f)
+	};
+	//cada farola tiene una luz puntual amarilla justo debajo de su lampara
+	//la atenuacion hace que alumbre un circulo de unos 6 m de radio alrededor del poste
+	for (int i = 0; i < numFarolas; i++)
+	{
+		pointLights[i] = PointLight(1.0f, 0.8f, 0.5f,
+			0.0f, 1.2f,
+			posicionFarolas[i].x, altoPoste - 0.2f, posicionFarolas[i].z,
+			1.0f, 0.09f, 0.032f);
+	}
+	//contador de luces puntuales, cambia en el while: 0 de tarde y numFarolas de noche
 	unsigned int pointLightCount = 0;
-	//luz puntual blanca
-	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f,
-		0.0f, 0.6f,
-		2.0f, 1.5f, -3.0f,
-		1.0f, 0.05f, 0.005f);
-	pointLightCount++;
 
 	//contador de spotlights (no puede pasar de MAX_SPOT_LIGHTS)
 	unsigned int spotLightCount = 0;
-	//linterna: su posicion y direccion se actualizan en el while con la camara
-	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f,
-		0.0f, 0.0f, 0.0f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		10.0f);
+	//fachada de Santo Domingo: desde el piso frente al templo, apuntando hacia arriba y hacia la fachada
+	spotLights[0] = SpotLight(1.0f, 0.9f, 0.75f,
+		0.0f, 2.0f,
+		32.0f, 0.5f, 0.0f,
+		1.0f, 0.7f, 0.0f,
+		1.0f, 0.022f, 0.0019f,
+		45.0f);
 	spotLightCount++;
 
-	//spotlight azul fija apuntando hacia abajo
-	spotLights[1] = SpotLight(0.2f, 0.4f, 1.0f,
-		0.0f, 2.0f,
-		3.0f, 4.0f, -7.0f,
+	//kiosco: desde arriba hacia abajo, el cono de 30 grados cubre toda su base
+	spotLights[1] = SpotLight(1.0f, 0.85f, 0.6f,
+		0.0f, 1.5f,
+		-25.0f, 12.0f, 0.0f,
 		0.0f, -1.0f, 0.0f,
-		1.0f, 0.05f, 0.005f,
-		20.0f);
+		1.0f, 0.022f, 0.0019f,
+		30.0f);
 	spotLightCount++;
 	//para agregar otra luz: se pone en el siguiente lugar libre del arreglo y se suma 1 al contador
 
@@ -460,7 +489,14 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//el skybox va primero, antes que todo lo demas
-		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
+		if (mainWindow.getesNoche())
+		{
+			skyboxNoche.DrawSkybox(camera.calculateViewMatrix(), projection);
+		}
+		else
+		{
+			skyboxTarde.DrawSkybox(camera.calculateViewMatrix(), projection);
+		}
 
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
@@ -477,14 +513,20 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-		//linterna pegada a la camara, un poco abajo de los ojos
 		//aqui en el while es donde se pueden cambiar cosas de las luces mientras corre el programa
-		glm::vec3 lowerLight = camera.getCameraPosition();
-		lowerLight.y -= 0.3f;
-		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
+		//segun la tecla N: de noche cambia la luz direccional y se encienden las farolas
+		if (mainWindow.getesNoche())
+		{
+			shaderList[0].SetDirectionalLight(&luzNoche);
+			pointLightCount = numFarolas;
+		}
+		else
+		{
+			shaderList[0].SetDirectionalLight(&luzTarde);
+			pointLightCount = 0;
+		}
 
 		//mandar todas las luces al shader
-		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
@@ -532,6 +574,13 @@ int main()
 		for (int i = 0; i < numCasas; i++)
 		{
 			DibujarBloque(posicionCasas[i], tamanoCasas[i], colorCasas[i], uniformModel, uniformColor);
+		}
+
+		//farolas provisionales: poste delgado y lampara arriba
+		for (int i = 0; i < numFarolas; i++)
+		{
+			DibujarBloque(posicionFarolas[i], glm::vec3(0.2f, altoPoste, 0.2f), glm::vec3(0.25f, 0.25f, 0.25f), uniformModel, uniformColor);
+			DibujarBloque(posicionFarolas[i] + glm::vec3(0.0f, altoPoste, 0.0f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(1.0f, 0.9f, 0.5f), uniformModel, uniformColor);
 		}
 
 		// ---------- objetos con transparencia ----------

@@ -12,6 +12,7 @@ Window::Window()
 	xChange = 0.0f;
 	yChange = 0.0f;
 	muevex = 2.0f;
+	esNoche = false;
 	mouseFirstMoved = true;
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -30,6 +31,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	xChange = 0.0f;
 	yChange = 0.0f;
 	muevex = 2.0f;
+	esNoche = false;
 	mouseFirstMoved = true;
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -129,6 +131,11 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_U && action != GLFW_RELEASE)
 	{
 		theWindow->muevex -= 1.0;
+	}
+	//N alterna entre atardecer y noche, solo al presionar para que no parpadee si se deja apretada
+	if (key == GLFW_KEY_N && action == GLFW_PRESS)
+	{
+		theWindow->esNoche = !theWindow->esNoche;
 	}
 
 	//guarda que teclas estan presionadas, la camara lo lee con getsKeys()
