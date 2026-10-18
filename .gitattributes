@@ -1,0 +1,16 @@
+# todo el texto con saltos de linea de Windows, asi VS no se queja ni salen diffs falsos
+* text=auto eol=crlf
+
+# archivos binarios: git no los toca
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.tga binary
+*.bmp binary
+*.fbx binary
+*.3ds binary
+*.blend binary
+*.glb binary
+*.dll binary
+*.lib binary
+*.exe binary

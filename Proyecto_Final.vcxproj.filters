@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Escena">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graficos">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Iluminacion">
+      <UniqueIdentifier>{2B1E5C3A-7D41-4F0B-9C6E-1A8F3D5B7E20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{8C4D2E6F-1B3A-4E5D-A7F9-0C2B4D6E8F31}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Escena</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Window.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader_light.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh_tn.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Model.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Skybox.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light.cpp">
+      <Filter>Iluminacion</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DirectionalLight.cpp">
+      <Filter>Iluminacion</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PointLight.cpp">
+      <Filter>Iluminacion</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpotLight.cpp">
+      <Filter>Iluminacion</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Material.cpp">
+      <Filter>Iluminacion</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Window.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader_light.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CommonValues.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh_tn.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Texture.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Model.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Skybox.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Light.h">
+      <Filter>Iluminacion</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DirectionalLight.h">
+      <Filter>Iluminacion</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PointLight.h">
+      <Filter>Iluminacion</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpotLight.h">
+      <Filter>Iluminacion</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Material.h">
+      <Filter>Iluminacion</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="shaders\shader_light.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\shader_light.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\skybox.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\skybox.frag">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>

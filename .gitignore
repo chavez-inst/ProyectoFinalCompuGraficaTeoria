@@ -1,0 +1,31 @@
+# librerias externas
+Librerias/
+*.zip
+
+# lo que genera Visual Studio al compilar
+build/
+x64/
+Debug/
+Release/
+*.exe
+*.pdb
+*.ilk
+*.obj.recipe
+*.tlog
+*.idb
+
+# configuracion personal de Visual Studio
+.vs/
+*.vcxproj.user
+*.suo
+*.user
+
+# basura de Windows
+Thumbs.db
+desktop.ini
+
+# notas de trabajo
+*.md
+!README.md
+!EVIDENCIAS.md
+capturas.ps1
