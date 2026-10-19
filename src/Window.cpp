@@ -13,6 +13,7 @@ Window::Window()
 	yChange = 0.0f;
 	muevex = 2.0f;
 	esNoche = false;
+	camaraActiva = 0;
 	mouseFirstMoved = true;
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -32,6 +33,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	yChange = 0.0f;
 	muevex = 2.0f;
 	esNoche = false;
+	camaraActiva = 0;
 	mouseFirstMoved = true;
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -136,6 +138,11 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_N && action == GLFW_PRESS)
 	{
 		theWindow->esNoche = !theWindow->esNoche;
+	}
+	//C pasa a la siguiente camara (0, 1, 2 y regresa a 0)
+	if (key == GLFW_KEY_C && action == GLFW_PRESS)
+	{
+		theWindow->camaraActiva = (theWindow->camaraActiva + 1) % 3;
 	}
 
 	//guarda que teclas estan presionadas, la camara lo lee con getsKeys()

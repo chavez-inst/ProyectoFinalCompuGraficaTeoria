@@ -2,7 +2,7 @@
 Proyecto Final - Computacion Grafica
 Calenda de Oaxaca frente al Templo de Santo Domingo
 Escenario: plaza, calle del circuito y bloques provisionales de los edificios
-Controles: WASD y mouse mueven la camara, N cambia entre atardecer y noche, ESC cierra
+Controles: WASD y mouse mueven la camara libre, C cambia de camara, N cambia entre atardecer y noche, ESC cierra
 
 Como esta acomodado este archivo (busquen los bloques ===):
  1. variables globales (texturas, modelos, materiales, luces)
@@ -46,7 +46,10 @@ Window mainWindow;
 std::vector<MeshModel*> meshListModel; //mallas hechas a mano, cada vertice es x y z, u v, nx ny nz
 std::vector<Shader> shaderList;
 
+//camaras: solo la libre (camera) se mueve con teclado y mouse, las otras dos son fijas
 Camera camera;
+Camera camaraFachada;
+Camera camaraDesfile;
 
 //texturas (los archivos van en la carpeta Textures)
 Texture plazaTexture;
@@ -340,6 +343,13 @@ int main()
 	//Camera(posicion inicial, vector up, yaw, pitch, velocidad de movimiento, velocidad de giro)
 	//vista inicial: al sur de la plaza, a 25 m de altura, mirando hacia el circuito (yaw -90 mira hacia -Z, pitch -25 inclina hacia abajo)
 	camera = Camera(glm::vec3(0.0f, 25.0f, 60.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -25.0f, 0.3f, 0.5f);
+	//fachada: desde la plaza a 10 m de altura mirando hacia +X (yaw 0), se ven la curva este y el templo completo
+	//velocidades en 0 porque esta camara no se mueve
+	camaraFachada = Camera(glm::vec3(5.0f, 10.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 2.0f, 0.0f, 0.0f);
+	//desfile: dentro del ovalo mirando de lado hacia la recta sur (yaw 90 mira hacia +Z)
+	camaraDesfile = Camera(glm::vec3(0.0f, 4.0f, 4.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -10.0f, 0.0f, 0.0f);
+	//camara con la que se dibuja la escena, cambia en el while segun la tecla C
+	Camera* camaraActual = &camera;
 
 	// ================== 3. CARGA DE RECURSOS ==================
 
@@ -481,8 +491,24 @@ int main()
 
 		//eventos de teclado y mouse
 		glfwPollEvents();
-		camera.keyControl(mainWindow.getsKeys(), deltaTime);
-		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+
+		//el cambio del mouse se lee siempre, aunque no se use, para que no se acumule mientras hay una camara fija
+		GLfloat cambioX = mainWindow.getXChange();
+		GLfloat cambioY = mainWindow.getYChange();
+		if (mainWindow.getcamaraActiva() == 1)
+		{
+			camaraActual = &camaraFachada;
+		}
+		else if (mainWindow.getcamaraActiva() == 2)
+		{
+			camaraActual = &camaraDesfile;
+		}
+		else
+		{
+			camaraActual = &camera;
+			camera.keyControl(mainWindow.getsKeys(), deltaTime);
+			camera.mouseControl(cambioX, cambioY);
+		}
 
 		//limpiar la pantalla
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -491,11 +517,11 @@ int main()
 		//el skybox va primero, antes que todo lo demas
 		if (mainWindow.getesNoche())
 		{
-			skyboxNoche.DrawSkybox(camera.calculateViewMatrix(), projection);
+			skyboxNoche.DrawSkybox(camaraActual->calculateViewMatrix(), projection);
 		}
 		else
 		{
-			skyboxTarde.DrawSkybox(camera.calculateViewMatrix(), projection);
+			skyboxTarde.DrawSkybox(camaraActual->calculateViewMatrix(), projection);
 		}
 
 		shaderList[0].UseShader();
@@ -510,8 +536,8 @@ int main()
 		uniformShininess = shaderList[0].GetShininessLocation();
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
-		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camaraActual->calculateViewMatrix()));
+		glUniform3f(uniformEyePosition, camaraActual->getCameraPosition().x, camaraActual->getCameraPosition().y, camaraActual->getCameraPosition().z);
 
 		//aqui en el while es donde se pueden cambiar cosas de las luces mientras corre el programa
 		//segun la tecla N: de noche cambia la luz direccional y se encienden las farolas

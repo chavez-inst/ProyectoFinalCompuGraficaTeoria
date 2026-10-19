@@ -28,3 +28,17 @@ El programa empieza de tarde, con el cielo naranja y una luz calida que viene de
 Farolas encendidas a lo largo de la recta norte:
 
 ![Farolas de noche](docs/evidencias/fase2/05_farolas_noche.png)
+
+## Fase 3 - Camaras
+
+Con la tecla C se cambia entre tres camaras. La primera es la libre, que se mueve con WASD y el mouse. La segunda esta fija en la plaza y ve de frente la fachada de Santo Domingo. La tercera esta dentro del ovalo y ve de lado la recta sur, por donde va a pasar el desfile. Al regresar a la camara libre queda donde se dejo. Las tres funcionan de tarde y de noche.
+
+| Camara libre (inicial) | Fachada de Santo Domingo |
+|---|---|
+| ![Camara libre](docs/evidencias/fase3/01_libre.png) | ![Fachada de tarde](docs/evidencias/fase3/02_fachada_tarde.png) |
+| **Lateral del desfile** | **Lateral del desfile de noche** |
+| ![Desfile de tarde](docs/evidencias/fase3/03_desfile_tarde.png) | ![Desfile de noche](docs/evidencias/fase3/04_desfile_noche.png) |
+
+Fachada de noche, con el reflector encendido:
+
+![Fachada de noche](docs/evidencias/fase3/05_fachada_noche.png)

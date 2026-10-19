@@ -26,8 +26,9 @@ Si al compilar sale `Falta la carpeta Librerias...` es que el paso 2 no quedo bi
 
 | Tecla       | Que hace                     |
 |-------------|------------------------------|
-| W A S D     | Mover la camara              |
-| Mouse       | Voltear la camara            |
+| W A S D     | Mover la camara libre        |
+| Mouse       | Voltear la camara libre      |
+| C           | Cambiar de camara: libre, fachada de Santo Domingo, lateral del desfile |
 | N           | Cambiar entre atardecer y noche |
 | ESC         | Cerrar                       |
 
