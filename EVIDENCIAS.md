@@ -42,3 +42,15 @@ Con la tecla C se cambia entre tres camaras. La primera es la libre, que se muev
 Fachada de noche, con el reflector encendido:
 
 ![Fachada de noche](docs/evidencias/fase3/05_fachada_noche.png)
+
+## Fase 4 - Personaje jerarquico
+
+Un muneco hecho con cubos en la recta sur, mirando hacia donde va a avanzar el desfile. Cada parte cuelga de la anterior: el cuerpo es la raiz, de ahi salen la cabeza, los brazos (hombro y codo) y las piernas (cadera y rodilla). Con teclas de prueba se gira cada articulacion y las partes se mueven juntas sin despegarse. Las fotos van en orden y cada una conserva el giro de la anterior.
+
+| Reposo | Hombros (Y/U) |
+|---|---|
+| ![Reposo](docs/evidencias/fase4/01_reposo.png) | ![Hombros](docs/evidencias/fase4/02_hombros.png) |
+| **Codos (H/J)** | **Caderas y rodillas (K/L, O/P)** |
+| ![Codos](docs/evidencias/fase4/03_codos.png) | ![Caderas y rodillas](docs/evidencias/fase4/04_caderas_rodillas.png) |
+| **Cabeza (Z/X)** | **Desde la camara del desfile** |
+| ![Cabeza](docs/evidencias/fase4/05_cabeza.png) | ![Camara del desfile](docs/evidencias/fase4/06_camara_desfile.png) |

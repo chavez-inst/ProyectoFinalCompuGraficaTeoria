@@ -30,6 +30,11 @@ Si al compilar sale `Falta la carpeta Librerias...` es que el paso 2 no quedo bi
 | Mouse       | Voltear la camara libre      |
 | C           | Cambiar de camara: libre, fachada de Santo Domingo, lateral del desfile |
 | N           | Cambiar entre atardecer y noche |
+| Y / U       | Muneco: girar los hombros (prueba) |
+| H / J       | Muneco: doblar los codos (prueba) |
+| K / L       | Muneco: girar las caderas (prueba) |
+| O / P       | Muneco: doblar las rodillas (prueba) |
+| Z / X       | Muneco: voltear la cabeza (prueba) |
 | ESC         | Cerrar                       |
 
 Capturas de cada fase del proyecto: [EVIDENCIAS.md](EVIDENCIAS.md).

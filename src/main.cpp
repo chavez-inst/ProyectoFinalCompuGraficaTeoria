@@ -1,14 +1,16 @@
 ﻿/*
 Proyecto Final - Computacion Grafica
 Calenda de Oaxaca frente al Templo de Santo Domingo
-Escenario: plaza, calle del circuito y bloques provisionales de los edificios
+Escenario: plaza, calle del circuito, bloques provisionales de los edificios y un muneco de cubos jerarquico
 Controles: WASD y mouse mueven la camara libre, C cambia de camara, N cambia entre atardecer y noche, ESC cierra
+Teclas de prueba del muneco: Y/U hombros, H/J codos, K/L caderas, O/P rodillas, Z/X cabeza
 
 Como esta acomodado este archivo (busquen los bloques ===):
  1. variables globales (texturas, modelos, materiales, luces)
  2. geometria hecha a mano (piso, plano de vegetacion, cubo, calle del circuito)
- 3. main: carga de texturas, modelos, skybox, materiales y luces
- 4. while: aqui se dibuja todo cada frame
+ 3. personaje jerarquico (pose, medidas del esqueleto, dibujo y teclas de prueba)
+ 4. main: carga de texturas, modelos, skybox, materiales y luces
+ 5. while: aqui se dibuja todo cada frame
 */
 
 //esto solo va aqui, en ningun otro archivo (si no da error de simbolos repetidos)
@@ -331,6 +333,172 @@ void DibujarBloque(glm::vec3 posicion, glm::vec3 tamano, glm::vec3 color, GLuint
 }
 
 
+// ================== 3. PERSONAJE JERARQUICO ==================
+//cada parte se dibuja a partir de la matriz de su padre: cuerpo -> cabeza, cuerpo -> brazo -> antebrazo, cuerpo -> muslo -> pierna
+//asi al girar el hombro tambien se mueven el antebrazo y la mano
+
+//angulos de las articulaciones, en grados
+//hombro: "Adelante" gira sobre X (negativo sube el brazo al frente) y "Lado" sobre Z (positivo mueve la mano hacia +X)
+//codos, caderas y rodillas giran sobre X (codo negativo dobla hacia el frente, rodilla positiva dobla hacia atras)
+//cabeza gira sobre Y para voltear
+struct PosePersona
+{
+	float hombroIzqAdelante, hombroIzqLado, codoIzq;
+	float hombroDerAdelante, hombroDerLado, codoDer;
+	float caderaIzq, rodillaIzq;
+	float caderaDer, rodillaDer;
+	float cabeza;
+};
+
+//variables de cada articulacion: la animacion las escribe y el dibujo solo las lee (despues las controlaran los KeyFrames)
+//orden: hombro izq (adelante, lado), codo izq, hombro der (adelante, lado), codo der, cadera y rodilla izq, cadera y rodilla der, cabeza
+PosePersona poseMuneco = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+
+//medidas del esqueleto en metros; los modelos que reemplacen a los cubos deben respetarlas
+//y tener su origen en la articulacion alrededor de la que giran
+const float alturaCadera = 0.92f;							//del piso al origen del cuerpo
+const glm::vec3 posHombro = glm::vec3(0.2f, 0.47f, 0.0f);	//hombro izquierdo; el derecho tiene x negativa
+const glm::vec3 posCuello = glm::vec3(0.0f, 0.55f, 0.0f);
+const glm::vec3 posCadera = glm::vec3(0.095f, -0.02f, 0.0f);	//cadera izquierda
+const float largoBrazo = 0.28f;		//del hombro al codo
+const float largoAntebrazo = 0.29f;	//del codo a la mano
+const float largoMuslo = 0.44f;		//de la cadera a la rodilla
+const float largoPierna = 0.46f;	//de la rodilla a la planta del pie
+
+//dibuja una parte del muneco con el cubo
+//articulacion: matriz del punto donde gira la parte; centro: donde queda el centro del cubo respecto a ese punto
+//la escala solo se aplica a esta copia de la matriz, asi no deforma a las partes hijas
+void DibujarParte(glm::mat4 articulacion, glm::vec3 centro, glm::vec3 tamano, glm::vec3 color, GLuint uniformModel, GLuint uniformColor)
+{
+	glm::mat4 model = glm::translate(articulacion, centro);
+	model = glm::scale(model, tamano);
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+	meshListModel[2]->RenderMeshModel();
+}
+
+//brazo o pierna de dos partes: articulacion -> primera parte -> doblez (codo o rodilla) -> segunda parte
+//las dos partes cuelgan hacia abajo (-Y) desde su articulacion
+void DibujarExtremidad(glm::mat4 padre, glm::vec3 articulacion, float adelante, float lado,
+	float largo1, float grosor1, glm::vec3 color1, float doblez, float largo2, float grosor2, glm::vec3 color2,
+	GLuint uniformModel, GLuint uniformColor)
+{
+	glm::mat4 model = glm::translate(padre, articulacion);
+	model = glm::rotate(model, adelante * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::rotate(model, lado * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+	DibujarParte(model, glm::vec3(0.0f, -largo1 / 2.0f, 0.0f), glm::vec3(grosor1, largo1, grosor1), color1, uniformModel, uniformColor);
+
+	//el codo o la rodilla esta al final de la primera parte
+	model = glm::translate(model, glm::vec3(0.0f, -largo1, 0.0f));
+	model = glm::rotate(model, doblez * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+	DibujarParte(model, glm::vec3(0.0f, -largo2 / 2.0f, 0.0f), glm::vec3(grosor2, largo2, grosor2), color2, uniformModel, uniformColor);
+}
+
+//base: posicion y giro del muneco sobre el piso; el muneco mira hacia +Z de la base
+void DibujarMuneco(glm::mat4 base, PosePersona pose, GLuint uniformModel, GLuint uniformColor)
+{
+	glm::vec3 colorCamisa = glm::vec3(0.80f, 0.20f, 0.20f);
+	glm::vec3 colorPiel = glm::vec3(0.85f, 0.65f, 0.50f);
+	glm::vec3 colorNariz = glm::vec3(0.60f, 0.40f, 0.30f);
+	glm::vec3 colorPantalon = glm::vec3(0.20f, 0.25f, 0.55f);
+	glm::vec3 colorEspinilla = glm::vec3(0.12f, 0.15f, 0.35f); //mas oscuro que el muslo para distinguir la rodilla
+
+	//cuerpo: raiz de la jerarquia, su origen esta a la altura de la cadera
+	glm::mat4 cuerpo = glm::translate(base, glm::vec3(0.0f, alturaCadera, 0.0f));
+	DibujarParte(cuerpo, glm::vec3(0.0f, 0.25f, 0.0f), glm::vec3(0.30f, 0.60f, 0.20f), colorCamisa, uniformModel, uniformColor);
+
+	//cabeza: gira en el cuello; la nariz sirve para ver hacia donde mira
+	glm::mat4 cabeza = glm::translate(cuerpo, posCuello);
+	cabeza = glm::rotate(cabeza, pose.cabeza * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	DibujarParte(cabeza, glm::vec3(0.0f, 0.18f, 0.0f), glm::vec3(0.22f, 0.26f, 0.24f), colorPiel, uniformModel, uniformColor);
+	DibujarParte(cabeza, glm::vec3(0.0f, 0.16f, 0.13f), glm::vec3(0.05f, 0.05f, 0.05f), colorNariz, uniformModel, uniformColor);
+
+	//brazos: hombro -> codo -> mano (el derecho tiene la x del hombro negativa)
+	glm::vec3 hombroDer = glm::vec3(-posHombro.x, posHombro.y, posHombro.z);
+	DibujarExtremidad(cuerpo, posHombro, pose.hombroIzqAdelante, pose.hombroIzqLado,
+		largoBrazo, 0.09f, colorCamisa, pose.codoIzq, largoAntebrazo, 0.08f, colorPiel, uniformModel, uniformColor);
+	DibujarExtremidad(cuerpo, hombroDer, pose.hombroDerAdelante, pose.hombroDerLado,
+		largoBrazo, 0.09f, colorCamisa, pose.codoDer, largoAntebrazo, 0.08f, colorPiel, uniformModel, uniformColor);
+
+	//piernas: cadera -> rodilla -> pie
+	glm::vec3 caderaDer = glm::vec3(-posCadera.x, posCadera.y, posCadera.z);
+	DibujarExtremidad(cuerpo, posCadera, pose.caderaIzq, 0.0f,
+		largoMuslo, 0.13f, colorPantalon, pose.rodillaIzq, largoPierna, 0.11f, colorEspinilla, uniformModel, uniformColor);
+	DibujarExtremidad(cuerpo, caderaDer, pose.caderaDer, 0.0f,
+		largoMuslo, 0.13f, colorPantalon, pose.rodillaDer, largoPierna, 0.11f, colorEspinilla, uniformModel, uniformColor);
+}
+
+//teclas de prueba para girar las articulaciones del muneco (se quitan cuando llegue la animacion)
+//esta es la parte que escribe la pose; el dibujo en el while solo la lee
+//Y/U hombros, H/J codos, K/L caderas, O/P rodillas, Z/X cabeza
+void ProbarArticulaciones(bool* keys, GLfloat deltaTime)
+{
+	float paso = 1.5f * deltaTime; //grados que gira en este frame mientras la tecla esta presionada
+
+	//hombros y caderas: cada lado gira al reves que el otro, como al caminar
+	if (keys[GLFW_KEY_Y])
+	{
+		poseMuneco.hombroIzqAdelante -= paso;
+		poseMuneco.hombroDerAdelante += paso;
+	}
+	if (keys[GLFW_KEY_U])
+	{
+		poseMuneco.hombroIzqAdelante += paso;
+		poseMuneco.hombroDerAdelante -= paso;
+	}
+	if (keys[GLFW_KEY_K])
+	{
+		poseMuneco.caderaIzq -= paso;
+		poseMuneco.caderaDer += paso;
+	}
+	if (keys[GLFW_KEY_L])
+	{
+		poseMuneco.caderaIzq += paso;
+		poseMuneco.caderaDer -= paso;
+	}
+	//codos y rodillas: los dos lados doblan igual
+	if (keys[GLFW_KEY_H])
+	{
+		poseMuneco.codoIzq -= paso;
+		poseMuneco.codoDer -= paso;
+	}
+	if (keys[GLFW_KEY_J])
+	{
+		poseMuneco.codoIzq += paso;
+		poseMuneco.codoDer += paso;
+	}
+	if (keys[GLFW_KEY_O])
+	{
+		poseMuneco.rodillaIzq += paso;
+		poseMuneco.rodillaDer += paso;
+	}
+	if (keys[GLFW_KEY_P])
+	{
+		poseMuneco.rodillaIzq -= paso;
+		poseMuneco.rodillaDer -= paso;
+	}
+	if (keys[GLFW_KEY_Z])
+	{
+		poseMuneco.cabeza += paso;
+	}
+	if (keys[GLFW_KEY_X])
+	{
+		poseMuneco.cabeza -= paso;
+	}
+
+	//limites para que ninguna articulacion se doble hacia donde no puede una persona
+	poseMuneco.hombroIzqAdelante = glm::clamp(poseMuneco.hombroIzqAdelante, -90.0f, 90.0f);
+	poseMuneco.hombroDerAdelante = glm::clamp(poseMuneco.hombroDerAdelante, -90.0f, 90.0f);
+	poseMuneco.codoIzq = glm::clamp(poseMuneco.codoIzq, -140.0f, 0.0f);
+	poseMuneco.codoDer = glm::clamp(poseMuneco.codoDer, -140.0f, 0.0f);
+	poseMuneco.caderaIzq = glm::clamp(poseMuneco.caderaIzq, -60.0f, 60.0f);
+	poseMuneco.caderaDer = glm::clamp(poseMuneco.caderaDer, -60.0f, 60.0f);
+	poseMuneco.rodillaIzq = glm::clamp(poseMuneco.rodillaIzq, 0.0f, 130.0f);
+	poseMuneco.rodillaDer = glm::clamp(poseMuneco.rodillaDer, 0.0f, 130.0f);
+	poseMuneco.cabeza = glm::clamp(poseMuneco.cabeza, -80.0f, 80.0f);
+}
+
+
 int main()
 {
 	mainWindow = Window(1366, 768); //tambien jala con 1280x1024 o 1024x768
@@ -351,7 +519,7 @@ int main()
 	//camara con la que se dibuja la escena, cambia en el while segun la tecla C
 	Camera* camaraActual = &camera;
 
-	// ================== 3. CARGA DE RECURSOS ==================
+	// ================== 4. CARGA DE RECURSOS ==================
 
 	//texturas: primero se asigna la ruta y luego se carga
 	//LoadTextureA para imagenes con canal alfa (png, tga) y LoadTexture para las que no tienen (jpg)
@@ -480,7 +648,7 @@ int main()
 	//ojo: glm::perspective usa radianes, asi que el 45.0f no son 45 grados, pero asi venia del lab y se ve bien
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
-	// ================== 4. CICLO PRINCIPAL ==================
+	// ================== 5. CICLO PRINCIPAL ==================
 	//todo lo que esta dentro del while se repite cada frame hasta que se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
@@ -509,6 +677,9 @@ int main()
 			camera.keyControl(mainWindow.getsKeys(), deltaTime);
 			camera.mouseControl(cambioX, cambioY);
 		}
+
+		//animacion: aqui se escriben las variables de la pose, el dibujo de abajo solo las lee
+		ProbarArticulaciones(mainWindow.getsKeys(), deltaTime);
 
 		//limpiar la pantalla
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -608,6 +779,13 @@ int main()
 			DibujarBloque(posicionFarolas[i], glm::vec3(0.2f, altoPoste, 0.2f), glm::vec3(0.25f, 0.25f, 0.25f), uniformModel, uniformColor);
 			DibujarBloque(posicionFarolas[i] + glm::vec3(0.0f, altoPoste, 0.0f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(1.0f, 0.9f, 0.5f), uniformModel, uniformColor);
 		}
+
+		//muneco de cubos en la recta sur, girado 90 grados para mirar hacia +X (hacia donde avanzara el desfile)
+		//se sube 1 cm igual que la calle para que los pies queden encima de ella
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-5.0f, 0.01f, 15.0f));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		DibujarMuneco(model, poseMuneco, uniformModel, uniformColor);
 
 		// ---------- objetos con transparencia ----------
 		//van al final, despues de todos los opacos, con glEnable(GL_BLEND) (todavia no hay ninguno)
