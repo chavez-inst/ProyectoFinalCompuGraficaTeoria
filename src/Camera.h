@@ -30,8 +30,8 @@ private:
 	glm::vec3 right;
 	glm::vec3 worldUp;
 
-	GLfloat yaw;	//giro a los lados (en grados)
-	GLfloat pitch;	//giro arriba/abajo (en grados)
+	GLfloat yaw;	//giro hacia los lados, en grados
+	GLfloat pitch;	//giro hacia arriba o hacia abajo, en grados
 
 	GLfloat moveSpeed;
 	GLfloat turnSpeed;

@@ -9,9 +9,9 @@ Model::Model()
 void Model::LoadModel(const std::string & fileName)
 {
 	Assimp::Importer importer;
-	//Triangulate: pasa poligonos y quads a triangulos
-	//GenSmoothNormals: genera normales si el modelo no trae
-	//JoinIdenticalVertices: junta los vertices repetidos en uno solo
+	//Triangulate pasa los poligonos y quads a triangulos
+	//GenSmoothNormals genera normales si el modelo no trae
+	//JoinIdenticalVertices junta los vertices repetidos en uno solo
 	const aiScene *scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
 	if (!scene)
 	{
@@ -87,7 +87,7 @@ void Model::LoadNode(aiNode * node, const aiScene * scene)
 	}
 }
 
-//pasa una malla de Assimp al formato de MeshModel (x y z, s t, nx ny nz)
+//pasa una malla de Assimp al formato de MeshModel, con posicion, coordenadas de textura y normal en cada vertice
 void Model::LoadMesh(aiMesh * mesh, const aiScene * scene)
 {
 	std::vector<GLfloat> vertices;
@@ -104,7 +104,7 @@ void Model::LoadMesh(aiMesh * mesh, const aiScene * scene)
 		{
 			vertices.insert(vertices.end(), { 0.0f, 0.0f });
 		}
-		//normales tal cual vienen del archivo (hacia afuera, igual que en Blender)
+		//las normales se usan tal cual vienen del archivo, apuntando hacia afuera igual que en Blender
 		vertices.insert(vertices.end(), { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z });
 	}
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -137,7 +137,7 @@ void Model::LoadMaterials(const aiScene * scene)
 			aiString path;
 			if (material->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
 			{
-				//se queda solo con el nombre del archivo, quitando las carpetas (todo lo que esta antes del ultimo \ o /)
+				//se queda solo con el nombre del archivo y quita las carpetas, o sea todo lo que esta antes de la ultima diagonal
 				//si no hay carpeta, idx + 1 vale 0 y se toma el nombre completo
 				std::string fullPath = std::string(path.data);
 				std::size_t idx = fullPath.find_last_of("\\/");

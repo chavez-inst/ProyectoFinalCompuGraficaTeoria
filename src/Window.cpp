@@ -52,7 +52,7 @@ int Window::Initialise()
 	//version de OpenGL que pedimos (4.3)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	//core profile: solo OpenGL moderno, sin las funciones viejas
+	//core profile, solo deja usar OpenGL moderno sin las funciones viejas
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
@@ -125,7 +125,7 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
-	//Y/U cambian muevex al presionar y mientras se deja presionada la tecla
+	//Y y U cambian muevex al presionar y mientras se deja presionada la tecla
 	if (key == GLFW_KEY_Y && action != GLFW_RELEASE)
 	{
 		theWindow->muevex += 1.0;
@@ -139,14 +139,14 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow->esNoche = !theWindow->esNoche;
 	}
-	//C pasa a la siguiente camara (0, 1, 2 y regresa a 0)
+	//C pasa a la siguiente camara y despues de la ultima regresa a la primera
 	if (key == GLFW_KEY_C && action == GLFW_PRESS)
 	{
 		theWindow->camaraActiva = (theWindow->camaraActiva + 1) % 3;
 	}
 
-	//guarda que teclas estan presionadas, la camara lo lee con getsKeys()
-	//ojo: WASD ya los usa la camara
+	//guarda que teclas estan presionadas, la camara y el muneco lo leen con getsKeys()
+	//ojo, WASD ya los usa la camara
 	if (key >= 0 && key < 1024)
 	{
 		if (action == GLFW_PRESS)

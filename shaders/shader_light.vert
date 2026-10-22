@@ -21,7 +21,7 @@ void main()
 	gl_Position = projection * view * model * vec4(pos, 1.0);
 	vColor=vec4(color,1.0f);
 	TexCoord = tex;
-	//la normal tambien se transforma con el modelo; la inversa transpuesta es para que no se deforme
+	//la normal tambien se transforma con el modelo, y se usa la inversa transpuesta para que no se deforme
 	//cuando el objeto tiene escalas no uniformes
 	Normal = mat3(transpose(inverse(model))) * norm;
 

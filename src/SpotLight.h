@@ -21,7 +21,7 @@ public:
 		GLuint constantLocation, GLuint linearLocation, GLuint exponentLocation,
 		GLuint edgeLocation);
 
-	//para mover la luz dentro del while: SetFlash cambia posicion y direccion, SetPos solo la posicion
+	//para mover la luz dentro del while, SetFlash cambia la posicion y la direccion, y SetPos solo la posicion
 	void SetFlash(glm::vec3 pos, glm::vec3 dir);
 	void SetPos(glm::vec3 pos);
 	~SpotLight();

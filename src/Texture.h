@@ -2,7 +2,7 @@
 #include<glew.h>
 
 //textura 2D cargada desde una imagen (con stb_image)
-//uso: tex = Texture("Textures/archivo.png"); y luego tex.LoadTextureA(); (o LoadTexture para jpg)
+//primero se crea con la ruta, por ejemplo Texture("Textures/archivo.png"), y luego se carga con LoadTextureA, o con LoadTexture si es jpg
 class Texture
 {
 public:

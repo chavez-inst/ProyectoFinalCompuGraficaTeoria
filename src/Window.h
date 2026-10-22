@@ -33,12 +33,12 @@ private:
 	GLfloat lastY;
 	GLfloat xChange;
 	GLfloat yChange;
-	//valor que cambia con Y/U
-	//para agregar otro: la variable aqui, su getter arriba, darle valor en los constructores y la tecla en ManejaTeclado
+	//valor de ejemplo que cambia con las teclas Y y U
+	//para agregar otro se declara la variable aqui, se pone su getter arriba, se le da valor en los constructores y se agrega la tecla en ManejaTeclado
 	GLfloat muevex;
-	//false: atardecer, true: noche; cambia con la tecla N
+	//vale false de tarde y true de noche, cambia con la tecla N
 	bool esNoche;
-	//0: camara libre, 1: fachada de Santo Domingo, 2: lateral del desfile; cambia con la tecla C
+	//camara que se usa, 0 es la libre, 1 la de la fachada de Santo Domingo y 2 la lateral del desfile, cambia con la tecla C
 	int camaraActiva;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);

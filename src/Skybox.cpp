@@ -9,7 +9,7 @@ Skybox::Skybox()
 	uniformView = 0;
 }
 
-//faceLocations: las 6 imagenes en el orden rt, lf, dn, up, bk, ft
+//faceLocations trae las 6 imagenes en este orden: rt, lf, dn, up, bk, ft
 Skybox::Skybox(std::vector<std::string> faceLocations)
 {
 	skyShader = new Shader();
@@ -17,7 +17,7 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 	uniformProjection = skyShader->GetProjectionLocation();
 	uniformView = skyShader->GetViewLocation();
 
-	//malla del skybox: un cubo de 2x2x2
+	//la malla del skybox es un cubo de 2x2x2
 	unsigned int skyboxIndices[] = {
 		// front
 		0, 1, 2,

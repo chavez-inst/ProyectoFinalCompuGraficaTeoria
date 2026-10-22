@@ -3,17 +3,17 @@ Proyecto Final - Computacion Grafica
 Calenda de Oaxaca frente al Templo de Santo Domingo
 Escenario: plaza, calle del circuito, bloques provisionales de los edificios y un muneco de cubos jerarquico
 Controles: WASD y mouse mueven la camara libre, C cambia de camara, N cambia entre atardecer y noche, ESC cierra
-Teclas de prueba del muneco: Y/U hombros, H/J codos, K/L caderas, O/P rodillas, Z/X cabeza
+Teclas de prueba del muneco: Y y U giran los hombros, H y J los codos, K y L las caderas, O y P las rodillas, Z y X la cabeza
 
-Como esta acomodado este archivo (busquen los bloques ===):
- 1. variables globales (texturas, modelos, materiales, luces)
- 2. geometria hecha a mano (piso, plano de vegetacion, cubo, calle del circuito)
- 3. personaje jerarquico (pose, medidas del esqueleto, dibujo y teclas de prueba)
- 4. main: carga de texturas, modelos, skybox, materiales y luces
- 5. while: aqui se dibuja todo cada frame
+Partes de este archivo, cada una empieza con un titulo entre signos =
+ 1. variables globales de texturas, modelos, materiales y luces
+ 2. geometria hecha a mano del piso, el plano de vegetacion, el cubo y la calle del circuito
+ 3. personaje jerarquico con su pose, las medidas del esqueleto, el dibujo y las teclas de prueba
+ 4. main, donde se cargan las texturas, modelos, skybox, materiales y luces
+ 5. while, donde se dibuja todo cada frame
 */
 
-//esto solo va aqui, en ningun otro archivo (si no da error de simbolos repetidos)
+//esto solo va aqui y en ningun otro archivo, porque si no da error de simbolos repetidos
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <vector>
@@ -45,18 +45,18 @@ const float toRadians = 3.14159265f / 180.0f;
 // ================== 1. VARIABLES GLOBALES ==================
 
 Window mainWindow;
-std::vector<MeshModel*> meshListModel; //mallas hechas a mano, cada vertice es x y z, u v, nx ny nz
+std::vector<MeshModel*> meshListModel; //mallas hechas a mano, cada vertice lleva posicion, coordenadas de textura y normal
 std::vector<Shader> shaderList;
 
-//camaras: solo la libre (camera) se mueve con teclado y mouse, las otras dos son fijas
+//de las tres camaras solo la libre, que es camera, se mueve con teclado y mouse, y las otras dos son fijas
 Camera camera;
 Camera camaraFachada;
 Camera camaraDesfile;
 
-//texturas (los archivos van en la carpeta Textures)
+//texturas, sus archivos van en la carpeta Textures
 Texture plazaTexture;
 Texture calleTexture;
-Texture plainTexture; //blanca: el objeto se ve solo con el color que se le pase
+Texture plainTexture; //textura blanca, con ella el objeto se ve solo con el color que se le pase
 
 //un cielo para la tarde y otro para la noche, se dibuja uno u otro segun la tecla N
 Skybox skyboxTarde;
@@ -70,14 +70,14 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
-//luz direccional (el "sol"): una de tarde y otra de noche, al shader se manda solo una segun la tecla N
+//luz direccional que hace de sol, hay una de tarde y otra de noche y al shader se manda solo una segun la tecla N
 DirectionalLight luzTarde;
 DirectionalLight luzNoche;
 //arreglos de luces, el maximo de cada una esta en CommonValues.h
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
 
-//shaders que usan todos los objetos (los del skybox los carga Skybox.cpp)
+//shaders que usan todos los objetos menos el skybox, que carga los suyos en Skybox.cpp
 static const char* vShader = "shaders/shader_light.vert";
 static const char* fShader = "shaders/shader_light.frag";
 
@@ -86,7 +86,7 @@ static const char* fShader = "shaders/shader_light.frag";
 
 //calcula las normales promediando las de los triangulos que comparten cada vertice
 //se llama antes de CreateMeshModel porque ahi es donde se copian los vertices a la GPU
-//la normal sale segun el orden de los indices: para que apunte hacia afuera del objeto,
+//la normal sale segun el orden de los indices, y para que apunte hacia afuera del objeto
 //los triangulos tienen que ir en sentido antihorario vistos desde afuera
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
 	unsigned int vLength, unsigned int normalOffset)
@@ -125,8 +125,8 @@ void CreateObjects()
 		1, 2, 3
 	};
 
-	//plaza de 120 x 80 metros, normales hacia arriba (hacia afuera del piso)
-	//la imagen se repite cada 4 metros (u de 0 a 30, v de 0 a 20)
+	//plaza de 120 por 80 metros, con las normales hacia arriba, que es hacia afuera del piso
+	//la imagen se repite cada 4 metros, por eso u va de 0 a 30 y v de 0 a 20
 	GLfloat floorVertices[] = {
 		//	x      y      z			u	  v			nx	  ny    nz
 		-60.0f, 0.0f, -40.0f,	0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
@@ -135,7 +135,7 @@ void CreateObjects()
 		60.0f, 0.0f, 40.0f,		30.0f, 20.0f,	0.0f, 1.0f, 0.0f
 	};
 
-	//dos planos cruzados, sirve para plantas o cosas con transparencia (se usara para los arboles)
+	//dos planos cruzados que sirven para plantas o cosas con transparencia, se van a usar para los arboles
 	unsigned int vegetacionIndices[] = {
 	   0, 1, 2,
 	   0, 2, 3,
@@ -156,7 +156,7 @@ void CreateObjects()
 		0.0f, 0.5f, -0.5f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
 	};
 
-	//CreateMeshModel(vertices, indices, cantidad de floats del arreglo, cantidad de indices)
+	//CreateMeshModel recibe los vertices, los indices, cuantos floats tiene el arreglo y cuantos indices son
 	MeshModel* piso = new MeshModel();
 	piso->CreateMeshModel(floorVertices, floorIndices, 32, 6);
 	meshListModel.push_back(piso); //meshListModel[0]
@@ -214,7 +214,7 @@ void CrearCubo()
 		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  1.0f,  0.0f,  0.0f,
 		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  1.0f,  0.0f,  0.0f,
 
-		// back (la S va al reves para que la imagen no salga en espejo)
+		// back, la S va al reves para que la imagen no salga en espejo
 		-0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  0.0f,  0.0f, -1.0f,
 		 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
 		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f,  0.0f, -1.0f,
@@ -245,13 +245,13 @@ void CrearCubo()
 }
 
 
-//medidas del circuito: dos rectas paralelas al eje X unidas por dos semicirculos
+//medidas del circuito, que son dos rectas paralelas al eje X unidas por dos semicirculos
 const float radioCircuito = 15.0f;		//radio de las curvas, medido al centro de la calle
-const float mitadRecta = 25.0f;			//las rectas van de x = -25 a x = 25, ahi estan los centros de las curvas
+const float mitadRecta = 25.0f;			//las rectas van de -25 a 25 en x, y en esos puntos estan los centros de las curvas
 const float anchoCalle = 6.0f;
 
-//agrega los dos vertices (borde interior y borde exterior) de un punto del centro de la calle
-//(dx, dz) es la direccion que va del centro de la calle hacia el borde exterior
+//agrega los dos vertices de un punto del centro de la calle, uno en el borde interior y otro en el exterior
+//dx y dz forman la direccion que va del centro de la calle hacia el borde exterior
 //recorrido son los metros avanzados desde el inicio, se usa como coordenada u para repetir el adoquin
 void AgregarPuntoCalle(std::vector<GLfloat>& vertices, float x, float z, float dx, float dz, float recorrido)
 {
@@ -265,7 +265,7 @@ void AgregarPuntoCalle(std::vector<GLfloat>& vertices, float x, float z, float d
 	vertices.insert(vertices.end(), { x + dx * mitad, 0.0f, z + dz * mitad,		u, anchoCalle / 2.0f,	0.0f, 1.0f, 0.0f });
 }
 
-//calle del circuito como una sola malla: se recorre el centro de la calle y en cada punto se agregan sus dos bordes
+//arma la calle del circuito como una sola malla, recorre el centro de la calle y en cada punto agrega sus dos bordes
 void CrearCalle()
 {
 	std::vector<GLfloat> vertices;
@@ -274,12 +274,12 @@ void CrearCalle()
 	float largoTramo = radioCircuito * 180.0f / segmentos * toRadians; //largo de arco de cada tramo
 	float recorrido = 0.0f;
 
-	//recta sur (z positivo), de oeste a este
+	//recta sur, del lado de Z positivo, de oeste a este
 	AgregarPuntoCalle(vertices, -mitadRecta, radioCircuito, 0.0f, 1.0f, recorrido);
 	recorrido += 2.0f * mitadRecta;
 	AgregarPuntoCalle(vertices, mitadRecta, radioCircuito, 0.0f, 1.0f, recorrido);
 
-	//curva este: el angulo va de 0 a 180 grados alrededor del centro (25, 0)
+	//curva este, donde el angulo va de 0 a 180 grados alrededor del centro (25, 0)
 	for (int i = 1; i <= segmentos; i++)
 	{
 		float angulo = i * 180.0f / segmentos * toRadians;
@@ -289,7 +289,7 @@ void CrearCalle()
 		AgregarPuntoCalle(vertices, mitadRecta + radioCircuito * dx, radioCircuito * dz, dx, dz, recorrido);
 	}
 
-	//recta norte (z negativo), de este a oeste
+	//recta norte, del lado de Z negativo, de este a oeste
 	recorrido += 2.0f * mitadRecta;
 	AgregarPuntoCalle(vertices, -mitadRecta, -radioCircuito, 0.0f, -1.0f, recorrido);
 
@@ -304,7 +304,7 @@ void CrearCalle()
 	}
 
 	//cada par de puntos seguidos forma un rectangulo de dos triangulos
-	//vertices pares: borde interior, impares: borde exterior
+	//los vertices pares son del borde interior y los impares del exterior
 	unsigned int numPuntos = vertices.size() / 16;
 	for (unsigned int k = 0; k < numPuntos - 1; k++)
 	{
@@ -320,7 +320,7 @@ void CrearCalle()
 }
 
 
-//dibuja el cubo como un bloque de color: posicion es el centro de su base, tamano es ancho, alto y fondo en metros
+//dibuja el cubo como un bloque de color, donde posicion es el centro de su base y tamano es el ancho, alto y fondo en metros
 //se sube la mitad de su alto para que quede apoyado sobre el piso
 void DibujarBloque(glm::vec3 posicion, glm::vec3 tamano, glm::vec3 color, GLuint uniformModel, GLuint uniformColor)
 {
@@ -334,13 +334,13 @@ void DibujarBloque(glm::vec3 posicion, glm::vec3 tamano, glm::vec3 color, GLuint
 
 
 // ================== 3. PERSONAJE JERARQUICO ==================
-//cada parte se dibuja a partir de la matriz de su padre: cuerpo -> cabeza, cuerpo -> brazo -> antebrazo, cuerpo -> muslo -> pierna
+//cada parte se dibuja a partir de la matriz de su padre. Del cuerpo salen la cabeza, los brazos y las piernas, del brazo sale el antebrazo y del muslo la pierna
 //asi al girar el hombro tambien se mueven el antebrazo y la mano
 
 //angulos de las articulaciones, en grados
-//hombro: "Adelante" gira sobre X (negativo sube el brazo al frente) y "Lado" sobre Z (positivo mueve la mano hacia +X)
-//codos, caderas y rodillas giran sobre X (codo negativo dobla hacia el frente, rodilla positiva dobla hacia atras)
-//cabeza gira sobre Y para voltear
+//el hombro gira hacia adelante sobre X, donde un angulo negativo sube el brazo al frente, y hacia el lado sobre Z, donde uno positivo mueve la mano hacia X positivo
+//codos, caderas y rodillas giran sobre X. Con un angulo negativo el codo dobla hacia el frente y con uno positivo la rodilla dobla hacia atras
+//la cabeza gira sobre Y para voltear
 struct PosePersona
 {
 	float hombroIzqAdelante, hombroIzqLado, codoIzq;
@@ -350,14 +350,14 @@ struct PosePersona
 	float cabeza;
 };
 
-//variables de cada articulacion: la animacion las escribe y el dibujo solo las lee (despues las controlaran los KeyFrames)
-//orden: hombro izq (adelante, lado), codo izq, hombro der (adelante, lado), codo der, cadera y rodilla izq, cadera y rodilla der, cabeza
+//variables de cada articulacion, la animacion las escribe y el dibujo solo las lee, asi despues las pueden controlar los KeyFrames
+//van en el mismo orden que en PosePersona, primero el brazo izquierdo, luego el derecho, despues las piernas y al final la cabeza
 PosePersona poseMuneco = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 
-//medidas del esqueleto en metros; los modelos que reemplacen a los cubos deben respetarlas
+//medidas del esqueleto en metros, los modelos que reemplacen a los cubos deben respetarlas
 //y tener su origen en la articulacion alrededor de la que giran
 const float alturaCadera = 0.92f;							//del piso al origen del cuerpo
-const glm::vec3 posHombro = glm::vec3(0.2f, 0.47f, 0.0f);	//hombro izquierdo; el derecho tiene x negativa
+const glm::vec3 posHombro = glm::vec3(0.2f, 0.47f, 0.0f);	//hombro izquierdo, el derecho usa la misma posicion con x negativa
 const glm::vec3 posCuello = glm::vec3(0.0f, 0.55f, 0.0f);
 const glm::vec3 posCadera = glm::vec3(0.095f, -0.02f, 0.0f);	//cadera izquierda
 const float largoBrazo = 0.28f;		//del hombro al codo
@@ -366,7 +366,7 @@ const float largoMuslo = 0.44f;		//de la cadera a la rodilla
 const float largoPierna = 0.46f;	//de la rodilla a la planta del pie
 
 //dibuja una parte del muneco con el cubo
-//articulacion: matriz del punto donde gira la parte; centro: donde queda el centro del cubo respecto a ese punto
+//articulacion es la matriz del punto donde gira la parte y centro es donde queda el centro del cubo respecto a ese punto
 //la escala solo se aplica a esta copia de la matriz, asi no deforma a las partes hijas
 void DibujarParte(glm::mat4 articulacion, glm::vec3 centro, glm::vec3 tamano, glm::vec3 color, GLuint uniformModel, GLuint uniformColor)
 {
@@ -377,8 +377,8 @@ void DibujarParte(glm::mat4 articulacion, glm::vec3 centro, glm::vec3 tamano, gl
 	meshListModel[2]->RenderMeshModel();
 }
 
-//brazo o pierna de dos partes: articulacion -> primera parte -> doblez (codo o rodilla) -> segunda parte
-//las dos partes cuelgan hacia abajo (-Y) desde su articulacion
+//dibuja un brazo o una pierna de dos partes, la primera gira en la articulacion y la segunda cuelga de ella y se dobla en el codo o la rodilla
+//las dos partes cuelgan hacia Y negativo desde su articulacion
 void DibujarExtremidad(glm::mat4 padre, glm::vec3 articulacion, float adelante, float lado,
 	float largo1, float grosor1, glm::vec3 color1, float doblez, float largo2, float grosor2, glm::vec3 color2,
 	GLuint uniformModel, GLuint uniformColor)
@@ -394,7 +394,7 @@ void DibujarExtremidad(glm::mat4 padre, glm::vec3 articulacion, float adelante, 
 	DibujarParte(model, glm::vec3(0.0f, -largo2 / 2.0f, 0.0f), glm::vec3(grosor2, largo2, grosor2), color2, uniformModel, uniformColor);
 }
 
-//base: posicion y giro del muneco sobre el piso; el muneco mira hacia +Z de la base
+//base es la posicion y el giro del muneco sobre el piso, y el muneco mira hacia Z positivo de la base
 void DibujarMuneco(glm::mat4 base, PosePersona pose, GLuint uniformModel, GLuint uniformColor)
 {
 	glm::vec3 colorCamisa = glm::vec3(0.80f, 0.20f, 0.20f);
@@ -403,24 +403,24 @@ void DibujarMuneco(glm::mat4 base, PosePersona pose, GLuint uniformModel, GLuint
 	glm::vec3 colorPantalon = glm::vec3(0.20f, 0.25f, 0.55f);
 	glm::vec3 colorEspinilla = glm::vec3(0.12f, 0.15f, 0.35f); //mas oscuro que el muslo para distinguir la rodilla
 
-	//cuerpo: raiz de la jerarquia, su origen esta a la altura de la cadera
+	//el cuerpo es la raiz de la jerarquia y su origen esta a la altura de la cadera
 	glm::mat4 cuerpo = glm::translate(base, glm::vec3(0.0f, alturaCadera, 0.0f));
 	DibujarParte(cuerpo, glm::vec3(0.0f, 0.25f, 0.0f), glm::vec3(0.30f, 0.60f, 0.20f), colorCamisa, uniformModel, uniformColor);
 
-	//cabeza: gira en el cuello; la nariz sirve para ver hacia donde mira
+	//la cabeza gira en el cuello y la nariz sirve para ver hacia donde mira
 	glm::mat4 cabeza = glm::translate(cuerpo, posCuello);
 	cabeza = glm::rotate(cabeza, pose.cabeza * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 	DibujarParte(cabeza, glm::vec3(0.0f, 0.18f, 0.0f), glm::vec3(0.22f, 0.26f, 0.24f), colorPiel, uniformModel, uniformColor);
 	DibujarParte(cabeza, glm::vec3(0.0f, 0.16f, 0.13f), glm::vec3(0.05f, 0.05f, 0.05f), colorNariz, uniformModel, uniformColor);
 
-	//brazos: hombro -> codo -> mano (el derecho tiene la x del hombro negativa)
+	//brazos que van del hombro al codo y del codo a la mano, el derecho usa la x del hombro en negativo
 	glm::vec3 hombroDer = glm::vec3(-posHombro.x, posHombro.y, posHombro.z);
 	DibujarExtremidad(cuerpo, posHombro, pose.hombroIzqAdelante, pose.hombroIzqLado,
 		largoBrazo, 0.09f, colorCamisa, pose.codoIzq, largoAntebrazo, 0.08f, colorPiel, uniformModel, uniformColor);
 	DibujarExtremidad(cuerpo, hombroDer, pose.hombroDerAdelante, pose.hombroDerLado,
 		largoBrazo, 0.09f, colorCamisa, pose.codoDer, largoAntebrazo, 0.08f, colorPiel, uniformModel, uniformColor);
 
-	//piernas: cadera -> rodilla -> pie
+	//piernas que van de la cadera a la rodilla y de la rodilla al pie
 	glm::vec3 caderaDer = glm::vec3(-posCadera.x, posCadera.y, posCadera.z);
 	DibujarExtremidad(cuerpo, posCadera, pose.caderaIzq, 0.0f,
 		largoMuslo, 0.13f, colorPantalon, pose.rodillaIzq, largoPierna, 0.11f, colorEspinilla, uniformModel, uniformColor);
@@ -428,14 +428,14 @@ void DibujarMuneco(glm::mat4 base, PosePersona pose, GLuint uniformModel, GLuint
 		largoMuslo, 0.13f, colorPantalon, pose.rodillaDer, largoPierna, 0.11f, colorEspinilla, uniformModel, uniformColor);
 }
 
-//teclas de prueba para girar las articulaciones del muneco (se quitan cuando llegue la animacion)
-//esta es la parte que escribe la pose; el dibujo en el while solo la lee
-//Y/U hombros, H/J codos, K/L caderas, O/P rodillas, Z/X cabeza
+//teclas de prueba para girar las articulaciones del muneco, se quitan cuando llegue la animacion
+//esta es la parte que escribe la pose, y el dibujo en el while solo la lee
+//Y y U giran los hombros, H y J los codos, K y L las caderas, O y P las rodillas, Z y X la cabeza
 void ProbarArticulaciones(bool* keys, GLfloat deltaTime)
 {
 	float paso = 1.5f * deltaTime; //grados que gira en este frame mientras la tecla esta presionada
 
-	//hombros y caderas: cada lado gira al reves que el otro, como al caminar
+	//en hombros y caderas cada lado gira al reves que el otro, como al caminar
 	if (keys[GLFW_KEY_Y])
 	{
 		poseMuneco.hombroIzqAdelante -= paso;
@@ -456,7 +456,7 @@ void ProbarArticulaciones(bool* keys, GLfloat deltaTime)
 		poseMuneco.caderaIzq += paso;
 		poseMuneco.caderaDer -= paso;
 	}
-	//codos y rodillas: los dos lados doblan igual
+	//en codos y rodillas los dos lados doblan igual
 	if (keys[GLFW_KEY_H])
 	{
 		poseMuneco.codoIzq -= paso;
@@ -508,21 +508,21 @@ int main()
 	CrearCalle();
 	CreateShaders();
 
-	//Camera(posicion inicial, vector up, yaw, pitch, velocidad de movimiento, velocidad de giro)
-	//vista inicial: al sur de la plaza, a 25 m de altura, mirando hacia el circuito (yaw -90 mira hacia -Z, pitch -25 inclina hacia abajo)
+	//Camera recibe la posicion inicial, el vector up, yaw, pitch, la velocidad de movimiento y la velocidad de giro
+	//la vista inicial esta al sur de la plaza a 25 m de altura, mirando hacia el circuito. Con yaw de -90 mira hacia Z negativo y con pitch de -25 se inclina hacia abajo
 	camera = Camera(glm::vec3(0.0f, 25.0f, 60.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -25.0f, 0.3f, 0.5f);
-	//fachada: desde la plaza a 10 m de altura mirando hacia +X (yaw 0), se ven la curva este y el templo completo
+	//la de la fachada esta en la plaza a 10 m de altura y con yaw de 0 mira hacia X positivo, asi se ven la curva este y el templo completo
 	//velocidades en 0 porque esta camara no se mueve
 	camaraFachada = Camera(glm::vec3(5.0f, 10.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 2.0f, 0.0f, 0.0f);
-	//desfile: dentro del ovalo mirando de lado hacia la recta sur (yaw 90 mira hacia +Z)
+	//la del desfile esta dentro del ovalo y con yaw de 90 mira hacia Z positivo, de lado hacia la recta sur
 	camaraDesfile = Camera(glm::vec3(0.0f, 4.0f, 4.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -10.0f, 0.0f, 0.0f);
 	//camara con la que se dibuja la escena, cambia en el while segun la tecla C
 	Camera* camaraActual = &camera;
 
 	// ================== 4. CARGA DE RECURSOS ==================
 
-	//texturas: primero se asigna la ruta y luego se carga
-	//LoadTextureA para imagenes con canal alfa (png, tga) y LoadTexture para las que no tienen (jpg)
+	//en las texturas primero se asigna la ruta y luego se carga
+	//LoadTextureA es para imagenes con canal alfa como png o tga, y LoadTexture para las que no tienen, como jpg
 	plazaTexture = Texture("Textures/plaza.png");
 	plazaTexture.LoadTextureA();
 	calleTexture = Texture("Textures/calle.png");
@@ -530,7 +530,7 @@ int main()
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTextureA();
 
-	//skybox: las 6 caras van en este orden: rt, lf, dn, up, bk, ft
+	//las 6 caras del skybox van en este orden: rt, lf, dn, up, bk, ft
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/tarde_rt.jpg");
 	skyboxFaces.push_back("Textures/Skybox/tarde_lf.jpg");
@@ -550,28 +550,28 @@ int main()
 	skyboxFaces.push_back("Textures/Skybox/noche_ft.jpg");
 	skyboxNoche = Skybox(skyboxFaces);
 
-	//materiales: Material(intensidad especular, shininess)
+	//Material recibe la intensidad especular y el shininess
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
 
 	// ---- luces ----
-	//los parametros van en este orden:
-	//DirectionalLight(r, g, b, intensidad ambiental, intensidad difusa, direccion x, y, z)
-	//PointLight(r, g, b, ambiental, difusa, posicion x, y, z, constante, lineal, exponente)
-	//SpotLight(r, g, b, ambiental, difusa, posicion x, y, z, direccion x, y, z, constante, lineal, exponente, angulo del cono)
+	//orden de los parametros de cada tipo de luz
+	//DirectionalLight recibe el color r g b, la intensidad ambiental y la difusa, y la direccion x y z
+	//PointLight recibe el color r g b, la intensidad ambiental y la difusa, la posicion x y z, y la atenuacion constante, lineal y exponencial
+	//SpotLight recibe lo mismo que PointLight pero con la direccion x y z despues de la posicion, y al final el angulo del cono
 
-	//luz direccional: siempre tiene que haber una
-	//tarde: sol naranja y bajo que viene del oeste, asi le pega de frente a la fachada de Santo Domingo
+	//siempre tiene que haber una luz direccional
+	//de tarde es un sol naranja y bajo que viene del oeste, asi le pega de frente a la fachada de Santo Domingo
 	luzTarde = DirectionalLight(1.0f, 0.75f, 0.5f,
 		0.35f, 0.5f,
 		1.0f, -0.4f, 0.3f);
-	//noche: luz azul tenue casi desde arriba, como la luna
+	//de noche es una luz azul tenue casi desde arriba, como la luna
 	luzNoche = DirectionalLight(0.4f, 0.45f, 0.7f,
 		0.12f, 0.15f,
 		0.2f, -1.0f, 0.3f);
 
-	//farolas en la orilla exterior del circuito: 3 en cada recta y 1 en cada curva
+	//farolas en la orilla exterior del circuito, 3 en cada recta y 1 en cada curva
 	//la calle esta a 15 m del centro y mide 6 de ancho, asi que su orilla exterior queda a 18 m
 	const int numFarolas = 8; //no debe pasar de MAX_POINT_LIGHTS
 	const float altoPoste = 4.5f;
@@ -589,12 +589,12 @@ int main()
 			posicionFarolas[i].x, altoPoste - 0.2f, posicionFarolas[i].z,
 			1.0f, 0.09f, 0.032f);
 	}
-	//contador de luces puntuales, cambia en el while: 0 de tarde y numFarolas de noche
+	//contador de luces puntuales, en el while cambia a 0 de tarde y a numFarolas de noche
 	unsigned int pointLightCount = 0;
 
-	//contador de spotlights (no puede pasar de MAX_SPOT_LIGHTS)
+	//contador de spotlights, no puede pasar de MAX_SPOT_LIGHTS
 	unsigned int spotLightCount = 0;
-	//fachada de Santo Domingo: desde el piso frente al templo, apuntando hacia arriba y hacia la fachada
+	//luz de la fachada de Santo Domingo, sale del piso frente al templo y apunta hacia arriba y hacia la fachada
 	spotLights[0] = SpotLight(1.0f, 0.9f, 0.75f,
 		0.0f, 2.0f,
 		32.0f, 0.5f, 0.0f,
@@ -603,7 +603,7 @@ int main()
 		45.0f);
 	spotLightCount++;
 
-	//kiosco: desde arriba hacia abajo, el cono de 30 grados cubre toda su base
+	//luz del kiosco, apunta de arriba hacia abajo y el cono de 30 grados cubre toda su base
 	spotLights[1] = SpotLight(1.0f, 0.85f, 0.6f,
 		0.0f, 1.5f,
 		-25.0f, 12.0f, 0.0f,
@@ -611,13 +611,13 @@ int main()
 		1.0f, 0.022f, 0.0019f,
 		30.0f);
 	spotLightCount++;
-	//para agregar otra luz: se pone en el siguiente lugar libre del arreglo y se suma 1 al contador
+	//para agregar otra luz se pone en el siguiente lugar libre del arreglo y se suma 1 al contador
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	GLuint uniformColor = 0;
 
-	//casas provisionales: centro de la base, tamano (ancho, alto, fondo) y color de cada una
+	//casas provisionales, de cada una se guarda el centro de su base, su ancho, alto y fondo, y su color
 	const int numCasas = 12;
 	glm::vec3 posicionCasas[numCasas] = {
 		//dentro del ovalo
@@ -645,7 +645,7 @@ int main()
 		glm::vec3(0.90f, 0.55f, 0.65f)
 	};
 
-	//ojo: glm::perspective usa radianes, asi que el 45.0f no son 45 grados, pero asi venia del lab y se ve bien
+	//ojo, glm::perspective usa radianes, asi que el 45.0f no son 45 grados, pero asi venia del lab y se ve bien
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
 	// ================== 5. CICLO PRINCIPAL ==================
@@ -678,7 +678,7 @@ int main()
 			camera.mouseControl(cambioX, cambioY);
 		}
 
-		//animacion: aqui se escriben las variables de la pose, el dibujo de abajo solo las lee
+		//en la animacion se escriben las variables de la pose, y el dibujo de abajo solo las lee
 		ProbarArticulaciones(mainWindow.getsKeys(), deltaTime);
 
 		//limpiar la pantalla
@@ -711,7 +711,7 @@ int main()
 		glUniform3f(uniformEyePosition, camaraActual->getCameraPosition().x, camaraActual->getCameraPosition().y, camaraActual->getCameraPosition().z);
 
 		//aqui en el while es donde se pueden cambiar cosas de las luces mientras corre el programa
-		//segun la tecla N: de noche cambia la luz direccional y se encienden las farolas
+		//con la tecla N, de noche cambia la luz direccional y se encienden las farolas
 		if (mainWindow.getesNoche())
 		{
 			shaderList[0].SetDirectionalLight(&luzNoche);
@@ -727,9 +727,9 @@ int main()
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
-		//para dibujar cada objeto siempre es lo mismo: matriz model, color, textura, material y render
+		//para dibujar cada objeto siempre se pone la matriz model, el color, la textura y el material, y luego se hace el render
 		glm::mat4 model(1.0);
-		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f); //blanco = la textura se ve con sus colores normales
+		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f); //con blanco la textura se ve con sus colores normales
 
 		// ---------- objetos opacos ----------
 
@@ -741,7 +741,7 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshListModel[0]->RenderMeshModel();
 
-		//calle del circuito: 1 cm arriba de la plaza para que no parpadeen al estar a la misma altura
+		//la calle del circuito va 1 cm arriba de la plaza para que no parpadeen al estar a la misma altura
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.01f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -750,17 +750,17 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshListModel[3]->RenderMeshModel();
 
-		//bloques provisionales: textura blanca para que se vea solo el color de cada bloque
+		//los bloques provisionales usan la textura blanca para que se vea solo el color de cada uno
 		plainTexture.UseTexture();
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
-		//Santo Domingo: nave y dos torres, afuera de la curva este con la fachada hacia el circuito
+		//Santo Domingo, con su nave y dos torres afuera de la curva este y la fachada hacia el circuito
 		glm::vec3 colorCantera = glm::vec3(0.85f, 0.78f, 0.62f);
 		DibujarBloque(glm::vec3(52.0f, 0.0f, 0.0f), glm::vec3(12.0f, 14.0f, 22.0f), colorCantera, uniformModel, uniformColor);
 		DibujarBloque(glm::vec3(48.5f, 0.0f, -9.0f), glm::vec3(5.0f, 22.0f, 5.0f), colorCantera, uniformModel, uniformColor);
 		DibujarBloque(glm::vec3(48.5f, 0.0f, 9.0f), glm::vec3(5.0f, 22.0f, 5.0f), colorCantera, uniformModel, uniformColor);
 
-		//kiosco: base y cuerpo, dentro de la curva oeste
+		//kiosco con su base y su cuerpo, dentro de la curva oeste
 		DibujarBloque(glm::vec3(-25.0f, 0.0f, 0.0f), glm::vec3(10.0f, 0.5f, 10.0f), glm::vec3(0.75f, 0.75f, 0.70f), uniformModel, uniformColor);
 		DibujarBloque(glm::vec3(-25.0f, 0.5f, 0.0f), glm::vec3(6.0f, 4.0f, 6.0f), glm::vec3(0.30f, 0.55f, 0.35f), uniformModel, uniformColor);
 
@@ -773,14 +773,14 @@ int main()
 			DibujarBloque(posicionCasas[i], tamanoCasas[i], colorCasas[i], uniformModel, uniformColor);
 		}
 
-		//farolas provisionales: poste delgado y lampara arriba
+		//farolas provisionales con un poste delgado y la lampara arriba
 		for (int i = 0; i < numFarolas; i++)
 		{
 			DibujarBloque(posicionFarolas[i], glm::vec3(0.2f, altoPoste, 0.2f), glm::vec3(0.25f, 0.25f, 0.25f), uniformModel, uniformColor);
 			DibujarBloque(posicionFarolas[i] + glm::vec3(0.0f, altoPoste, 0.0f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(1.0f, 0.9f, 0.5f), uniformModel, uniformColor);
 		}
 
-		//muneco de cubos en la recta sur, girado 90 grados para mirar hacia +X (hacia donde avanzara el desfile)
+		//muneco de cubos en la recta sur, girado 90 grados para que mire hacia X positivo, que es hacia donde va a avanzar el desfile
 		//se sube 1 cm igual que la calle para que los pies queden encima de ella
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-5.0f, 0.01f, 15.0f));
@@ -788,7 +788,7 @@ int main()
 		DibujarMuneco(model, poseMuneco, uniformModel, uniformColor);
 
 		// ---------- objetos con transparencia ----------
-		//van al final, despues de todos los opacos, con glEnable(GL_BLEND) (todavia no hay ninguno)
+		//van al final, despues de todos los opacos y con glEnable(GL_BLEND), por ahora no hay ninguno
 
 		glUseProgram(0);
 
