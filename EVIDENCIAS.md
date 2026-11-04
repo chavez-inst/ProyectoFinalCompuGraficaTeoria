@@ -7,7 +7,7 @@ Las imagenes estan en `docs/evidencias/<fase>/`.
 
 ## Fase 1 - Escenario base
 
-Plaza con su textura, calle del circuito y bloques de color que se usan provisionalmente en el lugar de Santo Domingo, el kiosco, la fuente y las casas.
+Plaza con su textura, calle del circuito y bloques de color en el lugar de Santo Domingo, el kiosco, la fuente y las casas.
 
 | Vista inicial | Santo Domingo |
 |---|---|

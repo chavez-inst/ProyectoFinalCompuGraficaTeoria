@@ -25,5 +25,5 @@ void main()
 	//cuando el objeto tiene escalas no uniformes
 	Normal = mat3(transpose(inverse(model))) * norm;
 
-	FragPos = (model * vec4(pos, 1.0)).xyz; //posicion del fragmento en el mundo (el .xyz es swizzling)
+	FragPos = (model * vec4(pos, 1.0)).xyz; //posicion del fragmento en el mundo, con .xyz se quedan solo sus primeros tres valores
 }

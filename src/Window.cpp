@@ -49,14 +49,14 @@ int Window::Initialise()
 		glfwTerminate();
 		return 1;
 	}
-	//version de OpenGL que pedimos (4.3)
+	//se pide la version 4.3 de OpenGL
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	//core profile, solo deja usar OpenGL moderno sin las funciones viejas
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	//crear la ventana (el texto es el titulo)
+	//crear la ventana, el texto es su titulo
 	mainWindow = glfwCreateWindow(width, height, "Proyecto Final", NULL, NULL);
 
 	if (!mainWindow)
@@ -68,7 +68,7 @@ int Window::Initialise()
 	//medidas reales del area donde se dibuja
 	glfwGetFramebufferSize(mainWindow, &bufferWidth, &bufferHeight);
 
-	//decirle a OpenGL que vamos a dibujar en esta ventana
+	//le dice a OpenGL que se va a dibujar en esta ventana
 	glfwMakeContextCurrent(mainWindow);
 
 	//teclado y mouse
@@ -88,7 +88,7 @@ int Window::Initialise()
 	glEnable(GL_DEPTH_TEST); //buffer de profundidad, para que lo de atras no tape lo de enfrente
 
 	glViewport(0, 0, bufferWidth, bufferHeight);
-	//guarda esta clase dentro de la ventana para poder usarla en los callbacks (que son static)
+	//guarda esta clase dentro de la ventana para poder usarla en los callbacks, que son static
 	glfwSetWindowUserPointer(mainWindow, this);
 
 	return 0;
@@ -115,8 +115,7 @@ GLfloat Window::getYChange()
 	return theChange;
 }
 
-//se llama una vez por cada evento de teclado (presionar, mantener o soltar una tecla)
-//aqui se agregan las teclas nuevas
+//se llama una vez por cada evento de teclado, ya sea al presionar, mantener o soltar una tecla
 void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode)
 {
 	Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
@@ -146,7 +145,7 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	}
 
 	//guarda que teclas estan presionadas, la camara y el muneco lo leen con getsKeys()
-	//ojo, WASD ya los usa la camara
+	//las teclas WASD ya las usa la camara
 	if (key >= 0 && key < 1024)
 	{
 		if (action == GLFW_PRESS)

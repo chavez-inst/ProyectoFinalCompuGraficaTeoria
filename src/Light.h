@@ -3,7 +3,7 @@
 #include <glew.h>
 #include <glm.hpp>
 
-//clase base de todas las luces: color, intensidad ambiental e intensidad difusa
+//clase base de todas las luces, guarda el color, la intensidad ambiental y la intensidad difusa
 class Light
 {
 public:

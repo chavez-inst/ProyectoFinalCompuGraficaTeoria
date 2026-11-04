@@ -31,7 +31,7 @@ void SpotLight::UseLight(GLuint ambientIntensityLocation, GLuint ambientcolorLoc
 		diffuseIntensityLocation, positionLocation,
 		constantLocation, linearLocation, exponentLocation);
 
-	//lo que solo tiene la SpotLight: direccion y apertura del cono
+	//lo que solo tiene la SpotLight es la direccion y la apertura del cono
 	glUniform3f(directionLocation, direction.x, direction.y, direction.z);
 	glUniform1f(edgeLocation, procEdge);
 }

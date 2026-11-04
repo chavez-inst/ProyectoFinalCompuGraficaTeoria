@@ -1,15 +1,14 @@
 #pragma once
 #include<glew.h>
 
-//textura 2D cargada desde una imagen (con stb_image)
-//primero se crea con la ruta, por ejemplo Texture("Textures/archivo.png"), y luego se carga con LoadTextureA, o con LoadTexture si es jpg
+//textura 2D que se carga desde una imagen con stb_image
 class Texture
 {
 public:
 	Texture();
 	Texture(const char* FileLoc);
-	bool LoadTexture();  //para imagenes sin transparencia (RGB), por ejemplo .jpg
-	bool LoadTextureA(); //para imagenes con canal alfa (RGBA), por ejemplo .png o .tga
+	bool LoadTexture();  //para imagenes RGB sin transparencia, como .jpg
+	bool LoadTextureA(); //para imagenes RGBA con canal alfa, como .png o .tga
 	void UseTexture();
 	void ClearTexture();
 	~Texture();

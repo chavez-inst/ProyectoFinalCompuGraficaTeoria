@@ -1,7 +1,7 @@
 #pragma once
 #include "PointLight.h"
 
-//luz puntual que solo alumbra dentro de un cono (como una linterna)
+//luz puntual que solo alumbra dentro de un cono, como una linterna
 //edg es la apertura del cono en grados
 class SpotLight :
 	public PointLight

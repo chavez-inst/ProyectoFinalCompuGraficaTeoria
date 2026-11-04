@@ -122,7 +122,7 @@ void Model::LoadMesh(aiMesh * mesh, const aiScene * scene)
 	meshTotex.push_back(mesh->mMaterialIndex);
 }
 
-//carga la textura difusa (map_Kd en el .mtl) de cada material
+//carga la textura difusa de cada material, que es la que dice map_Kd en el .mtl
 //si no tiene o no se encuentra, usa Textures/plain.png
 void Model::LoadMaterials(const aiScene * scene)
 {
@@ -179,7 +179,7 @@ void Model::LoadMaterials(const aiScene * scene)
 				}
 			}
 		}
-		//si no tiene textura o no se pudo cargar, se le pone plain.png (blanca) para que no se vea negro
+		//si no tiene textura o no se pudo cargar, se le pone plain.png, que es blanca, para que no se vea negro
 		if (!TextureList[i])
 		{
 			TextureList[i] = new Texture("Textures/plain.png");

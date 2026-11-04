@@ -17,7 +17,7 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 	uniformProjection = skyShader->GetProjectionLocation();
 	uniformView = skyShader->GetViewLocation();
 
-	//la malla del skybox es un cubo de 2x2x2
+	//la malla del skybox es un cubo de lado 2
 	unsigned int skyboxIndices[] = {
 		// front
 		0, 1, 2,

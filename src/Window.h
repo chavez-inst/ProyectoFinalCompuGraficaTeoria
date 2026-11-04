@@ -34,7 +34,6 @@ private:
 	GLfloat xChange;
 	GLfloat yChange;
 	//valor de ejemplo que cambia con las teclas Y y U
-	//para agregar otro se declara la variable aqui, se pone su getter arriba, se le da valor en los constructores y se agrega la tecla en ManejaTeclado
 	GLfloat muevex;
 	//vale false de tarde y true de noche, cambia con la tecla N
 	bool esNoche;

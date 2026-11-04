@@ -273,7 +273,7 @@ void Shader::AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderT
 
 Shader::~Shader()
 {
-	//no se llama ClearShader aqui a proposito: shaderList guarda copias de Shader, y cuando el vector
-	//crece destruye las copias viejas. Si aqui se borrara el programa, al agregar otro shader
-	//el primero dejaria de funcionar. Si de verdad se quiere borrar, llamar ClearShader() a mano
+	//aqui no se llama ClearShader a proposito, porque shaderList guarda copias de Shader y cuando el vector
+	//crece destruye las copias viejas, asi que si aqui se borrara el programa, al agregar otro shader
+	//el primero dejaria de funcionar y para borrarlo hay que llamar ClearShader() a mano
 }

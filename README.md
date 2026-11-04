@@ -6,7 +6,7 @@
 2. Extraer `Librerias.zip` **dentro de la carpeta del repo**.
    Al final tiene que quedar asi:
    ```
-   Proyecto_Final_CG_Lab/
+   ProyectoFinalCompuGraficaTeoria/
      Librerias/
        dll/  glm/  include/  lib/
      Models/
@@ -44,7 +44,7 @@ Capturas de cada fase del proyecto: [EVIDENCIAS.md](EVIDENCIAS.md).
 ## Mapa del proyecto
 
 ```
-Proyecto_Final_CG_Lab/
+ProyectoFinalCompuGraficaTeoria/
 |-- Proyecto_Final.slnx        <- esto es lo que se abre con VS
 |-- Proyecto_Final.vcxproj     <- configuracion del proyecto (rutas, librerias, etc.)
 |-- README.md                  <- este archivo
@@ -191,11 +191,11 @@ Si sale muy grande o muy chico, ajustar con `glm::scale`.
    ```cpp
    MeshModel* obj = new MeshModel();
    obj->CreateMeshModel(vertices, indices, numFloats, numIndices);
-   meshListModel.push_back(obj); //meshListModel[3], [4], ...
+   meshListModel.push_back(obj); //meshListModel[10]
    ```
-   Ojo: el tercer parametro es la **cantidad de floats** del arreglo (vertices x 8),
-   no la cantidad de vertices.
-3. Si no quieres escribir las normales a mano, se pueden calcular con `calcAverageNormals(...)`
+   El tercer parametro es la **cantidad de floats** del arreglo, o sea el numero de vertices por 8,
+   y no la cantidad de vertices. La malla queda en el siguiente indice libre de `meshListModel`.
+3. En lugar de escribir las normales a mano, se pueden calcular con `calcAverageNormals(...)`
    **antes** de `CreateMeshModel`.
 4. Llamar la funcion en `main()` junto a `CreateObjects()` y `CrearCubo()` y anotar que indice le toco.
 
@@ -203,7 +203,7 @@ Si sale muy grande o muy chico, ajustar con `glm::scale`.
 
 ```cpp
 Material Material_metal;                    //variables globales
-Material_metal = Material(2.0f, 128);       //carga de recursos: (intensidad especular, shininess)
+Material_metal = Material(2.0f, 128);       //carga de recursos, con la intensidad especular y el shininess
 Material_metal.UseMaterial(uniformSpecularIntensity, uniformShininess);  //antes de dibujar
 ```
 
@@ -213,38 +213,44 @@ Las luces se crean en la carga de recursos, en el siguiente lugar libre del arre
 suma 1 al contador:
 
 ```cpp
-pointLights[1] = PointLight(1.0f, 0.5f, 0.0f,    //color r g b
-    0.0f, 1.0f,                                   //intensidad ambiental, difusa
+spotLights[3] = SpotLight(1.0f, 0.5f, 0.0f,      //color r g b
+    0.0f, 1.0f,                                   //intensidad ambiental y difusa
     -3.0f, 2.0f, 0.0f,                            //posicion
-    1.0f, 0.09f, 0.032f);                         //atenuacion: constante, lineal, exponente
-pointLightCount++;
+    0.0f, -1.0f, 0.0f,                            //direccion
+    1.0f, 0.09f, 0.032f,                          //atenuacion constante, lineal y exponencial
+    30.0f);                                       //apertura del cono en grados
+spotLightCount++;
 ```
 
-- Maximo 3 puntuales y 4 spotlights (`CommonValues.h`).
-- `spotLights[0]` es la linterna de la camara.
+- El maximo es 16 puntuales y 4 spotlights (`CommonValues.h`). Las 16 puntuales son las farolas
+  y los spotlights 0, 1 y 2 son los de Santo Domingo, el kiosco y la Sangre de Cristo.
 - Para mover una luz mientras corre el programa, dentro del `while`:
   `spotLights[1].SetPos(nuevaPos);` o `spotLights[1].SetFlash(pos, dir);`
-- Para prender/apagar luces se puede cambiar el contador que se manda en
-  `SetPointLights(pointLights, pointLightCount)`.
+- Para prender o apagar luces se cambia el contador que se manda en
+  `SetPointLights(pointLights, pointLightCount)`, como hace la tecla N con las farolas.
 
 ### Una tecla nueva / mover algo con el teclado
 
-Se hace igual que la variable `muevex` (teclas Y/U):
+Se hace igual que la variable `esNoche` (tecla N):
 
-1. `Window.h`: agregar la variable en `private` (ej. `GLfloat rotaPuerta;`) y su getter en `public`
+1. `Window.h`: agregar la variable en `private` (por ejemplo `GLfloat rotaPuerta;`) y su getter en `public`
    (`GLfloat getrotaPuerta() { return rotaPuerta; }`).
 2. `Window.cpp`: darle valor inicial en **los dos** constructores.
 3. `Window.cpp`, en `ManejaTeclado`:
    ```cpp
-   if (key == GLFW_KEY_P && action == GLFW_PRESS)
+   if (key == GLFW_KEY_G && action == GLFW_PRESS)
    {
        theWindow->rotaPuerta += 10.0f;
    }
    ```
-   (`action == GLFW_PRESS` = una vez por pulsacion, `action != GLFW_RELEASE` = mientras se mantenga)
+   Con `action == GLFW_PRESS` cambia una vez por cada pulsacion y con `action != GLFW_RELEASE`
+   sigue cambiando mientras se mantenga la tecla.
 4. En `main.cpp` usarla: `mainWindow.getrotaPuerta()`.
 
-No usar W, A, S, D (son de la camara) ni ESC.
+Para algo que se mueve poco a poco mientras la tecla esta presionada, se lee `mainWindow.getsKeys()`
+en `main.cpp`, como en `ProbarArticulaciones`.
+
+No usar las teclas que ya estan en la tabla de controles.
 
 ### Cambiar el skybox
 
@@ -265,16 +271,15 @@ Agregar > Elemento existente. Si se usa "Agregar > Clase", cambiar la ubicacion 
 
 ---
 
-## Trabajo en equipo con Git
+## Git
 
-- **Antes de empezar a trabajar: Pull.** Al terminar: commit y push. Asi evitamos conflictos.
+- Si se trabaja desde otra computadora, hacer **pull** antes de empezar y **commit y push** al terminar.
 - Commits chicos y con mensaje claro (`agrega modelo de la casa`, `arregla luz de la lampara`).
-- `main.cpp` lo tocamos todos: cada quien agrega sus cosas en su propio bloque con un comentario
-  (`//--- objetos de Fulano ---`) y no reacomodar ni re-formatear codigo de otros.
+- Cada cosa nueva va en la parte de `main.cpp` que le toca, siguiendo los 6 bloques de arriba.
 - No subir nada de `Librerias/` ni `build/` (ya esta en el `.gitignore`).
-- GitHub no acepta archivos de mas de 100 MB. Mantener modelos y texturas ligeros
-  (texturas de 1024 o 2048 px estan bien).
-- Si alguien agrega una libreria nueva, se actualiza `Librerias.zip` y se sube al repo.
+- GitHub no acepta archivos de mas de 100 MB, asi que los modelos y texturas tienen que ser ligeros.
+  Las texturas de 1024 o 2048 px estan bien.
+- Si se agrega una libreria nueva, se actualiza `Librerias.zip`.
 
 ---
 

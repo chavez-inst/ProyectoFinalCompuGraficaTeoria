@@ -8,7 +8,7 @@ MeshModel::MeshModel()
 	indexCount = 0;
 }
 
-//ojo, numOfVertices es cuantos floats tiene el arreglo, o sea el numero de vertices por 8, y no cuantos vertices son
+//numOfVertices es cuantos floats tiene el arreglo, o sea el numero de vertices por 8, y no cuantos vertices son
 void MeshModel::CreateMeshModel(GLfloat* vertices, unsigned int* indices, unsigned int numOfVertices, unsigned int numOfIndices)
 {
 	indexCount = numOfIndices;

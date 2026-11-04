@@ -1,21 +1,4 @@
-﻿/*
-Proyecto Final - Computacion Grafica
-Calenda de Oaxaca por el andador Macedonio Alcala, del atrio de Santo Domingo al Zocalo
-Escenario: andador con sus calles, banquetas y plazas, casas con fachada, portales del Zocalo, telones al final de las calles que cruzan,
-farolas, Santo Domingo, la Sangre de Cristo, el kiosco, la fuente, jardineras y un muneco de cubos jerarquico
-Controles: WASD y mouse mueven la camara libre, C cambia de camara, N cambia entre atardecer y noche, ESC cierra
-Teclas de prueba del muneco: Y y U giran los hombros, H y J los codos, K y L las caderas, O y P las rodillas, Z y X la cabeza
-
-Partes de este archivo, cada una empieza con un titulo entre signos =
- 1. variables globales de texturas, modelos, materiales y luces
- 2. geometria hecha a mano: piso lejano, plano de vegetacion, cubo, plano parado y pisos de la ciudad
- 3. trazado de la escena: manzanas, plazas, tramos del andador y filas de casas
- 4. personaje jerarquico con su pose, las medidas del esqueleto, el dibujo y las teclas de prueba
- 5. main, donde se cargan las texturas, el skybox, los materiales y las luces
- 6. while, donde se dibuja todo cada frame
-*/
-
-//esto solo va aqui y en ningun otro archivo, porque si no da error de simbolos repetidos
+﻿//esto solo va aqui y en ningun otro archivo, porque si no da error de simbolos repetidos
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <vector>
@@ -208,7 +191,7 @@ void CreateObjects()
 		530.0f, -0.05f, 460.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f
 	};
 
-	//dos planos cruzados que sirven para plantas o cosas con transparencia, se van a usar para los arboles
+	//dos planos cruzados para plantas o cosas con transparencia
 	unsigned int vegetacionIndices[] = {
 	   0, 1, 2,
 	   0, 2, 3,
@@ -248,7 +231,7 @@ void CreateShaders()
 }
 
 
-//cubo de 1x1x1 centrado en el origen, con la imagen completa en cada cara
+//cubo de lado 1 centrado en el origen, con la imagen completa en cada cara
 void CrearCubo()
 {
 	//cada normal apunta hacia afuera de su cara, igual que en Blender
@@ -341,9 +324,7 @@ void CrearPlano()
 
 // ================== 3. TRAZADO DE LA ESCENA ==================
 //1 unidad es 1 metro, el norte esta hacia Z negativo y el sur hacia Z positivo
-//el andador va de norte a sur sobre x = 0, la calle mide 8 m (de -4 a 4) y cada banqueta 2 m
-//de norte a sur se cruzan Gurrion, Abasolo y Manuel Bravo, Morelos e Independencia, y al final esta el Zocalo
-//Santo Domingo queda al oriente del atrio con la fachada hacia el poniente, y la Sangre de Cristo en la esquina noroeste de Abasolo
+//el andador va de norte a sur sobre x = 0, la calle mide 8 m, de -4 a 4, y cada banqueta 2 m
 
 //un rectangulo en el piso, de la esquina noroeste (x0, z0) a la sureste (x1, z1)
 struct Rectangulo
@@ -651,12 +632,14 @@ void DibujarCasas(GLuint uniformModel, GLuint uniformColor)
 
 
 // ================== 4. PERSONAJE JERARQUICO ==================
-//cada parte se dibuja a partir de la matriz de su padre. Del cuerpo salen la cabeza, los brazos y las piernas, del brazo sale el antebrazo y del muslo la pierna
-//asi al girar el hombro tambien se mueven el antebrazo y la mano
+//cada parte se dibuja a partir de la matriz de su padre, del cuerpo salen la cabeza, los brazos y las piernas
+//y del brazo sale el antebrazo, asi al girar el hombro tambien se mueve el antebrazo
 
 //angulos de las articulaciones, en grados
-//el hombro gira hacia adelante sobre X, donde un angulo negativo sube el brazo al frente, y hacia el lado sobre Z, donde uno positivo mueve la mano hacia X positivo
-//codos, caderas y rodillas giran sobre X. Con un angulo negativo el codo dobla hacia el frente y con uno positivo la rodilla dobla hacia atras
+//el hombro gira hacia adelante sobre X, donde un angulo negativo sube el brazo al frente,
+//y hacia el lado sobre Z, donde uno positivo mueve la mano hacia X positivo
+//codos, caderas y rodillas giran sobre X, con un angulo negativo el codo dobla hacia el frente
+//y con uno positivo la rodilla dobla hacia atras
 //la cabeza gira sobre Y para voltear
 struct PosePersona
 {
@@ -667,12 +650,11 @@ struct PosePersona
 	float cabeza;
 };
 
-//variables de cada articulacion, la animacion las escribe y el dibujo solo las lee, asi despues las pueden controlar los KeyFrames
-//van en el mismo orden que en PosePersona, primero el brazo izquierdo, luego el derecho, despues las piernas y al final la cabeza
+//pose del muneco, empieza parado con todos los angulos en 0
+//los valores van en el mismo orden que en PosePersona, primero el brazo izquierdo, luego el derecho, despues las piernas y al final la cabeza
 PosePersona poseMuneco = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 
-//medidas del esqueleto en metros, los modelos que reemplacen a los cubos deben respetarlas
-//y tener su origen en la articulacion alrededor de la que giran
+//medidas del esqueleto en metros
 const float alturaCadera = 0.92f;							//del piso al origen del cuerpo
 const glm::vec3 posHombro = glm::vec3(0.2f, 0.47f, 0.0f);	//hombro izquierdo, el derecho usa la misma posicion con x negativa
 const glm::vec3 posCuello = glm::vec3(0.0f, 0.55f, 0.0f);
@@ -694,7 +676,8 @@ void DibujarParte(glm::mat4 articulacion, glm::vec3 centro, glm::vec3 tamano, gl
 	meshListModel[2]->RenderMeshModel();
 }
 
-//dibuja un brazo o una pierna de dos partes, la primera gira en la articulacion y la segunda cuelga de ella y se dobla en el codo o la rodilla
+//dibuja un brazo o una pierna de dos partes, la primera gira en la articulacion
+//y la segunda cuelga de ella y se dobla en el codo o la rodilla
 //las dos partes cuelgan hacia Y negativo desde su articulacion
 void DibujarExtremidad(glm::mat4 padre, glm::vec3 articulacion, float adelante, float lado,
 	float largo1, float grosor1, glm::vec3 color1, float doblez, float largo2, float grosor2, glm::vec3 color2,
@@ -745,9 +728,8 @@ void DibujarMuneco(glm::mat4 base, PosePersona pose, GLuint uniformModel, GLuint
 		largoMuslo, 0.13f, colorPantalon, pose.rodillaDer, largoPierna, 0.11f, colorEspinilla, uniformModel, uniformColor);
 }
 
-//teclas de prueba para girar las articulaciones del muneco, se quitan cuando llegue la animacion
-//esta es la parte que escribe la pose, y el dibujo en el while solo la lee
-//Y y U giran los hombros, H y J los codos, K y L las caderas, O y P las rodillas, Z y X la cabeza
+//teclas de prueba que giran las articulaciones del muneco
+//aqui se escribe la pose y el dibujo en el while solo la lee
 void ProbarArticulaciones(bool* keys, GLfloat deltaTime)
 {
 	float paso = 1.5f * deltaTime; //grados que gira en este frame mientras la tecla esta presionada
@@ -818,7 +800,7 @@ void ProbarArticulaciones(bool* keys, GLfloat deltaTime)
 
 int main()
 {
-	mainWindow = Window(1366, 768); //tambien jala con 1280x1024 o 1024x768
+	mainWindow = Window(1366, 768);
 	mainWindow.Initialise();
 	CreateObjects();
 	CrearCubo();
@@ -829,7 +811,7 @@ int main()
 
 	//Camera recibe la posicion inicial, el vector up, yaw, pitch, la velocidad de movimiento y la velocidad de giro
 	//con yaw de 90 la camara mira hacia Z positivo, con 0 hacia X positivo y con 180 hacia X negativo
-	//la vista inicial esta sobre el andador frente al atrio, a 10 m de altura, mirando hacia el sur por donde va a bajar el desfile
+	//la vista inicial esta sobre el andador frente al atrio, a 10 m de altura, mirando hacia el sur
 	camera = Camera(glm::vec3(0.0f, 10.0f, -150.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -15.0f, 0.3f, 0.5f);
 	//la de la fachada esta en el atrio y mira hacia el oriente, donde esta Santo Domingo, un poco hacia arriba para ver las torres
 	//velocidades en 0 porque esta camara no se mueve
@@ -907,7 +889,7 @@ int main()
 	Material_opaco = Material(0.3f, 4);
 
 
-	// ---- luces ----
+	// ---------- luces ----------
 	//orden de los parametros de cada tipo de luz
 	//DirectionalLight recibe el color r g b, la intensidad ambiental y la difusa, y la direccion x y z
 	//PointLight recibe el color r g b, la intensidad ambiental y la difusa, la posicion x y z, y la atenuacion constante, lineal y exponencial
@@ -999,7 +981,6 @@ int main()
 		1.0f, 0.045f, 0.0075f,
 		40.0f);
 	spotLightCount++;
-	//para agregar otra luz se pone en el siguiente lugar libre del arreglo y se suma 1 al contador
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
@@ -1017,7 +998,7 @@ int main()
 	//los de la orilla poniente ven hacia X positivo y los de la oriente hacia X negativo
 	float giroTelones[numTelones] = { 90.0f, -90.0f, 90.0f, -90.0f, 90.0f, -90.0f, 90.0f, -90.0f };
 
-	//ojo, glm::perspective usa radianes, asi que el 45.0f no son 45 grados, pero asi venia del lab y se ve bien
+	//el angulo de glm::perspective va en radianes, por eso 45.0f da una vista de unos 58 grados y no de 45
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
 	// ================== 6. CICLO PRINCIPAL ==================
@@ -1052,7 +1033,7 @@ int main()
 			camera.limitarPosicion(glm::vec3(-54.0f, 1.0f, -200.0f), glm::vec3(68.0f, 30.0f, 126.0f));
 		}
 
-		//en la animacion se escriben las variables de la pose, y el dibujo de abajo solo las lee
+		//las teclas de prueba escriben la pose del muneco y el dibujo de abajo solo la lee
 		ProbarArticulaciones(mainWindow.getsKeys(), deltaTime);
 
 		//limpiar la pantalla
@@ -1084,7 +1065,6 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camaraActual->calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camaraActual->getCameraPosition().x, camaraActual->getCameraPosition().y, camaraActual->getCameraPosition().z);
 
-		//aqui en el while es donde se pueden cambiar cosas de las luces mientras corre el programa
 		//con la tecla N, de noche cambia la luz direccional y se encienden las farolas
 		if (mainWindow.getesNoche())
 		{
@@ -1101,7 +1081,6 @@ int main()
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
-		//para dibujar cada objeto siempre se pone la matriz model, el color, la textura y el material, y luego se hace el render
 		glm::mat4 model(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f); //con blanco la textura se ve con sus colores normales
 
@@ -1181,7 +1160,7 @@ int main()
 			}
 		}
 
-		//muneco de cubos sobre el andador, frente a la Sangre de Cristo, mirando hacia el sur que es hacia donde baja el desfile
+		//muneco de cubos sobre el andador, frente a la Sangre de Cristo, mirando hacia el sur
 		//se sube 1 cm igual que el andador para que los pies queden encima de el
 		plainTexture.UseTexture();
 		model = glm::mat4(1.0);

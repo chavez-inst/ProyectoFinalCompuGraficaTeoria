@@ -98,7 +98,7 @@ vec4 CalcPointLight(PointLight pLight)
 	direction = normalize(direction);
 
 	vec4 color = CalcLightByDirection(pLight.base, direction);
-	//atenuacion: entre mas lejos, mas se divide la luz
+	//atenuacion, entre mas lejos esta la luz mas se divide
 	float attenuation = pLight.exponent * distance * distance +
 						pLight.linear * distance +
 						pLight.constant;
