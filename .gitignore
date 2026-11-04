@@ -29,3 +29,12 @@ desktop.ini
 !README.md
 !EVIDENCIAS.md
 capturas.ps1
+
+# fotos de referencia de Google Maps e internet, solo para guiarse
+Referencias/
+
+# maqueta de la escena del andador, es la referencia de hacia donde va el proyecto
+Maqueta_andador/
+
+# archivos fuente de modelos y texturas (descargas originales, .blend), lo que se usa va en Models/ y Textures/
+Fuentes/

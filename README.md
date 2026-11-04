@@ -88,13 +88,16 @@ En el Explorador de soluciones de VS los archivos estan agrupados en carpetas vi
 
 ### Como esta acomodado main.cpp
 
-Esta dividido en 4 bloques marcados con `// ==================`:
+Esta dividido en 6 bloques marcados con `// ==================`:
 
 1. **Variables globales**: aqui se declaran texturas, modelos, materiales y luces.
-2. **Geometria hecha a mano**: plaza, plano de vegetacion, cubo y calle del circuito (`CreateObjects`, `CrearCubo` y `CrearCalle`).
-   `DibujarBloque` usa el cubo para dibujar los edificios provisionales como bloques de color.
-3. **Carga de recursos** (dentro de `main`): se cargan texturas, modelos, skybox, materiales y luces.
-4. **Ciclo principal** (el `while`): se dibuja todo cada frame. Primero los objetos opacos y al final los transparentes.
+2. **Geometria hecha a mano**: piso lejano, plano de vegetacion y cubo (`CreateObjects` y `CrearCubo`), y las funciones
+   que arman pisos con la textura pegada al mundo (`AgregarRectanguloPiso`, `AgregarPlataforma`, `GuardarMalla`).
+3. **Trazado de la escena**: medidas de las manzanas, las plazas y los tramos del andador, `CrearEscenario` (arma los pisos)
+   y las filas de casas (`DibujarFilaCasas`). `DibujarBloque` usa el cubo para los edificios provisionales como bloques de color.
+4. **Personaje jerarquico**: el muneco de cubos, su pose y las teclas de prueba.
+5. **Carga de recursos** (dentro de `main`): se cargan texturas, modelos, skybox, materiales y luces.
+6. **Ciclo principal** (el `while`): se dibuja todo cada frame. Primero los objetos opacos y al final los transparentes.
 
 ### Reglas importantes
 

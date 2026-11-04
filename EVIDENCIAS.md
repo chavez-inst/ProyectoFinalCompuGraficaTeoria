@@ -54,3 +54,21 @@ Un muneco hecho con cubos en la recta sur, mirando hacia donde va a avanzar el d
 | ![Codos](docs/evidencias/fase4/03_codos.png) | ![Caderas y rodillas](docs/evidencias/fase4/04_caderas_rodillas.png) |
 | **Cabeza (Z/X)** | **Desde la camara del desfile** |
 | ![Cabeza](docs/evidencias/fase4/05_cabeza.png) | ![Camara del desfile](docs/evidencias/fase4/06_camara_desfile.png) |
+
+## Fase 4.5.1 - Andador en lugar del circuito
+
+La escena deja el circuito y pasa al andador Macedonio Alcala, que el desfile recorre en una sola direccion: sale del atrio de Santo Domingo y baja hacia el sur hasta el Zocalo. El andador tiene losas de cantera y en las tres calles que lo cruzan se ve el empedrado. A los lados van las banquetas, 15 cm arriba de la calle, y el atrio, el jardin Labastida y el Zocalo tienen losas grandes en cuadricula. Las casas, Santo Domingo, la Sangre de Cristo, el kiosco y la fuente siguen siendo bloques de color, ahora en su lugar nuevo. Las farolas, los reflectores, las tres camaras y el muneco tambien se movieron al andador.
+
+| Camara libre al iniciar, desde el atrio | Todo el andador desde arriba |
+|---|---|
+| ![Vista inicial](docs/evidencias/fase4_5_1/01_inicial.png) | ![Vista alta](docs/evidencias/fase4_5_1/02_vista_alta.png) |
+| **Fachada de Santo Domingo** | **Lateral del desfile** |
+| ![Fachada](docs/evidencias/fase4_5_1/03_fachada.png) | ![Desfile](docs/evidencias/fase4_5_1/04_desfile.png) |
+| **Kiosco en el Zocalo** | **Andador de noche** |
+| ![Zocalo](docs/evidencias/fase4_5_1/05_zocalo.png) | ![Noche](docs/evidencias/fase4_5_1/06_noche_inicial.png) |
+| **Fachada de noche** | **Lateral del desfile de noche** |
+| ![Fachada de noche](docs/evidencias/fase4_5_1/07_fachada_noche.png) | ![Desfile de noche](docs/evidencias/fase4_5_1/08_desfile_noche.png) |
+
+Kiosco de noche, con su reflector y las dos farolas del Zocalo:
+
+![Zocalo de noche](docs/evidencias/fase4_5_1/09_zocalo_noche.png)

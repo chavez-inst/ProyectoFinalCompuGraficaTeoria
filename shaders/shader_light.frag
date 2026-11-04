@@ -151,6 +151,11 @@ void main()
 	vec4 finalcolor = CalcDirectionalLight();
 	finalcolor += CalcPointLights();
 	finalcolor += CalcSpotLights();
+	//los pixeles casi transparentes de la textura, como lo que rodea a una hoja o al papel picado, no se dibujan
+	//para que no tapen lo que esta atras aunque se dibujen antes
+	vec4 colorTextura = texture(theTexture, TexCoord);
+	if (colorTextura.a < 0.1)
+		discard;
 	//el color final es la textura por el color del objeto, que es el uniform color, por toda la luz que le llega
-	color = texture(theTexture, TexCoord)*vColor*finalcolor;
+	color = colorTextura*vColor*finalcolor;
 }
