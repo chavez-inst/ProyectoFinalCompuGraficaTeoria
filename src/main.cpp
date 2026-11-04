@@ -1,8 +1,8 @@
 ﻿/*
 Proyecto Final - Computacion Grafica
 Calenda de Oaxaca por el andador Macedonio Alcala, del atrio de Santo Domingo al Zocalo
-Escenario: andador con sus calles, banquetas y plazas, casas con fachada, telones al final de las calles que cruzan, farolas,
-Santo Domingo, la Sangre de Cristo, bloques provisionales del kiosco y la fuente, y un muneco de cubos jerarquico
+Escenario: andador con sus calles, banquetas y plazas, casas con fachada, portales del Zocalo, telones al final de las calles que cruzan,
+farolas, Santo Domingo, la Sangre de Cristo, el kiosco, la fuente, jardineras y un muneco de cubos jerarquico
 Controles: WASD y mouse mueven la camara libre, C cambia de camara, N cambia entre atardecer y noche, ESC cierra
 Teclas de prueba del muneco: Y y U giran los hombros, H y J los codos, K y L las caderas, O y P las rodillas, Z y X la cabeza
 
@@ -65,17 +65,20 @@ Texture plainTexture;		//textura blanca, con ella el objeto se ve solo con el co
 Texture fachadaCasa1Texture;	//casa de un piso
 Texture fachadaCasa2Texture;	//casa de dos pisos con balcones
 Texture fachadaCanteraTexture;	//edificio de cantera, no se pinta
-//Sangre de Cristo
-Texture canteraTexture;			//muro de cantera verde en bloques, la imagen cubre 2 m
-Texture fachadaSangreTexture;	//fachada con la portada, la puerta y el nicho
-//estas tienen canal alfa y se dibujan al final con transparencia
+Texture fachadaPortalTexture;	//portales del Zocalo con dos arcos abajo, ya viene pintada
+//jardineras del Zocalo
+Texture canteraTexture;			//cantera verde en bloques de las orillas, la imagen cubre 2 m
+Texture tierraTexture;			//tierra roja de adentro, la imagen cubre 2 m
+//tiene canal alfa y se dibuja al final con transparencia
 Texture telonTexture;		//calle que sigue, al final de cada calle que cruza
-Texture espadanaTexture;	//remate con las campanas encima de la fachada de la Sangre de Cristo
 
 //modelos, sus archivos van en la carpeta Models y sus texturas en Textures
 Model farolaBrazo;		//farola con el farol colgado de un brazo, para el andador
 Model farolaGlobos;		//farola de dos globos, para el Zocalo
 Model santoDomingo;		//templo, torres y ex convento, con la fachada hacia Z positivo
+Model sangreDeCristo;	//templo con su plataforma y escalones, con la fachada hacia Z positivo
+Model kiosco;			//kiosco del Zocalo con su base de cantera, centrado en el origen
+Model fuenteZocalo;		//fuente redonda con el agua y la escultura, centrada en el origen
 
 //un cielo para la tarde y otro para la noche, se dibuja uno u otro segun la tecla N
 Skybox skyboxTarde;
@@ -186,19 +189,6 @@ void GuardarMalla(std::vector<GLfloat>& vertices, std::vector<unsigned int>& ind
 	malla->CreateMeshModel(vertices.data(), indices.data(), (unsigned int)vertices.size(), (unsigned int)indices.size());
 	meshListModel.push_back(malla);
 }
-
-//caja con la base en el origen, de ancho en X, alto en Y y fondo en Z, con la textura repetida cada metrosImagen
-//se usa para los edificios de cantera, asi los bloques de piedra miden lo mismo en todas las caras
-void CrearCaja(float ancho, float alto, float fondo, float metrosImagen)
-{
-	std::vector<GLfloat> vertices;
-	std::vector<unsigned int> indices;
-	float x = ancho / 2.0f;
-	float z = fondo / 2.0f;
-	AgregarPlataforma(vertices, indices, -x, -z, x, z, alto, metrosImagen);
-	GuardarMalla(vertices, indices);
-}
-
 
 //cada malla que se crea aqui se mete a meshListModel y luego se dibuja con su indice
 void CreateObjects()
@@ -396,6 +386,15 @@ const Rectangulo tramosAndador[numTramos] = {
 	{ -4.0f, -16.0f, 4.0f, 32.0f }			//de Morelos a Independencia
 };
 
+//jardineras del Zocalo en las cuatro esquinas alrededor del kiosco, dejan libres los pasillos hacia el kiosco y la fuente
+const int numJardineras = 4;
+const Rectangulo jardineras[numJardineras] = {
+	{ -29.0f, 49.0f, -11.0f, 63.0f }, { 11.0f, 49.0f, 29.0f, 63.0f },
+	{ -29.0f, 91.0f, -11.0f, 105.0f }, { 11.0f, 91.0f, 29.0f, 105.0f }
+};
+const float altoJardinera = 0.6f;	//lo que sobresalen del piso de la plaza
+const float orillaJardinera = 0.5f;	//ancho del borde de cantera que rodea la tierra
+
 //arma las mallas de las calles, el andador, las banquetas y las plazas con los rectangulos de arriba
 void CrearEscenario()
 {
@@ -435,6 +434,31 @@ void CrearEscenario()
 	GuardarMalla(vertices, indices); //meshListModel[6]
 }
 
+//jardineras del Zocalo, una malla con los bloques de cantera y otra con la tierra de encima
+//los lados del bloque empiezan en 0, pero lo que queda abajo de la plaza no se ve
+//la tierra va 1 cm arriba de la cantera para que no parpadeen
+//se crean despues del plano, por eso quedan en meshListModel[8] y [9]
+void CrearJardineras()
+{
+	std::vector<GLfloat> vertices;
+	std::vector<unsigned int> indices;
+	for (int i = 0; i < numJardineras; i++)
+	{
+		AgregarPlataforma(vertices, indices, jardineras[i].x0, jardineras[i].z0, jardineras[i].x1, jardineras[i].z1,
+			altoBanqueta + altoJardinera, 2.0f);
+	}
+	GuardarMalla(vertices, indices); //meshListModel[8]
+
+	vertices.clear();
+	indices.clear();
+	for (int i = 0; i < numJardineras; i++)
+	{
+		AgregarRectanguloPiso(vertices, indices, jardineras[i].x0 + orillaJardinera, jardineras[i].z0 + orillaJardinera,
+			jardineras[i].x1 - orillaJardinera, jardineras[i].z1 - orillaJardinera, altoBanqueta + altoJardinera + 0.01f, 2.0f);
+	}
+	GuardarMalla(vertices, indices); //meshListModel[9]
+}
+
 
 //dibuja el cubo como un bloque de color, donde posicion es el centro de su base y tamano es el ancho, alto y fondo en metros
 //se sube la mitad de su alto para que quede apoyado sobre el piso
@@ -446,16 +470,6 @@ void DibujarBloque(glm::vec3 posicion, glm::vec3 tamano, glm::vec3 color, GLuint
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 	meshListModel[2]->RenderMeshModel();
-}
-
-//dibuja una de las cajas de cantera con la base en posicion, con color blanco para que su textura se vea tal cual
-void DibujarCaja(int malla, glm::vec3 posicion, GLuint uniformModel, GLuint uniformColor)
-{
-	glm::mat4 model(1.0);
-	model = glm::translate(model, posicion);
-	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-	glUniform3fv(uniformColor, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
-	meshListModel[malla]->RenderMeshModel();
 }
 
 //dibuja un plano parado, posicion es el centro de su orilla de abajo y giro son los grados sobre Y
@@ -519,6 +533,7 @@ void DibujarFilaCasas(glm::vec3 inicio, float giro, float largo, float fondo, in
 			ancho = 10.0f;
 			alto = 9.0f;
 			colorCuerpo = glm::vec3(0.90f, 0.80f, 0.60f);
+			colorFachada = glm::vec3(1.0f, 1.0f, 1.0f);
 		}
 		//la ultima casa se recorta para no pasarse del largo de la fila
 		if (avance + ancho > largo)
@@ -544,34 +559,35 @@ void DibujarFilaCasas(glm::vec3 inicio, float giro, float largo, float fondo, in
 				glm::vec3(1.0f, 1.3f, 1.0f), glm::vec3(0.12f, 0.12f, 0.13f), uniformModel, uniformColor);
 		}
 
-		//los portales todavia no llevan fachada, por ahora solo son el bloque
-		if (estilo != estiloPortal)
+		//fachada, las casas altas son de dos pisos
+		if (estilo == estiloCantera)
 		{
-			//fachada, las casas altas son de dos pisos
-			if (estilo == estiloCantera)
-			{
-				fachadaCanteraTexture.UseTexture();
-			}
-			else if (alto >= 7.0f)
-			{
-				fachadaCasa2Texture.UseTexture();
-			}
-			else
-			{
-				fachadaCasa1Texture.UseTexture();
-			}
-			DibujarPlano(centroFrente + haciaLaCalle * 0.02f, giro, ancho, alto, colorFachada, uniformModel, uniformColor);
+			fachadaCanteraTexture.UseTexture();
+		}
+		else if (estilo == estiloPortal)
+		{
+			fachadaPortalTexture.UseTexture();
+		}
+		else if (alto >= 7.0f)
+		{
+			fachadaCasa2Texture.UseTexture();
+		}
+		else
+		{
+			fachadaCasa1Texture.UseTexture();
+		}
+		DibujarPlano(centroFrente + haciaLaCalle * 0.02f, giro, ancho, alto, colorFachada, uniformModel, uniformColor);
 
-			//la primera y la ultima casa de la fila quedan en esquina, asi que tambien llevan fachada en el costado que da a la otra calle
-			glm::vec3 centroCostado = centroFrente - haciaLaCalle * (fondo / 2.0f);
-			if (avance == 0.0f)
-			{
-				DibujarPlano(centroCostado - aLoLargo * (ancho / 2.0f + 0.02f), giro - 90.0f, fondo, alto, colorFachada, uniformModel, uniformColor);
-			}
-			if (avance + ancho >= largo - 0.5f)
-			{
-				DibujarPlano(centroCostado + aLoLargo * (ancho / 2.0f + 0.02f), giro + 90.0f, fondo, alto, colorFachada, uniformModel, uniformColor);
-			}
+		//la primera y la ultima casa de la fila quedan en esquina, asi que tambien llevan fachada en el costado que da a la otra calle
+		//en los portales no se pone porque sus costados son muy largos y los arcos se verian estirados
+		glm::vec3 centroCostado = centroFrente - haciaLaCalle * (fondo / 2.0f);
+		if (avance == 0.0f && estilo != estiloPortal)
+		{
+			DibujarPlano(centroCostado - aLoLargo * (ancho / 2.0f + 0.02f), giro - 90.0f, fondo, alto, colorFachada, uniformModel, uniformColor);
+		}
+		if (avance + ancho >= largo - 0.5f && estilo != estiloPortal)
+		{
+			DibujarPlano(centroCostado + aLoLargo * (ancho / 2.0f + 0.02f), giro + 90.0f, fondo, alto, colorFachada, uniformModel, uniformColor);
 		}
 
 		avance += ancho;
@@ -583,7 +599,8 @@ void DibujarFilaCasas(glm::vec3 inicio, float giro, float largo, float fondo, in
 void DibujarCasas(GLuint uniformModel, GLuint uniformColor)
 {
 	//poniente del andador, las fachadas ven hacia X positivo
-	DibujarFilaCasas(glm::vec3(-6.0f, 0.0f, -104.0f), 90.0f, 74.0f, 12.0f, estiloColores, 0, uniformModel, uniformColor);
+	//la primera fila empieza junto al costado norte de la Sangre de Cristo
+	DibujarFilaCasas(glm::vec3(-6.0f, 0.0f, -101.0f), 90.0f, 77.0f, 12.0f, estiloColores, 0, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(-6.0f, 0.0f, -26.0f), 90.0f, 48.0f, 12.0f, estiloColores, 2, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(-6.0f, 0.0f, 30.0f), 90.0f, 44.0f, 12.0f, estiloCantera, 1, uniformModel, uniformColor);
 	//oriente del andador, las fachadas ven hacia X negativo
@@ -593,7 +610,8 @@ void DibujarCasas(GLuint uniformModel, GLuint uniformColor)
 
 	//calles que cruzan, del lado poniente
 	DibujarFilaCasas(glm::vec3(-18.0f, 0.0f, -178.0f), 180.0f, 36.0f, 12.0f, estiloColores, 5, uniformModel, uniformColor);
-	DibujarFilaCasas(glm::vec3(-54.0f, 0.0f, -86.0f), 0.0f, 30.0f, 12.0f, estiloColores, 3, uniformModel, uniformColor);
+	//esta llega hasta la parte de atras de la Sangre de Cristo, en x = -27
+	DibujarFilaCasas(glm::vec3(-54.0f, 0.0f, -86.0f), 0.0f, 27.0f, 12.0f, estiloColores, 3, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(-18.0f, 0.0f, -74.0f), 180.0f, 36.0f, 12.0f, estiloColores, 4, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(-54.0f, 0.0f, -26.0f), 0.0f, 36.0f, 12.0f, estiloColores, 6, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(-18.0f, 0.0f, -14.0f), 180.0f, 36.0f, 12.0f, estiloColores, 3, uniformModel, uniformColor);
@@ -806,7 +824,7 @@ int main()
 	CrearCubo();
 	CrearEscenario();
 	CrearPlano();
-	CrearCaja(18.0f, 12.0f, 18.0f, 2.0f);	//Sangre de Cristo, meshListModel[8]
+	CrearJardineras();
 	CreateShaders();
 
 	//Camera recibe la posicion inicial, el vector up, yaw, pitch, la velocidad de movimiento y la velocidad de giro
@@ -841,14 +859,14 @@ int main()
 	fachadaCasa2Texture.LoadTexture();
 	fachadaCanteraTexture = Texture("Textures/fachada_cantera.jpg");
 	fachadaCanteraTexture.LoadTexture();
+	fachadaPortalTexture = Texture("Textures/fachada_portal.jpg");
+	fachadaPortalTexture.LoadTexture();
 	telonTexture = Texture("Textures/telon.png");
 	telonTexture.LoadTextureA();
 	canteraTexture = Texture("Textures/cantera_muro.jpg");
 	canteraTexture.LoadTexture();
-	fachadaSangreTexture = Texture("Textures/fachada_sangre_de_cristo.jpg");
-	fachadaSangreTexture.LoadTexture();
-	espadanaTexture = Texture("Textures/espadana.png");
-	espadanaTexture.LoadTextureA();
+	tierraTexture = Texture("Textures/tierra_roja.jpg");
+	tierraTexture.LoadTexture();
 
 	//los modelos traen su propia textura, que se busca en la carpeta Textures
 	farolaBrazo = Model();
@@ -857,6 +875,12 @@ int main()
 	farolaGlobos.LoadModel("Models/farola_globos.obj");
 	santoDomingo = Model();
 	santoDomingo.LoadModel("Models/santo_domingo.obj");
+	sangreDeCristo = Model();
+	sangreDeCristo.LoadModel("Models/sangre_de_cristo.obj");
+	kiosco = Model();
+	kiosco.LoadModel("Models/kiosco.obj");
+	fuenteZocalo = Model();
+	fuenteZocalo.LoadModel("Models/fuente_zocalo.obj");
 
 	//las 6 caras del skybox van en este orden: rt, lf, dn, up, bk, ft
 	std::vector<std::string> skyboxFaces;
@@ -958,19 +982,19 @@ int main()
 		45.0f);
 	spotLightCount++;
 
-	//luz del kiosco, apunta de arriba hacia abajo y el cono cubre toda su base
+	//luz del kiosco, esta debajo del techo y apunta hacia abajo para alumbrar la plataforma donde toca la banda
 	spotLights[1] = SpotLight(1.0f, 0.85f, 0.6f,
 		0.0f, 1.5f,
-		0.0f, 16.0f, 77.0f,
+		0.0f, 7.0f, 77.0f,
 		0.0f, -1.0f, 0.0f,
 		1.0f, 0.022f, 0.0019f,
-		30.0f);
+		55.0f);
 	spotLightCount++;
 
-	//luz de la fachada de la Sangre de Cristo, sale del piso del andador y apunta hacia el poniente y hacia arriba
+	//luz de la fachada de la Sangre de Cristo, sale del piso del andador frente a la puerta y apunta hacia el poniente y hacia arriba
 	spotLights[2] = SpotLight(1.0f, 0.88f, 0.7f,
 		0.0f, 1.6f,
-		3.0f, 0.3f, -95.0f,
+		3.0f, 0.3f, -93.6f,
 		-1.0f, 0.5f, 0.0f,
 		1.0f, 0.045f, 0.0075f,
 		40.0f);
@@ -1115,24 +1139,28 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		santoDomingo.RenderModel();
 
-		//Sangre de Cristo en la esquina noroeste de Abasolo, con la fachada hacia el oriente, que da al andador, y un escalon enfrente
-		//la fachada va 2 cm enfrente de la caja para que no parpadee con su cara oriente
+		//Sangre de Cristo en la esquina noroeste de Abasolo, con la fachada hacia el oriente, que da al andador
+		//el modelo tiene la fachada hacia Z positivo, por eso se gira 90 grados para que vea hacia X positivo
+		//la fachada queda en x = -9 y la orilla de los escalones en x = -6, junto a la banqueta, y su costado sur da a Abasolo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-9.0f, altoBanqueta, -93.6f));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		sangreDeCristo.RenderModel();
+
+		//kiosco al centro del Zocalo, sus escaleras ven hacia los cuatro lados
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, altoBanqueta, 77.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		kiosco.RenderModel();
+
+		//jardineras del Zocalo, igual que los pisos ya tienen sus coordenadas en el mundo
+		model = glm::mat4(1.0);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		canteraTexture.UseTexture();
-		DibujarCaja(8, glm::vec3(-15.0f, 0.0f, -95.0f), uniformModel, uniformColor);
-		fachadaSangreTexture.UseTexture();
-		DibujarPlano(glm::vec3(-5.98f, 0.0f, -95.0f), 90.0f, 18.0f, 12.0f, color, uniformModel, uniformColor);
-		plainTexture.UseTexture();
-		DibujarBloque(glm::vec3(-5.3f, altoBanqueta, -95.0f), glm::vec3(1.4f, 0.2f, 9.0f), glm::vec3(0.78f, 0.75f, 0.62f), uniformModel, uniformColor);
-
-		//los bloques provisionales usan la textura blanca para que se vea solo el color de cada uno
-		plainTexture.UseTexture();
-
-		//kiosco al centro del Zocalo con su base y su cuerpo
-		DibujarBloque(glm::vec3(0.0f, altoBanqueta, 77.0f), glm::vec3(12.0f, 1.6f, 12.0f), glm::vec3(0.75f, 0.75f, 0.70f), uniformModel, uniformColor);
-		DibujarBloque(glm::vec3(0.0f, altoBanqueta + 1.6f, 77.0f), glm::vec3(8.0f, 4.5f, 8.0f), glm::vec3(0.30f, 0.55f, 0.35f), uniformModel, uniformColor);
-
-		//fuente al sur del kiosco
-		DibujarBloque(glm::vec3(0.0f, altoBanqueta, 100.0f), glm::vec3(4.0f, 0.8f, 4.0f), glm::vec3(0.40f, 0.70f, 0.90f), uniformModel, uniformColor);
+		meshListModel[8]->RenderMeshModel();
+		tierraTexture.UseTexture();
+		meshListModel[9]->RenderMeshModel();
 
 		//farolas, el mismo modelo se dibuja en cada lugar con su giro
 		//los modelos usan su propia textura, solo se les pone el color blanco para que se vea tal cual
@@ -1172,10 +1200,11 @@ int main()
 			DibujarPlano(posicionTelones[i], giroTelones[i], 12.0f, 12.0f, color, uniformModel, uniformColor);
 		}
 
-		//espadana de la Sangre de Cristo, el remate con las campanas encima de la fachada
-		//la imagen tiene una orilla transparente arriba y abajo, por eso el plano empieza 28 cm abajo de la azotea
-		espadanaTexture.UseTexture();
-		DibujarPlano(glm::vec3(-6.3f, 11.72f, -95.0f), 90.0f, 9.0f, 6.56f, color, uniformModel, uniformColor);
+		//fuente al sur del kiosco, va aqui porque su agua es un poco transparente y deja ver el fondo de la pila
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, altoBanqueta, 100.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		fuenteZocalo.RenderModel();
 
 		glDisable(GL_BLEND);
 

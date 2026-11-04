@@ -92,11 +92,10 @@ Esta dividido en 6 bloques marcados con `// ==================`:
 
 1. **Variables globales**: aqui se declaran texturas, modelos, materiales y luces.
 2. **Geometria hecha a mano**: piso lejano, plano de vegetacion y cubo (`CreateObjects` y `CrearCubo`), las funciones
-   que arman pisos con la textura pegada al mundo (`AgregarRectanguloPiso`, `AgregarPlataforma`, `GuardarMalla`) y `CrearCaja`,
-   una caja con la textura repetida cada tantos metros (la usa la Sangre de Cristo).
-3. **Trazado de la escena**: medidas de las manzanas, las plazas y los tramos del andador, `CrearEscenario` (arma los pisos)
-   y las filas de casas (`DibujarFilaCasas`). `DibujarBloque` usa el cubo para los edificios provisionales como bloques de color
-   y `DibujarCaja` dibuja las cajas de `CrearCaja`.
+   que arman pisos con la textura pegada al mundo (`AgregarRectanguloPiso`, `AgregarPlataforma`, `GuardarMalla`).
+3. **Trazado de la escena**: medidas de las manzanas, las plazas y los tramos del andador, `CrearEscenario` (arma los pisos),
+   las jardineras del Zocalo (`CrearJardineras`) y las filas de casas y portales (`DibujarFilaCasas`). `DibujarBloque` usa el cubo
+   para dibujar bloques de color, como los tinacos.
 4. **Personaje jerarquico**: el muneco de cubos, su pose y las teclas de prueba.
 5. **Carga de recursos** (dentro de `main`): se cargan texturas, modelos, skybox, materiales y luces.
 6. **Ciclo principal** (el `while`): se dibuja todo cada frame. Primero los objetos opacos y al final los transparentes.

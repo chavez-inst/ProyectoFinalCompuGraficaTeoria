@@ -108,3 +108,19 @@ Tambien se activaron los mipmaps en las texturas, para que el azulejo, las losas
 | ![Sangre de Cristo](docs/evidencias/fase4_5_3/05_sangre.png) | ![Sangre de Cristo de noche](docs/evidencias/fase4_5_3/06_sangre_noche.png) |
 | **Fachada de Santo Domingo de noche** | **Lateral del desfile de noche** |
 | ![Fachada de noche](docs/evidencias/fase4_5_3/07_fachada_noche.png) | ![Desfile de noche](docs/evidencias/fase4_5_3/08_desfile_noche.png) |
+
+## Fase 4.5.4 - Zocalo, kiosco y Sangre de Cristo
+
+La caja de la Sangre de Cristo se cambio por el modelo del templo. Tiene el muro de piedra verde, la portada de tres cuerpos con la puerta de madera y el nicho, el remate curvo con su cruz y las dos torrecitas con campana y cupula roja. Esta sobre una plataforma con escalones que dan al andador, y su costado sur da a Abasolo. Las casas de junto se recortaron para que no se metan en el templo, y el reflector se recorrio para quedar frente a la puerta.
+
+En el Zocalo los bloques del kiosco y de la fuente se cambiaron por sus modelos. El kiosco tiene la base de cantera con sus cuatro escaleras, las columnas de hierro con focos, los barandales y el techo con las cupulas. Su luz ahora esta debajo del techo y alumbra la plataforma. La fuente tiene la pila redonda con el agua un poco transparente y la escultura al centro.
+
+Alrededor del kiosco se pusieron cuatro jardineras de cantera con tierra roja, y los portales de los tres lados ya tienen su fachada con arcos, puertas de madera y balcones.
+
+| Sangre de Cristo desde la camara del desfile | Sangre de Cristo de noche |
+|---|---|
+| ![Sangre de Cristo](docs/evidencias/fase4_5_4/01_sangre.png) | ![Sangre de Cristo de noche](docs/evidencias/fase4_5_4/02_sangre_noche.png) |
+| **Zocalo con el kiosco, las jardineras y los portales** | **Zocalo de noche** |
+| ![Zocalo](docs/evidencias/fase4_5_4/03_zocalo.png) | ![Zocalo de noche](docs/evidencias/fase4_5_4/04_zocalo_noche.png) |
+| **Kiosco** | **Fuente al sur del kiosco** |
+| ![Kiosco](docs/evidencias/fase4_5_4/05_kiosco.png) | ![Fuente](docs/evidencias/fase4_5_4/06_fuente.png) |
