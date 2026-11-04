@@ -2,7 +2,7 @@
 Proyecto Final - Computacion Grafica
 Calenda de Oaxaca por el andador Macedonio Alcala, del atrio de Santo Domingo al Zocalo
 Escenario: andador con sus calles, banquetas y plazas, casas con fachada, telones al final de las calles que cruzan, farolas,
-bloques provisionales de los edificios y un muneco de cubos jerarquico
+Santo Domingo, la Sangre de Cristo, bloques provisionales del kiosco y la fuente, y un muneco de cubos jerarquico
 Controles: WASD y mouse mueven la camara libre, C cambia de camara, N cambia entre atardecer y noche, ESC cierra
 Teclas de prueba del muneco: Y y U giran los hombros, H y J los codos, K y L las caderas, O y P las rodillas, Z y X la cabeza
 
@@ -65,12 +65,17 @@ Texture plainTexture;		//textura blanca, con ella el objeto se ve solo con el co
 Texture fachadaCasa1Texture;	//casa de un piso
 Texture fachadaCasa2Texture;	//casa de dos pisos con balcones
 Texture fachadaCanteraTexture;	//edificio de cantera, no se pinta
-//esta tiene canal alfa y se dibuja al final con transparencia
+//Sangre de Cristo
+Texture canteraTexture;			//muro de cantera verde en bloques, la imagen cubre 2 m
+Texture fachadaSangreTexture;	//fachada con la portada, la puerta y el nicho
+//estas tienen canal alfa y se dibujan al final con transparencia
 Texture telonTexture;		//calle que sigue, al final de cada calle que cruza
+Texture espadanaTexture;	//remate con las campanas encima de la fachada de la Sangre de Cristo
 
 //modelos, sus archivos van en la carpeta Models y sus texturas en Textures
 Model farolaBrazo;		//farola con el farol colgado de un brazo, para el andador
 Model farolaGlobos;		//farola de dos globos, para el Zocalo
+Model santoDomingo;		//templo, torres y ex convento, con la fachada hacia Z positivo
 
 //un cielo para la tarde y otro para la noche, se dibuja uno u otro segun la tecla N
 Skybox skyboxTarde;
@@ -180,6 +185,18 @@ void GuardarMalla(std::vector<GLfloat>& vertices, std::vector<unsigned int>& ind
 	MeshModel* malla = new MeshModel();
 	malla->CreateMeshModel(vertices.data(), indices.data(), (unsigned int)vertices.size(), (unsigned int)indices.size());
 	meshListModel.push_back(malla);
+}
+
+//caja con la base en el origen, de ancho en X, alto en Y y fondo en Z, con la textura repetida cada metrosImagen
+//se usa para los edificios de cantera, asi los bloques de piedra miden lo mismo en todas las caras
+void CrearCaja(float ancho, float alto, float fondo, float metrosImagen)
+{
+	std::vector<GLfloat> vertices;
+	std::vector<unsigned int> indices;
+	float x = ancho / 2.0f;
+	float z = fondo / 2.0f;
+	AgregarPlataforma(vertices, indices, -x, -z, x, z, alto, metrosImagen);
+	GuardarMalla(vertices, indices);
 }
 
 
@@ -350,11 +367,11 @@ const float altoBanqueta = 0.15f;
 const int numManzanas = 12;
 const Rectangulo manzanas[numManzanas] = {
 	{ -56.0f, -204.0f, 110.0f, -188.0f },	//fila al norte de Gurrion
-	{ 56.0f, -180.0f, 110.0f, -130.0f },	//templo y ex convento de Santo Domingo
+	{ 56.0f, -180.0f, 110.0f, -108.0f },	//templo y ex convento de Santo Domingo
 	{ -56.0f, -180.0f, -4.0f, -84.0f },		//poniente del atrio y del primer tramo, con la Sangre de Cristo
 	{ -56.0f, -76.0f, -4.0f, -24.0f },		//poniente del segundo tramo
 	{ -56.0f, -16.0f, -4.0f, 32.0f },		//poniente del tercer tramo
-	{ 4.0f, -130.0f, 70.0f, -84.0f },		//oriente del primer tramo
+	{ 4.0f, -108.0f, 70.0f, -84.0f },		//oriente del primer tramo
 	{ 40.0f, -76.0f, 70.0f, -46.0f },		//junto al jardin Labastida
 	{ 4.0f, -46.0f, 70.0f, -24.0f },		//oriente del segundo tramo
 	{ 4.0f, -16.0f, 70.0f, 32.0f },			//oriente del tercer tramo
@@ -366,7 +383,7 @@ const Rectangulo manzanas[numManzanas] = {
 //plazas con losas grandes, tambien 15 cm arriba de la calle
 const int numPlazas = 3;
 const Rectangulo plazas[numPlazas] = {
-	{ 4.0f, -180.0f, 56.0f, -130.0f },		//atrio de Santo Domingo
+	{ 4.0f, -180.0f, 56.0f, -108.0f },		//atrio de Santo Domingo, tan largo como el frente del templo
 	{ 4.0f, -76.0f, 40.0f, -46.0f },		//jardin Labastida
 	{ -35.0f, 42.0f, 35.0f, 112.0f }		//Zocalo
 };
@@ -388,7 +405,7 @@ void CrearEscenario()
 	//todo el piso de la ciudad es empedrado, la imagen cubre 2 m
 	//el segundo rectangulo es el pedazo que queda detras de Santo Domingo
 	AgregarRectanguloPiso(vertices, indices, -58.0f, -206.0f, 72.0f, 130.0f, 0.0f, 2.0f);
-	AgregarRectanguloPiso(vertices, indices, 72.0f, -206.0f, 112.0f, -128.0f, 0.0f, 2.0f);
+	AgregarRectanguloPiso(vertices, indices, 72.0f, -206.0f, 112.0f, -106.0f, 0.0f, 2.0f);
 	GuardarMalla(vertices, indices); //meshListModel[3]
 
 	//el andador va 1 cm arriba del empedrado para que no parpadeen al estar a la misma altura
@@ -429,6 +446,16 @@ void DibujarBloque(glm::vec3 posicion, glm::vec3 tamano, glm::vec3 color, GLuint
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 	meshListModel[2]->RenderMeshModel();
+}
+
+//dibuja una de las cajas de cantera con la base en posicion, con color blanco para que su textura se vea tal cual
+void DibujarCaja(int malla, glm::vec3 posicion, GLuint uniformModel, GLuint uniformColor)
+{
+	glm::mat4 model(1.0);
+	model = glm::translate(model, posicion);
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	glUniform3fv(uniformColor, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+	meshListModel[malla]->RenderMeshModel();
 }
 
 //dibuja un plano parado, posicion es el centro de su orilla de abajo y giro son los grados sobre Y
@@ -560,7 +587,7 @@ void DibujarCasas(GLuint uniformModel, GLuint uniformColor)
 	DibujarFilaCasas(glm::vec3(-6.0f, 0.0f, -26.0f), 90.0f, 48.0f, 12.0f, estiloColores, 2, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(-6.0f, 0.0f, 30.0f), 90.0f, 44.0f, 12.0f, estiloCantera, 1, uniformModel, uniformColor);
 	//oriente del andador, las fachadas ven hacia X negativo
-	DibujarFilaCasas(glm::vec3(6.0f, 0.0f, -128.0f), -90.0f, 42.0f, 12.0f, estiloColores, 4, uniformModel, uniformColor);
+	DibujarFilaCasas(glm::vec3(6.0f, 0.0f, -106.0f), -90.0f, 20.0f, 12.0f, estiloColores, 4, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(6.0f, 0.0f, -44.0f), -90.0f, 18.0f, 9.0f, estiloColores, 0, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(6.0f, 0.0f, -14.0f), -90.0f, 44.0f, 12.0f, estiloCantera, 2, uniformModel, uniformColor);
 
@@ -573,8 +600,9 @@ void DibujarCasas(GLuint uniformModel, GLuint uniformColor)
 	DibujarFilaCasas(glm::vec3(-54.0f, 0.0f, 30.0f), 0.0f, 36.0f, 12.0f, estiloCantera, 0, uniformModel, uniformColor);
 
 	//calles que cruzan, del lado oriente, y las casas que ven al atrio y al jardin Labastida
-	DibujarFilaCasas(glm::vec3(56.0f, 0.0f, -128.0f), 180.0f, 38.0f, 12.0f, estiloColores, 1, uniformModel, uniformColor);
-	DibujarFilaCasas(glm::vec3(18.0f, 0.0f, -86.0f), 0.0f, 50.0f, 12.0f, estiloColores, 6, uniformModel, uniformColor);
+	//la manzana entre el atrio y Manuel Bravo es angosta, por eso las casas que ven al atrio y las de Manuel Bravo tienen menos fondo
+	DibujarFilaCasas(glm::vec3(56.0f, 0.0f, -106.0f), 180.0f, 38.0f, 9.0f, estiloColores, 1, uniformModel, uniformColor);
+	DibujarFilaCasas(glm::vec3(18.0f, 0.0f, -86.0f), 0.0f, 50.0f, 11.0f, estiloColores, 6, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(42.0f, 0.0f, -74.0f), -90.0f, 28.0f, 12.0f, estiloColores, 2, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(68.0f, 0.0f, -74.0f), 180.0f, 14.0f, 12.0f, estiloColores, 5, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(68.0f, 0.0f, -44.0f), 180.0f, 50.0f, 9.0f, estiloColores, 3, uniformModel, uniformColor);
@@ -778,6 +806,7 @@ int main()
 	CrearCubo();
 	CrearEscenario();
 	CrearPlano();
+	CrearCaja(18.0f, 12.0f, 18.0f, 2.0f);	//Sangre de Cristo, meshListModel[8]
 	CreateShaders();
 
 	//Camera recibe la posicion inicial, el vector up, yaw, pitch, la velocidad de movimiento y la velocidad de giro
@@ -786,8 +815,8 @@ int main()
 	camera = Camera(glm::vec3(0.0f, 10.0f, -150.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -15.0f, 0.3f, 0.5f);
 	//la de la fachada esta en el atrio y mira hacia el oriente, donde esta Santo Domingo, un poco hacia arriba para ver las torres
 	//velocidades en 0 porque esta camara no se mueve
-	camaraFachada = Camera(glm::vec3(14.0f, 9.0f, -155.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 12.0f, 0.0f, 0.0f);
-	//la del desfile esta en la banqueta oriente y mira hacia el sur por el andador, un poco cargada hacia la calle
+	camaraFachada = Camera(glm::vec3(12.0f, 9.0f, -144.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 12.0f, 0.0f, 0.0f);
+	//la del desfile esta en la esquina del atrio junto al andador y mira hacia el sur, un poco cargada hacia la Sangre de Cristo
 	camaraDesfile = Camera(glm::vec3(5.0f, 2.6f, -112.0f), glm::vec3(0.0f, 1.0f, 0.0f), 110.0f, -8.0f, 0.0f, 0.0f);
 	//camara con la que se dibuja la escena, cambia en el while segun la tecla C
 	Camera* camaraActual = &camera;
@@ -814,12 +843,20 @@ int main()
 	fachadaCanteraTexture.LoadTexture();
 	telonTexture = Texture("Textures/telon.png");
 	telonTexture.LoadTextureA();
+	canteraTexture = Texture("Textures/cantera_muro.jpg");
+	canteraTexture.LoadTexture();
+	fachadaSangreTexture = Texture("Textures/fachada_sangre_de_cristo.jpg");
+	fachadaSangreTexture.LoadTexture();
+	espadanaTexture = Texture("Textures/espadana.png");
+	espadanaTexture.LoadTextureA();
 
 	//los modelos traen su propia textura, que se busca en la carpeta Textures
 	farolaBrazo = Model();
 	farolaBrazo.LoadModel("Models/farola_brazo.obj");
 	farolaGlobos = Model();
 	farolaGlobos.LoadModel("Models/farola_globos.obj");
+	santoDomingo = Model();
+	santoDomingo.LoadModel("Models/santo_domingo.obj");
 
 	//las 6 caras del skybox van en este orden: rt, lf, dn, up, bk, ft
 	std::vector<std::string> skyboxFaces;
@@ -915,7 +952,7 @@ int main()
 	//luz de la fachada de Santo Domingo, sale del piso del atrio y apunta hacia arriba y hacia la fachada
 	spotLights[0] = SpotLight(1.0f, 0.9f, 0.75f,
 		0.0f, 1.2f,
-		36.0f, 0.5f, -155.0f,
+		36.0f, 0.5f, -142.0f,
 		1.0f, 0.6f, 0.0f,
 		1.0f, 0.022f, 0.0019f,
 		45.0f);
@@ -928,6 +965,15 @@ int main()
 		0.0f, -1.0f, 0.0f,
 		1.0f, 0.022f, 0.0019f,
 		30.0f);
+	spotLightCount++;
+
+	//luz de la fachada de la Sangre de Cristo, sale del piso del andador y apunta hacia el poniente y hacia arriba
+	spotLights[2] = SpotLight(1.0f, 0.88f, 0.7f,
+		0.0f, 1.6f,
+		3.0f, 0.3f, -95.0f,
+		-1.0f, 0.5f, 0.0f,
+		1.0f, 0.045f, 0.0075f,
+		40.0f);
 	spotLightCount++;
 	//para agregar otra luz se pone en el siguiente lugar libre del arreglo y se suma 1 al contador
 
@@ -1058,18 +1104,28 @@ int main()
 
 		DibujarCasas(uniformModel, uniformColor);
 
+		//Santo Domingo en el oriente del atrio, con la puerta en x = 56 y la fachada hacia el poniente
+		//el modelo tiene la fachada hacia Z positivo, por eso se gira -90 grados para que vea hacia X negativo
+		//asi el ex convento, que en el modelo esta hacia X negativo, queda al norte
+		//los barandales y las rejas son png con transparencia, el discard del shader quita lo que no se ve aunque se dibujen aqui
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(56.0f, altoBanqueta, -139.5f));
+		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		santoDomingo.RenderModel();
+
+		//Sangre de Cristo en la esquina noroeste de Abasolo, con la fachada hacia el oriente, que da al andador, y un escalon enfrente
+		//la fachada va 2 cm enfrente de la caja para que no parpadee con su cara oriente
+		canteraTexture.UseTexture();
+		DibujarCaja(8, glm::vec3(-15.0f, 0.0f, -95.0f), uniformModel, uniformColor);
+		fachadaSangreTexture.UseTexture();
+		DibujarPlano(glm::vec3(-5.98f, 0.0f, -95.0f), 90.0f, 18.0f, 12.0f, color, uniformModel, uniformColor);
+		plainTexture.UseTexture();
+		DibujarBloque(glm::vec3(-5.3f, altoBanqueta, -95.0f), glm::vec3(1.4f, 0.2f, 9.0f), glm::vec3(0.78f, 0.75f, 0.62f), uniformModel, uniformColor);
+
 		//los bloques provisionales usan la textura blanca para que se vea solo el color de cada uno
 		plainTexture.UseTexture();
-
-		//Santo Domingo en el oriente del atrio, con la fachada hacia el poniente: nave, dos torres y el ex convento detras
-		glm::vec3 colorCantera = glm::vec3(0.85f, 0.78f, 0.62f);
-		DibujarBloque(glm::vec3(73.0f, 0.0f, -155.0f), glm::vec3(34.0f, 18.0f, 22.0f), colorCantera, uniformModel, uniformColor);
-		DibujarBloque(glm::vec3(59.0f, 0.0f, -169.0f), glm::vec3(6.0f, 25.0f, 6.0f), colorCantera, uniformModel, uniformColor);
-		DibujarBloque(glm::vec3(59.0f, 0.0f, -141.0f), glm::vec3(6.0f, 25.0f, 6.0f), colorCantera, uniformModel, uniformColor);
-		DibujarBloque(glm::vec3(86.0f, 0.0f, -155.0f), glm::vec3(48.0f, 11.0f, 50.0f), glm::vec3(0.78f, 0.72f, 0.58f), uniformModel, uniformColor);
-
-		//Sangre de Cristo en la esquina noroeste de Abasolo, con la fachada hacia el sur
-		DibujarBloque(glm::vec3(-15.0f, 0.0f, -95.0f), glm::vec3(18.0f, 12.0f, 18.0f), glm::vec3(0.80f, 0.66f, 0.55f), uniformModel, uniformColor);
 
 		//kiosco al centro del Zocalo con su base y su cuerpo
 		DibujarBloque(glm::vec3(0.0f, altoBanqueta, 77.0f), glm::vec3(12.0f, 1.6f, 12.0f), glm::vec3(0.75f, 0.75f, 0.70f), uniformModel, uniformColor);
@@ -1115,6 +1171,11 @@ int main()
 		{
 			DibujarPlano(posicionTelones[i], giroTelones[i], 12.0f, 12.0f, color, uniformModel, uniformColor);
 		}
+
+		//espadana de la Sangre de Cristo, el remate con las campanas encima de la fachada
+		//la imagen tiene una orilla transparente arriba y abajo, por eso el plano empieza 28 cm abajo de la azotea
+		espadanaTexture.UseTexture();
+		DibujarPlano(glm::vec3(-6.3f, 11.72f, -95.0f), 90.0f, 9.0f, 6.56f, color, uniformModel, uniformColor);
 
 		glDisable(GL_BLEND);
 

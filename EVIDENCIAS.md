@@ -90,3 +90,21 @@ Ahora son 16 farolas: 12 de brazo a lo largo del andador y 4 de dos globos alred
 | ![Vista alta](docs/evidencias/fase4_5_2/05_vista_alta.png) | ![Fachada](docs/evidencias/fase4_5_2/06_fachada.png) |
 | **Andador de noche** | **Lateral del desfile de noche** |
 | ![Noche](docs/evidencias/fase4_5_2/07_noche.png) | ![Desfile de noche](docs/evidencias/fase4_5_2/08_desfile_noche.png) |
+
+## Fase 4.5.3 - Santo Domingo y la Sangre de Cristo
+
+Los bloques de los dos templos se cambiaron por los edificios. Santo Domingo ya es un modelo con sus dos torres de cupula de azulejo, la fachada labrada al centro, el ex convento con sus arcos a un lado y la capilla con su cupula roja al otro. El frente del templo es mas largo que el atrio que teniamos, asi que el atrio y la manzana del templo se alargaron hacia el sur y la manzana de casas que sigue quedo mas angosta. La camara fija de la fachada y su reflector se recorrieron para quedar frente a la puerta.
+
+La Sangre de Cristo es una caja de cantera con su fachada hacia el andador: portada clara, puerta de arco, ventana con reja y un nicho con su santo. Encima lleva la espadana con las dos campanas, que es un plano con transparencia, y enfrente tiene un escalon. De noche la ilumina un reflector desde el andador.
+
+Tambien se activaron los mipmaps en las texturas, para que el azulejo, las losas y la foto de la fachada no titilen cuando se ven de lejos.
+
+| Camara libre al iniciar | Fachada de Santo Domingo |
+|---|---|
+| ![Vista inicial](docs/evidencias/fase4_5_3/01_inicial.png) | ![Fachada](docs/evidencias/fase4_5_3/02_fachada.png) |
+| **Lateral del desfile, frente a la Sangre de Cristo** | **Atrio desde el andador** |
+| ![Desfile](docs/evidencias/fase4_5_3/03_desfile.png) | ![Atrio](docs/evidencias/fase4_5_3/04_atrio.png) |
+| **Sangre de Cristo con su espadana** | **Sangre de Cristo de noche** |
+| ![Sangre de Cristo](docs/evidencias/fase4_5_3/05_sangre.png) | ![Sangre de Cristo de noche](docs/evidencias/fase4_5_3/06_sangre_noche.png) |
+| **Fachada de Santo Domingo de noche** | **Lateral del desfile de noche** |
+| ![Fachada de noche](docs/evidencias/fase4_5_3/07_fachada_noche.png) | ![Desfile de noche](docs/evidencias/fase4_5_3/08_desfile_noche.png) |

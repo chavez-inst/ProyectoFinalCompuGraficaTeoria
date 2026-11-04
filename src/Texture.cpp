@@ -57,7 +57,9 @@ bool Texture::LoadTextureFile(bool useAlpha)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); //eje T, que es como Y
 	//MIN_FILTER se usa cuando la textura se ve mas chica, de lejos, y MAG_FILTER cuando se ve mas grande, de cerca
 	//GL_LINEAR mezcla los texels cercanos (se ve suave), GL_NEAREST toma el mas cercano (se ve pixeleado)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//de lejos se usa GL_LINEAR_MIPMAP_LINEAR, que toma los mipmaps, copias mas chicas de la imagen que hace glGenerateMipmap
+	//sin ellos las texturas con detalle fino, como las losas o el azulejo, titilan y hacen rayas al mover la camara
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, formato, width, height, 0, formato, GL_UNSIGNED_BYTE, texData);
 	glGenerateMipmap(GL_TEXTURE_2D);
