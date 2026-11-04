@@ -116,6 +116,20 @@ Esta dividido en 6 bloques marcados con `// ==================`:
 
 ---
 
+## Creditos
+
+Modelos y texturas de otras personas que usa el proyecto. Los que tienen licencia CC-BY piden dar credito; a algunos se les hicieron ajustes (tamano, cantidad de triangulos o color).
+
+| Que | Archivo | Autor y fuente | Licencia |
+|---|---|---|---|
+| Farola de brazo | `Models/farola_brazo.obj` | "Street Lamp" de bez_glaza, https://sketchfab.com/3d-models/street-lamp-6881aa1e84b047d79860fa9297e05e22 | CC-BY 4.0 |
+| Farola de dos globos | `Models/farola_globos.obj` | "Roanoke Street Lamp" de loganh96, https://sketchfab.com/3d-models/roanoke-street-lamp-75d0449d82464b468a85a94a4cf713a3 | CC-BY 4.0 |
+| Empedrado | `Textures/empedrado.jpg` | "Cobblestone Floor 08" de Poly Haven, https://polyhaven.com/a/cobblestone_floor_08 | CC0 |
+| Aplanado de las fachadas | `Textures/fachada_casa1.jpg`, `fachada_casa2.jpg` | "Plaster001" de ambientCG, https://ambientcg.com/view?id=Plaster001 | CC0 |
+| Madera de las puertas | `Textures/fachada_*.jpg` | "Planks013" de ambientCG, https://ambientcg.com/view?id=Planks013 | CC0 |
+
+---
+
 ## Guia: como agregar cosas
 
 ### Plantilla para dibujar cualquier objeto

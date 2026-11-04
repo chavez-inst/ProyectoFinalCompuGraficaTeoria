@@ -72,3 +72,21 @@ La escena deja el circuito y pasa al andador Macedonio Alcala, que el desfile re
 Kiosco de noche, con su reflector y las dos farolas del Zocalo:
 
 ![Zocalo de noche](docs/evidencias/fase4_5_1/09_zocalo_noche.png)
+
+## Fase 4.5.2 - Fachadas, telones y farolas
+
+Las casas ya tienen fachada: cada una lleva su puerta de madera, ventanas con reja y, en las de dos pisos, balcones. La imagen de la fachada es clara y se pinta con el color de cada casa, asi con pocas imagenes salen muchas casas distintas. En el ultimo tramo antes del Zocalo los edificios son de cantera y las casas de esquina tambien llevan fachada en el costado. Algunas casas tienen tinaco en la azotea.
+
+Al final de cada calle que cruza hay un telon con la imagen de la calle que sigue, para que no se vea que la escena se acaba ahi. Tambien se limito la camara libre para que no salga de la ciudad ni suba demasiado.
+
+Ahora son 16 farolas: 12 de brazo a lo largo del andador y 4 de dos globos alrededor del kiosco. Cada una tiene su luz en el farol y de noche alumbran todo el andador.
+
+| Camara libre al iniciar | Lateral del desfile |
+|---|---|
+| ![Vista inicial](docs/evidencias/fase4_5_2/01_inicial.png) | ![Desfile](docs/evidencias/fase4_5_2/02_desfile.png) |
+| **Telon al poniente de Abasolo** | **Telon al oriente de Manuel Bravo** |
+| ![Telon poniente](docs/evidencias/fase4_5_2/03_telon_poniente.png) | ![Telon oriente](docs/evidencias/fase4_5_2/04_telon_oriente.png) |
+| **Vista alta, con el limite de la camara** | **Fachada de Santo Domingo** |
+| ![Vista alta](docs/evidencias/fase4_5_2/05_vista_alta.png) | ![Fachada](docs/evidencias/fase4_5_2/06_fachada.png) |
+| **Andador de noche** | **Lateral del desfile de noche** |
+| ![Noche](docs/evidencias/fase4_5_2/07_noche.png) | ![Desfile de noche](docs/evidencias/fase4_5_2/08_desfile_noche.png) |

@@ -63,6 +63,12 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 	update();
 }
 
+//deja la camara dentro de una caja, si se pasa de un lado se regresa a la orilla
+void Camera::limitarPosicion(glm::vec3 minimo, glm::vec3 maximo)
+{
+	position = glm::clamp(position, minimo, maximo);
+}
+
 glm::mat4 Camera::calculateViewMatrix()
 {
 	return glm::lookAt(position, position + front, up);

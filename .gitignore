@@ -38,3 +38,6 @@ Maqueta_andador/
 
 # archivos fuente de modelos y texturas (descargas originales, .blend), lo que se usa va en Models/ y Textures/
 Fuentes/
+
+# reporte de avances en LaTeX, se entrega aparte
+Reporte_avances/
