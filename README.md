@@ -28,7 +28,10 @@ Si al compilar sale `Falta la carpeta Librerias...` es que el paso 2 no quedo bi
 |-------------|------------------------------|
 | W A S D     | Mover la camara libre        |
 | Mouse       | Voltear la camara libre      |
-| C           | Cambiar de camara: libre, fachada de Santo Domingo, lateral del desfile, Zocalo y vista aerea |
+| Shift       | Mover la camara libre mas rapido (se mantiene presionada junto con WASD) |
+| 1 a 5       | Ir directo a una camara: 1 libre, 2 fachada de Santo Domingo, 3 lateral del desfile, 4 Zocalo y 5 vista aerea |
+| C           | Pasar a la siguiente camara |
+| F           | Soltar la camara fija: la libre sigue desde ese mismo lugar |
 | N           | Cambiar entre atardecer y noche |
 | Y / U       | Muneco: girar los hombros (prueba) |
 | H / J       | Muneco: doblar los codos (prueba) |
@@ -195,8 +198,7 @@ Si sale muy grande o muy chico, ajustar con `glm::scale`.
    ```
    El tercer parametro es la **cantidad de floats** del arreglo, o sea el numero de vertices por 8,
    y no la cantidad de vertices. La malla queda en el siguiente indice libre de `meshListModel`.
-3. En lugar de escribir las normales a mano, se pueden calcular con `calcAverageNormals(...)`
-   **antes** de `CreateMeshModel`.
+3. Las normales se escriben a mano y apuntan hacia afuera de cada cara, por ejemplo `0, 1, 0` en un piso.
 4. Llamar la funcion en `main()` junto a `CreateObjects()` y `CrearCubo()` y anotar que indice le toco.
 
 ### Un material

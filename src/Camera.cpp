@@ -20,6 +20,12 @@ void Camera::keyControl(bool* keys, GLfloat deltaTime)
 {
 	GLfloat velocity = moveSpeed * deltaTime;
 
+	//con Shift presionado va tres veces mas rapido, para recorrer el mapa sin tardar tanto
+	if (keys[GLFW_KEY_LEFT_SHIFT] || keys[GLFW_KEY_RIGHT_SHIFT])
+	{
+		velocity = velocity * 3.0f;
+	}
+
 	if (keys[GLFW_KEY_W])
 	{
 		position += front * velocity;
@@ -67,6 +73,15 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 void Camera::limitarPosicion(glm::vec3 minimo, glm::vec3 maximo)
 {
 	position = glm::clamp(position, minimo, maximo);
+}
+
+//copia la posicion y hacia donde mira otra camara, pero se queda con sus propias velocidades
+void Camera::tomarVistaDe(Camera otra)
+{
+	position = otra.position;
+	yaw = otra.yaw;
+	pitch = otra.pitch;
+	update();
 }
 
 glm::mat4 Camera::calculateViewMatrix()

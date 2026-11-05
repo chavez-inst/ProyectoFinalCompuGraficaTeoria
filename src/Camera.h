@@ -17,6 +17,7 @@ public:
 	void keyControl(bool* keys, GLfloat deltaTime);
 	void mouseControl(GLfloat xChange, GLfloat yChange);
 	void limitarPosicion(glm::vec3 minimo, glm::vec3 maximo);
+	void tomarVistaDe(Camera otra);
 
 	glm::vec3 getCameraPosition();
 	glm::vec3 getCameraDirection();

@@ -142,3 +142,7 @@ Con la tecla C ahora se pasa por cinco camaras: a las tres de antes se agregaron
 Zocalo de noche, con las farolas de globos y la luz del kiosco:
 
 ![Zocalo de noche](docs/evidencias/fase4_5_4_ajustes/07_zocalo_noche.png)
+
+## Ajustes antes de la fase 4.5.5 - Teclas de las camaras
+
+Cada camara tiene su tecla: la 1 es la libre, la 2 la de la fachada, la 3 la del desfile, la 4 la del Zocalo y la 5 la aerea. La C sigue pasando de una en una. Con la F se suelta una camara fija: la libre aparece en ese mismo lugar, viendo hacia el mismo lado, y desde ahi se mueve con WASD y el mouse. Al soltar la aerea, la camara baja a 30 m, que es lo mas alto que puede subir la libre. Con Shift presionado la camara libre va tres veces mas rapido, para recorrer la escena sin tardar tanto.

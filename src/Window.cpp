@@ -11,9 +11,9 @@ Window::Window()
 	lastY = 0.0f;
 	xChange = 0.0f;
 	yChange = 0.0f;
-	muevex = 2.0f;
 	esNoche = false;
 	camaraActiva = 0;
+	soltarCamara = false;
 	mouseFirstMoved = true;
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -31,9 +31,9 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	lastY = 0.0f;
 	xChange = 0.0f;
 	yChange = 0.0f;
-	muevex = 2.0f;
 	esNoche = false;
 	camaraActiva = 0;
+	soltarCamara = false;
 	mouseFirstMoved = true;
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -115,6 +115,14 @@ GLfloat Window::getYChange()
 	return theChange;
 }
 
+//regresa si se presiono F y lo reinicia en false, asi la camara solo se suelta una vez por tecla
+bool Window::getsoltarCamara()
+{
+	bool soltar = soltarCamara;
+	soltarCamara = false;
+	return soltar;
+}
+
 //se llama una vez por cada evento de teclado, ya sea al presionar, mantener o soltar una tecla
 void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode)
 {
@@ -123,15 +131,6 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
-	}
-	//Y y U cambian muevex al presionar y mientras se deja presionada la tecla
-	if (key == GLFW_KEY_Y && action != GLFW_RELEASE)
-	{
-		theWindow->muevex += 1.0;
-	}
-	if (key == GLFW_KEY_U && action != GLFW_RELEASE)
-	{
-		theWindow->muevex -= 1.0;
 	}
 	//N alterna entre atardecer y noche, solo al presionar para que no parpadee si se deja apretada
 	if (key == GLFW_KEY_N && action == GLFW_PRESS)
@@ -142,6 +141,33 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_C && action == GLFW_PRESS)
 	{
 		theWindow->camaraActiva = (theWindow->camaraActiva + 1) % 5;
+	}
+	//las teclas 1 a 5 van directo a cada camara, la 1 es la libre
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+	{
+		theWindow->camaraActiva = 0;
+	}
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+	{
+		theWindow->camaraActiva = 1;
+	}
+	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+	{
+		theWindow->camaraActiva = 2;
+	}
+	if (key == GLFW_KEY_4 && action == GLFW_PRESS)
+	{
+		theWindow->camaraActiva = 3;
+	}
+	if (key == GLFW_KEY_5 && action == GLFW_PRESS)
+	{
+		theWindow->camaraActiva = 4;
+	}
+	//F suelta la camara fija, se pasa a la libre y en main.cpp la libre toma el lugar de la fija
+	if (key == GLFW_KEY_F && action == GLFW_PRESS && theWindow->camaraActiva != 0)
+	{
+		theWindow->soltarCamara = true;
+		theWindow->camaraActiva = 0;
 	}
 
 	//guarda que teclas estan presionadas, la camara y el muneco lo leen con getsKeys()

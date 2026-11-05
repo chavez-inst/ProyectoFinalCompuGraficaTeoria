@@ -92,39 +92,6 @@ static const char* fShader = "shaders/shader_light.frag";
 
 // ================== 2. GEOMETRIA HECHA A MANO ==================
 
-//calcula las normales promediando las de los triangulos que comparten cada vertice
-//se llama antes de CreateMeshModel porque ahi es donde se copian los vertices a la GPU
-//la normal sale segun el orden de los indices, y para que apunte hacia afuera del objeto
-//los triangulos tienen que ir en sentido antihorario vistos desde afuera
-void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
-	unsigned int vLength, unsigned int normalOffset)
-{
-	for (size_t i = 0; i < indiceCount; i += 3)
-	{
-		unsigned int in0 = indices[i] * vLength;
-		unsigned int in1 = indices[i + 1] * vLength;
-		unsigned int in2 = indices[i + 2] * vLength;
-		glm::vec3 v1(vertices[in1] - vertices[in0], vertices[in1 + 1] - vertices[in0 + 1], vertices[in1 + 2] - vertices[in0 + 2]);
-		glm::vec3 v2(vertices[in2] - vertices[in0], vertices[in2 + 1] - vertices[in0 + 1], vertices[in2 + 2] - vertices[in0 + 2]);
-		glm::vec3 normal = glm::cross(v1, v2);
-		normal = glm::normalize(normal);
-
-		in0 += normalOffset; in1 += normalOffset; in2 += normalOffset;
-		vertices[in0] += normal.x; vertices[in0 + 1] += normal.y; vertices[in0 + 2] += normal.z;
-		vertices[in1] += normal.x; vertices[in1 + 1] += normal.y; vertices[in1 + 2] += normal.z;
-		vertices[in2] += normal.x; vertices[in2 + 1] += normal.y; vertices[in2 + 2] += normal.z;
-	}
-
-	for (size_t i = 0; i < verticeCount / vLength; i++)
-	{
-		unsigned int nOffset = i * vLength + normalOffset;
-		glm::vec3 vec(vertices[nOffset], vertices[nOffset + 1], vertices[nOffset + 2]);
-		vec = glm::normalize(vec);
-		vertices[nOffset] = vec.x; vertices[nOffset + 1] = vec.y; vertices[nOffset + 2] = vec.z;
-	}
-}
-
-
 //agrega a una malla un rectangulo acostado que va de (x0, z0) a (x1, z1) a la altura y, con la normal hacia arriba
 //u y v salen de dividir x y z entre los metros que cubre la imagen, asi la textura queda pegada al mundo
 //y dos pedazos vecinos siempre coinciden
@@ -829,7 +796,7 @@ int main()
 	//la aerea esta a 300 m sobre el centro de la escena y mira hacia abajo, con el norte hacia arriba de la pantalla
 	//el pitch llega a -89 y no a -90 porque mirando derecho hacia abajo no se puede saber cual es la derecha de la camara
 	camaraAerea = Camera(glm::vec3(27.0f, 300.0f, -38.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -89.0f, 0.0f, 0.0f);
-	//camara con la que se dibuja la escena, cambia en el while segun la tecla C
+	//camara con la que se dibuja la escena, cambia en el while segun las teclas 1 a 5 o la C
 	Camera* camaraActual = &camera;
 
 	// ================== 5. CARGA DE RECURSOS ==================
@@ -1029,6 +996,12 @@ int main()
 		//el cambio del mouse se lee siempre, aunque no se use, para que no se acumule mientras hay una camara fija
 		GLfloat cambioX = mainWindow.getXChange();
 		GLfloat cambioY = mainWindow.getYChange();
+		//al soltar una camara fija, camaraActual todavia es la del ciclo anterior,
+		//asi que la libre copia esa vista y se sigue moviendo desde ahi
+		if (mainWindow.getsoltarCamara())
+		{
+			camera.tomarVistaDe(*camaraActual);
+		}
 		if (mainWindow.getcamaraActiva() == 1)
 		{
 			camaraActual = &camaraFachada;
