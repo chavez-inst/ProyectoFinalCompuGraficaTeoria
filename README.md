@@ -28,7 +28,7 @@ Si al compilar sale `Falta la carpeta Librerias...` es que el paso 2 no quedo bi
 |-------------|------------------------------|
 | W A S D     | Mover la camara libre        |
 | Mouse       | Voltear la camara libre      |
-| C           | Cambiar de camara: libre, fachada de Santo Domingo, lateral del desfile |
+| C           | Cambiar de camara: libre, fachada de Santo Domingo, lateral del desfile, Zocalo y vista aerea |
 | N           | Cambiar entre atardecer y noche |
 | Y / U       | Muneco: girar los hombros (prueba) |
 | H / J       | Muneco: doblar los codos (prueba) |
@@ -94,7 +94,7 @@ Esta dividido en 6 bloques marcados con `// ==================`:
 2. **Geometria hecha a mano**: piso lejano, plano de vegetacion y cubo (`CreateObjects` y `CrearCubo`), las funciones
    que arman pisos con la textura pegada al mundo (`AgregarRectanguloPiso`, `AgregarPlataforma`, `GuardarMalla`).
 3. **Trazado de la escena**: medidas de las manzanas, las plazas y los tramos del andador, `CrearEscenario` (arma los pisos),
-   las jardineras del Zocalo (`CrearJardineras`) y las filas de casas y portales (`DibujarFilaCasas`). `DibujarBloque` usa el cubo
+   las jardineras del atrio y del Zocalo (`CrearJardineras`) y las filas de casas y portales (`DibujarFilaCasas`). `DibujarBloque` usa el cubo
    para dibujar bloques de color, como los tinacos.
 4. **Personaje jerarquico**: el muneco de cubos, su pose y las teclas de prueba.
 5. **Carga de recursos** (dentro de `main`): se cargan texturas, modelos, skybox, materiales y luces.

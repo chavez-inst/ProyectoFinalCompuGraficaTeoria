@@ -37,7 +37,7 @@ private:
 	GLfloat muevex;
 	//vale false de tarde y true de noche, cambia con la tecla N
 	bool esNoche;
-	//camara que se usa, 0 es la libre, 1 la de la fachada de Santo Domingo y 2 la lateral del desfile, cambia con la tecla C
+	//camara que se usa, 0 es la libre, 1 la de la fachada de Santo Domingo, 2 la lateral del desfile, 3 la del Zocalo y 4 la aerea, cambia con la tecla C
 	int camaraActiva;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);

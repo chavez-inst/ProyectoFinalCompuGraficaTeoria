@@ -33,10 +33,12 @@ Window mainWindow;
 std::vector<MeshModel*> meshListModel; //mallas hechas a mano, cada vertice lleva posicion, coordenadas de textura y normal
 std::vector<Shader> shaderList;
 
-//de las tres camaras solo la libre, que es camera, se mueve con teclado y mouse, y las otras dos son fijas
+//de las cinco camaras solo la libre, que es camera, se mueve con teclado y mouse, y las demas son fijas
 Camera camera;
 Camera camaraFachada;
 Camera camaraDesfile;
+Camera camaraZocalo;
+Camera camaraAerea;
 
 //texturas, sus archivos van en la carpeta Textures
 Texture andadorTexture;		//losas de cantera del andador
@@ -49,7 +51,7 @@ Texture fachadaCasa1Texture;	//casa de un piso
 Texture fachadaCasa2Texture;	//casa de dos pisos con balcones
 Texture fachadaCanteraTexture;	//edificio de cantera, no se pinta
 Texture fachadaPortalTexture;	//portales del Zocalo con dos arcos abajo, ya viene pintada
-//jardineras del Zocalo
+//jardineras del atrio y del Zocalo
 Texture canteraTexture;			//cantera verde en bloques de las orillas, la imagen cubre 2 m
 Texture tierraTexture;			//tierra roja de adentro, la imagen cubre 2 m
 //tiene canal alfa y se dibuja al final con transparencia
@@ -62,6 +64,7 @@ Model santoDomingo;		//templo, torres y ex convento, con la fachada hacia Z posi
 Model sangreDeCristo;	//templo con su plataforma y escalones, con la fachada hacia Z positivo
 Model kiosco;			//kiosco del Zocalo con su base de cantera, centrado en el origen
 Model fuenteZocalo;		//fuente redonda con el agua y la escultura, centrada en el origen
+Model agave;			//un agave de 1.5 m de ancho, se repite en filas en las jardineras del atrio
 
 //un cielo para la tarde y otro para la noche, se dibuja uno u otro segun la tecla N
 Skybox skyboxTarde;
@@ -367,9 +370,12 @@ const Rectangulo tramosAndador[numTramos] = {
 	{ -4.0f, -16.0f, 4.0f, 32.0f }			//de Morelos a Independencia
 };
 
-//jardineras del Zocalo en las cuatro esquinas alrededor del kiosco, dejan libres los pasillos hacia el kiosco y la fuente
-const int numJardineras = 4;
+//las dos primeras jardineras son las del atrio, con agaves, y quedan a los lados del paso que va a la puerta de Santo Domingo
+//las otras cuatro son las del Zocalo en las esquinas alrededor del kiosco, dejan libres los pasillos hacia el kiosco
+const int numJardineras = 6;
+const int numJardinerasAtrio = 2;
 const Rectangulo jardineras[numJardineras] = {
+	{ 20.0f, -166.5f, 46.0f, -146.5f }, { 20.0f, -132.5f, 46.0f, -112.5f },
 	{ -29.0f, 49.0f, -11.0f, 63.0f }, { 11.0f, 49.0f, 29.0f, 63.0f },
 	{ -29.0f, 91.0f, -11.0f, 105.0f }, { 11.0f, 91.0f, 29.0f, 105.0f }
 };
@@ -415,7 +421,7 @@ void CrearEscenario()
 	GuardarMalla(vertices, indices); //meshListModel[6]
 }
 
-//jardineras del Zocalo, una malla con los bloques de cantera y otra con la tierra de encima
+//jardineras, una malla con los bloques de cantera y otra con la tierra de encima
 //los lados del bloque empiezan en 0, pero lo que queda abajo de la plaza no se ve
 //la tierra va 1 cm arriba de la cantera para que no parpadeen
 //se crean despues del plano, por eso quedan en meshListModel[8] y [9]
@@ -818,6 +824,11 @@ int main()
 	camaraFachada = Camera(glm::vec3(12.0f, 9.0f, -144.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 12.0f, 0.0f, 0.0f);
 	//la del desfile esta en la esquina del atrio junto al andador y mira hacia el sur, un poco cargada hacia la Sangre de Cristo
 	camaraDesfile = Camera(glm::vec3(5.0f, 2.6f, -112.0f), glm::vec3(0.0f, 1.0f, 0.0f), 110.0f, -8.0f, 0.0f, 0.0f);
+	//la del Zocalo esta en la esquina noroeste de la plaza y mira en diagonal hacia el kiosco, con la fuente a la izquierda
+	camaraZocalo = Camera(glm::vec3(-30.0f, 10.0f, 46.0f), glm::vec3(0.0f, 1.0f, 0.0f), 46.0f, -8.0f, 0.0f, 0.0f);
+	//la aerea esta a 300 m sobre el centro de la escena y mira hacia abajo, con el norte hacia arriba de la pantalla
+	//el pitch llega a -89 y no a -90 porque mirando derecho hacia abajo no se puede saber cual es la derecha de la camara
+	camaraAerea = Camera(glm::vec3(27.0f, 300.0f, -38.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -89.0f, 0.0f, 0.0f);
 	//camara con la que se dibuja la escena, cambia en el while segun la tecla C
 	Camera* camaraActual = &camera;
 
@@ -863,6 +874,8 @@ int main()
 	kiosco.LoadModel("Models/kiosco.obj");
 	fuenteZocalo = Model();
 	fuenteZocalo.LoadModel("Models/fuente_zocalo.obj");
+	agave = Model();
+	agave.LoadModel("Models/agave.obj");
 
 	//las 6 caras del skybox van en este orden: rt, lf, dn, up, bk, ft
 	std::vector<std::string> skyboxFaces;
@@ -1024,6 +1037,14 @@ int main()
 		{
 			camaraActual = &camaraDesfile;
 		}
+		else if (mainWindow.getcamaraActiva() == 3)
+		{
+			camaraActual = &camaraZocalo;
+		}
+		else if (mainWindow.getcamaraActiva() == 4)
+		{
+			camaraActual = &camaraAerea;
+		}
 		else
 		{
 			camaraActual = &camera;
@@ -1133,13 +1154,34 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		kiosco.RenderModel();
 
-		//jardineras del Zocalo, igual que los pisos ya tienen sus coordenadas en el mundo
+		//jardineras, igual que los pisos ya tienen sus coordenadas en el mundo
 		model = glm::mat4(1.0);
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		canteraTexture.UseTexture();
 		meshListModel[8]->RenderMeshModel();
 		tierraTexture.UseTexture();
 		meshListModel[9]->RenderMeshModel();
+
+		//agaves en las jardineras del atrio, diez a lo largo y siete a lo ancho, cada uno al centro de su cuadro
+		//cada uno se gira distinto para que no se vean todos iguales
+		for (int i = 0; i < numJardinerasAtrio; i++)
+		{
+			const Rectangulo& j = jardineras[i];
+			for (int columna = 0; columna < 10; columna++)
+			{
+				for (int fila = 0; fila < 7; fila++)
+				{
+					float x = j.x0 + (j.x1 - j.x0) * (columna + 0.5f) / 10.0f;
+					float z = j.z0 + (j.z1 - j.z0) * (fila + 0.5f) / 7.0f;
+					float giro = (columna * 2 + fila) * 45.0f;
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(x, altoBanqueta + altoJardinera + 0.01f, z));
+					model = glm::rotate(model, giro * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					agave.RenderModel();
+				}
+			}
+		}
 
 		//farolas, el mismo modelo se dibuja en cada lugar con su giro
 		//los modelos usan su propia textura, solo se les pone el color blanco para que se vea tal cual
@@ -1179,9 +1221,10 @@ int main()
 			DibujarPlano(posicionTelones[i], giroTelones[i], 12.0f, 12.0f, color, uniformModel, uniformColor);
 		}
 
-		//fuente al sur del kiosco, va aqui porque su agua es un poco transparente y deja ver el fondo de la pila
+		//fuente al norte del kiosco, a un lado del pasillo por donde llega el desfile
+		//va aqui porque su agua es un poco transparente y deja ver el fondo de la pila
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, altoBanqueta, 100.0f));
+		model = glm::translate(model, glm::vec3(7.0f, altoBanqueta, 55.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		fuenteZocalo.RenderModel();
 

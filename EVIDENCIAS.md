@@ -124,3 +124,21 @@ Alrededor del kiosco se pusieron cuatro jardineras de cantera con tierra roja, y
 | ![Zocalo](docs/evidencias/fase4_5_4/03_zocalo.png) | ![Zocalo de noche](docs/evidencias/fase4_5_4/04_zocalo_noche.png) |
 | **Kiosco** | **Fuente al sur del kiosco** |
 | ![Kiosco](docs/evidencias/fase4_5_4/05_kiosco.png) | ![Fuente](docs/evidencias/fase4_5_4/06_fuente.png) |
+
+## Ajustes antes de la fase 4.5.5 - Atrio, fuente y camaras
+
+Comparamos la escena con la foto satelital y le hicimos unos ajustes para que se parezca mas al lugar real. En el atrio de Santo Domingo pusimos dos jardineras de cantera con tierra roja, una a cada lado del paso que llega a la puerta, y en cada una hay 70 agaves acomodados en filas. La fuente del Zocalo se paso al norte del kiosco, junto a la jardinera de la esquina, a un lado del pasillo por donde entra el desfile.
+
+Con la tecla C ahora se pasa por cinco camaras: a las tres de antes se agregaron una en la esquina del Zocalo, que ve el kiosco en diagonal, y una aerea a 300 m que ve toda la escena desde arriba con el norte hacia arriba.
+
+| Atrio con las jardineras de agaves | Fachada de Santo Domingo |
+|---|---|
+| ![Atrio](docs/evidencias/fase4_5_4_ajustes/01_atrio.png) | ![Fachada](docs/evidencias/fase4_5_4_ajustes/02_fachada.png) |
+| **Camara del Zocalo, con la fuente al norte del kiosco** | **Camara aerea** |
+| ![Zocalo](docs/evidencias/fase4_5_4_ajustes/03_zocalo.png) | ![Aerea](docs/evidencias/fase4_5_4_ajustes/04_aerea.png) |
+| **Camara aerea de noche** | **Fachada de Santo Domingo de noche** |
+| ![Aerea de noche](docs/evidencias/fase4_5_4_ajustes/05_aerea_noche.png) | ![Fachada de noche](docs/evidencias/fase4_5_4_ajustes/06_fachada_noche.png) |
+
+Zocalo de noche, con las farolas de globos y la luz del kiosco:
+
+![Zocalo de noche](docs/evidencias/fase4_5_4_ajustes/07_zocalo_noche.png)

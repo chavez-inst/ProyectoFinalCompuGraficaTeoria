@@ -141,7 +141,7 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	//C pasa a la siguiente camara y despues de la ultima regresa a la primera
 	if (key == GLFW_KEY_C && action == GLFW_PRESS)
 	{
-		theWindow->camaraActiva = (theWindow->camaraActiva + 1) % 3;
+		theWindow->camaraActiva = (theWindow->camaraActiva + 1) % 5;
 	}
 
 	//guarda que teclas estan presionadas, la camara y el muneco lo leen con getsKeys()
