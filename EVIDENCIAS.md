@@ -146,3 +146,39 @@ Zocalo de noche, con las farolas de globos y la luz del kiosco:
 ## Ajustes antes de la fase 4.5.5 - Teclas de las camaras
 
 Cada camara tiene su tecla: la 1 es la libre, la 2 la de la fachada, la 3 la del desfile, la 4 la del Zocalo y la 5 la aerea. La C sigue pasando de una en una. Con la F se suelta una camara fija: la libre aparece en ese mismo lugar, viendo hacia el mismo lado, y desde ahi se mueve con WASD y el mouse. Al soltar la aerea, la camara baja a 30 m, que es lo mas alto que puede subir la libre. Con Shift presionado la camara libre va tres veces mas rapido, para recorrer la escena sin tardar tanto.
+
+## Fase 4.5.5 - Vegetacion y adornos
+
+Sobre el andador cuelgan tiras de papel picado de colores, de una fachada a la otra, entre Abasolo y Morelos y entre Morelos e Independencia. Cada tira baja un poco en medio, como un cordel, y por los recortes de las banderitas se ve el cielo.
+
+En el atrio de Santo Domingo pusimos una fila de flamboyanes de flores rojas en una jardinera larga del lado de Gurrion, y tres palmeras en macetones de cantera del lado del andador. Junto al andador hay dos jacarandas y en la banqueta de enfrente dos arboles de flores blancas (cacaloxochitl). La jardinera de los flamboyanes tiene flores abajo.
+
+El jardin Labastida tiene jacarandas moradas, otros arboles y dos bugambilias en las esquinas, y en la orilla que da al andador hay un puesto de textiles con mesas con toldo y tendederos. Junto a ellos, en la orilla norte, hay dos puestos sobre petates: uno de cazuelas, ollas y tazas con una canasta de pan de muerto, y otro de alebrijes. En el Zocalo hay arboles en las jardineras, a los lados del kiosco y en las esquinas, flores en las jardineras, bancas de hierro viendo hacia los pasillos y dos carritos de elotes junto a los portales. A lo largo del andador hay estantes de madera con macetas de barro pegados a las casas y algunas bugambilias que cuelgan de las fachadas.
+
+| Papel picado sobre el andador | Flamboyanes en el norte del atrio |
+|---|---|
+| ![Papel picado](docs/evidencias/fase4_5_5/01_papel_picado.png) | ![Flamboyanes](docs/evidencias/fase4_5_5/02_flamboyanes.png) |
+| **Atrio con las palmeras y el cacaloxochitl** | **Jardin Labastida con el puesto de textiles** |
+| ![Atrio](docs/evidencias/fase4_5_5/03_atrio_palmeras.png) | ![Labastida](docs/evidencias/fase4_5_5/04_labastida.png) |
+| **Zocalo con arboles y bancas** | **Puestos de artesanias en el jardin Labastida** |
+| ![Zocalo](docs/evidencias/fase4_5_5/05_zocalo.png) | ![Artesanias](docs/evidencias/fase4_5_5/06_artesanias.png) |
+| **Bugambilia en una fachada y macetas** | **Flamboyanes de noche** |
+| ![Bugambilia](docs/evidencias/fase4_5_5/07_bugambilia_muro.png) | ![Flamboyanes de noche](docs/evidencias/fase4_5_5/08_flamboyanes_noche.png) |
+
+## Ajustes despues de la fase 4.5.5 - Texturas, cielo y ventana
+
+Se retocaron casi todas las texturas de la escena para que se vean como materiales reales: la cantera de Santo Domingo, de la Sangre de Cristo y del kiosco tiene vetas y un desgaste parejo, los aplanados de las casas ya no se ven lisos, las losas del andador y de las plazas tienen juntas y cambios de tono, y la fuente del Zocalo tiene piedra y agua con ondas. En el kiosco, el tablero con el medallon quedo centrado en cada tramo de la barda junto a las escaleras.
+
+El cielo tambien cambio. El de la tarde tiene nubes rosas y moradas iluminadas desde abajo y el de la noche tiene estrellas y nubes oscuras, y en los dos ya no se notan las uniones entre las caras del cubo.
+
+La ventana ahora abre maximizada, del tamano del monitor, con su barra de titulo. Ademas del proyecto de Visual Studio, el programa tambien se puede compilar desde VS Code con CMake (ver el `README.md`).
+
+| Vista inicial | Fachada de Santo Domingo (tecla 2) |
+|---|---|
+| ![Vista inicial](docs/evidencias/retoque_texturas/01_vista_inicial.png) | ![Santo Domingo](docs/evidencias/retoque_texturas/02_santo_domingo.png) |
+| **Andador desde la camara del desfile (tecla 3)** | **Zocalo con el kiosco (tecla 4)** |
+| ![Andador](docs/evidencias/retoque_texturas/03_andador.png) | ![Zocalo](docs/evidencias/retoque_texturas/04_zocalo.png) |
+| **Escena desde arriba (tecla 5)** | **Escena desde arriba de noche** |
+| ![Aerea](docs/evidencias/retoque_texturas/05_aerea.png) | ![Aerea de noche](docs/evidencias/retoque_texturas/06_aerea_noche.png) |
+| **Zocalo de noche** | **Santo Domingo de noche** |
+| ![Zocalo de noche](docs/evidencias/retoque_texturas/07_zocalo_noche.png) | ![Santo Domingo de noche](docs/evidencias/retoque_texturas/08_santo_domingo_noche.png) |
