@@ -1,0 +1,445 @@
+% Manual tecnico del proyecto final de Computacion Grafica
+% Se compila con latexmk (ver latexmkrc). Las capturas se toman de ../docs/evidencias/ y de img/
+% Lo que falta se marca con \pendiente{...}
+\documentclass[11pt,a4paper]{article}
+\input{estilo}
+
+\begin{document}
+
+\encabezado{Manual técnico}
+
+\tableofcontents
+
+% =====================================================================
+\section{Descripción general}
+
+El proyecto es un recorrido virtual en 3D de una calenda en el Centro Histórico de Oaxaca, hecho con C++ y OpenGL.
+La calenda es el desfile que recorre las calles con banda de música, chinas oaxaqueñas, marmotas y toritos para anunciar una fiesta; la más conocida es la de la Guelaguetza, en julio.
+
+La escena reproduce el camino que sigue la calenda: sale del atrio del templo de Santo Domingo de Guzmán, baja por el andador Macedonio Alcalá, pasa frente al templo de la Sangre de Cristo y el jardín Labastida, y llega al Zócalo, donde se detiene frente al kiosco.
+El usuario puede caminar libremente por la escena, cambiar entre cinco cámaras, alternar entre la tarde y la noche, ver el desfile y consultar información sobre los edificios, los personajes y los objetos.
+
+\unafoto{retoque_texturas/05_aerea}{La escena completa vista desde arriba: el atrio de Santo Domingo arriba a la derecha, el andador al centro y el Zócalo abajo.}
+
+\subsection{Cambios respecto a la propuesta}
+
+\begin{itemize}
+  \item \textbf{Recorrido.} La propuesta planteaba un circuito cerrado frente a Santo Domingo. Al comparar con fotos y mapas del lugar real se vio que un óvalo no se parecía a Oaxaca, así que el 2 de noviembre la escena se cambió al andador Macedonio Alcalá, que es por donde pasa la calenda. El desfile ahora va en una sola dirección, del atrio al Zócalo.
+  \item \textbf{Equipo.} La propuesta era de dos integrantes y el proyecto se terminó de forma individual (ver la sección \ref{sec:roles}).
+  \item \textbf{Cámaras.} Además de las tres de la propuesta (libre, fachada y desfile) se agregaron la del Zócalo y una aérea, y una tecla para soltar una cámara fija y seguir caminando desde ahí.
+\end{itemize}
+
+\pendiente{agregar aquí cualquier otro cambio que se haga antes de la entrega (por ejemplo, si el audio no se integra).}
+
+% =====================================================================
+\section{Investigación cultural}
+\label{sec:cultura}
+
+\subsection{La Guelaguetza y la calenda}
+
+La Guelaguetza es la fiesta más importante de Oaxaca. Su nombre viene del zapoteco y se suele traducir como ofrenda, cooperación o intercambio entre las comunidades (Embajada de México ante la Santa Sede, s.~f.). Se celebra en julio, en los dos lunes más cercanos a la fiesta de la Virgen del Carmen (16 de julio), por eso también se le llama los Lunes del Cerro: las delegaciones de las regiones del estado bailan en el auditorio del Cerro del Fortín y al final regalan productos de su región al público (Gobierno del Estado de Oaxaca, 2026).
+
+Antes de cada fiesta se hace una calenda: un desfile por las calles que anuncia la celebración e invita a la gente a unirse. En Oaxaca hay calendas casi todos los días, para fiestas de los barrios, bodas o bautizos, y en la Guelaguetza las delegaciones desfilan por el centro de la ciudad (México Desconocido, s.~f.). Los elementos que no faltan son:
+
+\begin{itemize}
+  \item \textbf{Banda de música de viento}, que toca sones y jarabes y marca el paso del desfile.
+  \item \textbf{Chinas oaxaqueñas}, mujeres con traje tradicional (blusa bordada, enagua de colores con olanes y rebozo) que bailan con una canasta adornada con flores sobre la cabeza y a veces reparten dulces o mezcal.
+  \item \textbf{Marmotas}, esferas grandes de manta sobre un armazón de carrizo, montadas en un palo que un danzante hace girar mientras avanza. Muchas llevan escrito el nombre del barrio o de la fiesta.
+  \item \textbf{Toritos}, armazones de carrizo en forma de toro que un danzante lleva sobre los hombros y que por la noche cargan cohetes.
+  \item \textbf{Monos de calenda}, figuras gigantes de carrizo y tela que se bailan girando.
+  \item \textbf{Espectadores} a los lados de la calle, que aplauden, saludan y a veces se unen al desfile.
+\end{itemize}
+
+\subsection{Por qué se eligieron estos lugares}
+
+\begin{itemize}
+  \item \textbf{Templo de Santo Domingo de Guzmán.} Fue construido por la orden de los dominicos entre los siglos XVI y XVIII y su ex convento hoy es el Museo de las Culturas de Oaxaca (Instituto Nacional de Antropología e Historia, s.~f.). Su atrio es el punto de salida de muchas calendas, por eso es donde empieza el recorrido. La fachada de cantera verde, las dos torres y las jardineras de agaves del atrio se tomaron de fotos del lugar.
+  \item \textbf{Andador Macedonio Alcalá.} Es la calle peatonal que une Santo Domingo con el Zócalo y la que recorren los desfiles. Tiene casas de uno y dos pisos de colores con balcones de herrería y piso de cantera. Lleva el nombre del compositor oaxaqueño de ``Dios nunca muere''.
+  \item \textbf{Templo de la Sangre de Cristo y jardín Labastida.} Están a media cuadra del andador y son parte del recorrido real. En el jardín se ponen artesanos y vendedores.
+  \item \textbf{Zócalo.} Es la plaza principal de la ciudad, con su kiosco al centro, árboles grandes, bancas de hierro y portales alrededor. Aquí termina el recorrido.
+\end{itemize}
+
+El Centro Histórico de Oaxaca es Patrimonio de la Humanidad desde 1987, junto con la zona arqueológica de Monte Albán (UNESCO World Heritage Centre, s.~f.).
+
+\subsection{Objetos y adornos}
+
+\begin{itemize}
+  \item \textbf{Papel picado}, que se cuelga sobre las calles en las fiestas. Se representa con tiras de banderitas de colores con transparencia en los recortes.
+  \item \textbf{Artesanías}: alebrijes de madera tallada y pintada, como los de San Martín Tilcajete y San Antonio Arrazola; piezas de barro; y textiles de lana como los de Teotitlán del Valle. Se pusieron en puestos sobre petates y en mesas con toldo, como se ven en el andador y en el jardín Labastida.
+  \item \textbf{Comida}: pan oaxaqueño en canastas y carritos de elotes en el Zócalo.
+  \item \textbf{Plantas}: agaves en el atrio de Santo Domingo, flamboyanes de flores rojas, jacarandas, bugambilias y cacaloxóchitl, que son comunes en el centro de Oaxaca.
+\end{itemize}
+
+\pendiente{revisar que cada objeto quede bien ubicado en el tiempo de la fiesta (por ejemplo, el pan de los puestos y los árboles en flor en julio) y agregar una o dos fuentes culturales más, de preferencia de la Secretaría de Cultura de Oaxaca o del INAH, sobre las calendas, las marmotas y los toritos.}
+
+% =====================================================================
+\section{Arquitectura del proyecto}
+
+\subsection{Organización de carpetas}
+
+\begin{table}[H]
+  \centering
+  \small
+  \begin{tabular}{|>{\ttfamily}p{0.22\linewidth}|p{0.7\linewidth}|}
+    \hline
+    \textbf{Carpeta} & \textbf{Qué contiene} \\ \hline
+    src/ & Todo el código en C++: la escena (\texttt{main.cpp}) y las clases de la ventana, la cámara, las luces, las texturas y los modelos \\ \hline
+    shaders/ & Shaders en GLSL: \texttt{shader\_light} (escena con iluminación) y \texttt{skybox} \\ \hline
+    Models/ & Modelos \texttt{.obj} con su \texttt{.mtl} (42 modelos) \\ \hline
+    Textures/ & Texturas \texttt{.jpg} y \texttt{.png} (105 imágenes) y las 12 caras del cielo en \texttt{Skybox/} \\ \hline
+    Librerias/ & GLEW, GLFW, GLM, Assimp y stb\_image (se reparte en \texttt{Librerias.zip}) \\ \hline
+    docs/evidencias/ & Capturas de cada fase del desarrollo \\ \hline
+    Documentacion/ & Estos manuales en LaTeX \\ \hline
+  \end{tabular}
+  \caption{Carpetas del proyecto.}
+\end{table}
+
+\subsection{Clases}
+
+La base del código es la del laboratorio de la materia, con las mismas clases. Se le agregaron funciones donde hizo falta, pero se mantuvo la misma forma de cargar y dibujar.
+
+\begin{table}[H]
+  \centering
+  \small
+  \begin{tabular}{|>{\ttfamily}p{0.25\linewidth}|p{0.67\linewidth}|}
+    \hline
+    \textbf{Clase o archivo} & \textbf{Para qué sirve} \\ \hline
+    main.cpp & Crea las mallas, carga shaders, texturas y modelos, coloca las luces y tiene el ciclo que dibuja cada cuadro \\ \hline
+    Window & Crea la ventana con GLFW, lee el teclado y el mouse, y guarda la hora (tarde o noche) y la cámara activa \\ \hline
+    Camera & Cámara en primera persona con WASD y mouse; \texttt{tomarVistaDe} copia la vista de una cámara fija y \texttt{limitarPosicion} evita que salga de la ciudad \\ \hline
+    MeshModel (Mesh\_tn) & Mallas hechas a mano con posición, coordenadas de textura y normal (8 valores por vértice) \\ \hline
+    Model & Carga modelos \texttt{.obj} con Assimp y sus texturas \\ \hline
+    Texture & Carga imágenes con stb\_image (\texttt{LoadTexture} para jpg y \texttt{LoadTextureA} para png con transparencia) \\ \hline
+    Shader & Compila los shaders y guarda las ubicaciones de los uniforms \\ \hline
+    Light, DirectionalLight, PointLight, SpotLight & Las luces del modelo de Phong; \texttt{SpotLight} hereda de \texttt{PointLight} \\ \hline
+    Material & Intensidad especular y brillo de cada superficie \\ \hline
+    Skybox & Cubo con las seis caras del cielo \\ \hline
+  \end{tabular}
+  \caption{Clases del proyecto.}
+\end{table}
+
+\subsection{Funcionamiento del programa}
+
+\begin{enumerate}
+  \item \textbf{Inicio.} Se crea la ventana, se compilan los shaders y se crean las mallas hechas a mano (pisos, fachadas, jardineras, papel picado).
+  \item \textbf{Carga.} Se cargan las texturas, los 42 modelos y los dos cielos, y se colocan las luces. Esta parte tarda unos 30 segundos.
+  \item \textbf{Ciclo principal}, una vez por cuadro:
+  \begin{enumerate}
+    \item Se calcula el tiempo desde el cuadro anterior para que el movimiento no dependa de la velocidad de la computadora.
+    \item Se leen el teclado y el mouse y se mueve la cámara activa.
+    \item Según la hora se elige el cielo, el color de la luz del sol o de la luna y cuántas farolas se encienden.
+    \item Se dibuja el cielo, luego los objetos opacos y al final los que tienen transparencia (árboles, papel picado, telones, puestos).
+    \item Se muestra la imagen en la ventana.
+  \end{enumerate}
+\end{enumerate}
+
+\pendiente{agregar al ciclo los pasos de las animaciones (avance del desfile y KeyFrames) y de la información cultural cuando estén en el programa.}
+
+% =====================================================================
+\section{Tecnologías utilizadas}
+
+\begin{table}[H]
+  \centering
+  \small
+  \begin{tabular}{|p{0.24\linewidth}|p{0.68\linewidth}|}
+    \hline
+    \textbf{Tecnología} & \textbf{Para qué se usó y por qué} \\ \hline
+    C++20 y OpenGL 4.3 (GLSL 330) & Lenguaje y API de gráficos de la materia. Dan control directo sobre cómo se dibuja cada cosa \\ \hline
+    GLFW & Ventana, teclado y mouse \\ \hline
+    GLEW & Acceso a las funciones de OpenGL \\ \hline
+    GLM & Vectores y matrices para las transformaciones y la cámara \\ \hline
+    Assimp & Cargar los modelos \texttt{.obj} con sus materiales \\ \hline
+    stb\_image & Leer las imágenes jpg y png de las texturas \\ \hline
+    Visual Studio 2026 & Compilador y depurador. Es el entorno del curso y donde se entrega el proyecto \\ \hline
+    VS Code y CMake & Editor y compilación desde la terminal; se usó en la última parte del desarrollo porque es más ligero. El proyecto de Visual Studio se mantiene igual \\ \hline
+    Blender 5.2 & Revisar, escalar, reducir y convertir a \texttt{.obj} los modelos de internet, y armar los edificios a partir de fotos \\ \hline
+    Git y GitHub & Control de versiones; cada fase terminada es un commit \\ \hline
+    LaTeX & Reporte de avances y estos manuales \\ \hline
+  \end{tabular}
+  \caption{Tecnologías del proyecto.}
+\end{table}
+
+\subsection{Comparación con lo planeado}
+
+En la propuesta se compararon Blender, Maya y 3ds Max para modelado; OpenGL, Unity y Unreal para el desarrollo; y GIMP, Photoshop y Krita para las texturas. Se mantuvieron Blender y OpenGL con C++. Blender por ser gratuito y por exportar \texttt{.obj} con normales y coordenadas de textura, que es lo que lee Assimp; OpenGL porque es lo que se vio en la materia y obliga a entender cómo funciona cada parte (luces, cámaras, transformaciones) en lugar de dejárselo a un motor.
+
+Lo que se agregó fue VS Code con CMake: el proyecto en Google Drive hacía que Visual Studio fallara al escribir archivos temporales en la carpeta sincronizada, y CMake deja los archivos de compilación fuera de Drive.
+
+\pendiente{confirmar qué editor de imágenes se usó al final para las texturas (en la propuesta se eligió GIMP) y corregir la tabla.}
+
+% =====================================================================
+\section{Técnicas de computación gráfica}
+
+\subsection{Modelado geométrico}
+
+Todo lo que es plano o repetitivo se armó a mano con vértices en \texttt{main.cpp}: los pisos del andador, las banquetas y las plazas; las fachadas de las casas como planos; las jardineras de cantera con su tierra; y las tiras de papel picado, que se arman en 12 tramos para que bajen en medio como un cordel.
+
+En los pisos las coordenadas de textura se calculan a partir de la posición del vértice en el mundo (X y Z), así una losa mide lo mismo en todos lados aunque los rectángulos sean de distinto tamaño, y no se notan cortes entre un piso y el siguiente.
+
+Las fachadas de las casas usan pocas imágenes claras que se tiñen con el color de cada casa, así salen muchas casas distintas sin cargar una textura por casa.
+
+\subsection{Modelos importados}
+
+Los edificios principales (Santo Domingo, la Sangre de Cristo, el kiosco y la fuente) se armaron en Blender a partir de fotos del lugar. Los árboles, plantas, farolas y algunas artesanías vienen de Sketchfab, Poly Haven y ambientCG con licencia CC0 o CC-BY (ver la sección \ref{sec:creditos}); a todos se les ajustó el tamaño a metros, se les redujo el número de triángulos cuando eran muy pesados y se juntaron sus texturas para que carguen más rápido.
+
+Los modelos que se repiten (bancas, macetas, árboles, farolas) se cargan una sola vez y se dibujan varias veces con la función \texttt{DibujarModelo}, que solo cambia la posición, el giro y la escala.
+
+\subsection{Modelado jerárquico}
+
+Cada parte del cuerpo se dibuja a partir de la matriz de la parte anterior: el cuerpo es la raíz, de él salen la cabeza, los brazos y las piernas, y de cada brazo sale el antebrazo. Así, al girar el hombro, el antebrazo lo sigue sin despegarse. Los ángulos de cada articulación están en una estructura (\texttt{PosePersona}) para que las animaciones y los KeyFrames solo tengan que cambiar esos valores.
+
+\pendiente{describir los personajes del desfile (qué partes tiene cada uno, de dónde salen sus modelos) con una captura o diagrama de su jerarquía.}
+
+\subsection{Texturizado}
+
+\begin{itemize}
+  \item Las texturas usan \textit{mipmaps} (\texttt{GL\_LINEAR\_MIPMAP\_LINEAR}): versiones más chicas de la imagen que OpenGL usa cuando el objeto está lejos, para que los pisos y las fachadas no parpadeen.
+  \item Se repiten con \texttt{GL\_REPEAT}, lo que permite cubrir pisos grandes con una imagen chica.
+  \item Las imágenes png con transparencia (hojas, papel picado, rejas, telones) se recortan en el shader: si el alfa de un pixel es menor a 0.1 se descarta con \texttt{discard}, y así lo que está detrás se ve aunque se haya dibujado después.
+  \item Los jpg deben tener un ancho múltiplo de 4, porque OpenGL lee cada fila en bloques de 4 bytes. Con otro ancho el programa lee fuera de la imagen y se cierra.
+\end{itemize}
+
+\subsection{Iluminación}
+
+Se usa el modelo de Phong en el shader \texttt{shader\_light.frag}, con luz ambiental, difusa y especular, y tres tipos de luz:
+
+\begin{itemize}
+  \item \textbf{Una luz direccional}: el sol de la tarde, naranja y bajo desde el poniente para que pegue de frente a Santo Domingo, o la luna de la noche, azul y más débil.
+  \item \textbf{16 luces puntuales}, una en el farol de cada farola: 12 en el andador y 4 en el Zócalo. Solo se encienden de noche.
+  \item \textbf{Reflectores} (\textit{spotlights}) en la fachada de Santo Domingo, en la Sangre de Cristo y debajo del techo del kiosco.
+\end{itemize}
+
+Con la tecla N se cambian el cielo, el color y la fuerza del sol o de la luna y las farolas, dentro del ciclo principal.
+
+\dosfotos{retoque_texturas/02_santo_domingo}{Tarde}{retoque_texturas/08_santo_domingo_noche}{Noche}{La iluminación de la tarde y de la noche en Santo Domingo.}
+
+\subsection{Cielo, transparencias y cámaras}
+
+El cielo es un \textit{skybox}: un cubo con una imagen en cada cara (en el orden derecha, izquierda, abajo, arriba, atrás y adelante) que se dibuja primero y siempre alrededor de la cámara. Hay uno de tarde y uno de noche, con caras de 2048 pixeles.
+
+Para la transparencia se activa el \textit{blending} (\texttt{GL\_SRC\_ALPHA}, \texttt{GL\_ONE\_MINUS\_SRC\_ALPHA}) y los objetos transparentes se dibujan al final, después de los opacos.
+
+Las cámaras fijas son objetos \texttt{Camera} con su posición y su dirección. Al soltar una con la tecla F, la cámara libre copia su posición y hacia dónde mira y sigue desde ahí.
+
+% =====================================================================
+\section{Animaciones}
+\label{sec:animaciones}
+
+En la propuesta se plantearon cinco animaciones para teoría, todas relacionadas con lo que pasa en una calenda. Además, la china oaxaqueña se anima con KeyFrames.
+
+\begin{table}[H]
+  \centering
+  \small
+  \begin{tabular}{|p{0.04\linewidth}|p{0.27\linewidth}|p{0.42\linewidth}|p{0.15\linewidth}|}
+    \hline
+    \textbf{\#} & \textbf{Animación} & \textbf{Qué hace y para qué sirve} & \textbf{Técnica} \\ \hline
+    1 & Caminata del desfile & Los personajes avanzan del atrio al Zócalo moviendo piernas y brazos, se detienen frente al kiosco y el ciclo vuelve a empezar & Jerárquica y por estados \\ \hline
+    2 & Giro del torito & El armazón del torito gira sobre los hombros del danzante mientras avanza & Transformaciones \\ \hline
+    3 & Globos & Los globos suben, se mecen y bajan sobre el desfile & Transformaciones \\ \hline
+    4 & Músico & Los brazos del músico suben y bajan el instrumento al tocar & Jerárquica \\ \hline
+    5 & Espectadores & Los espectadores a los lados saludan al paso de la calenda & Jerárquica \\ \hline
+    -- & China oaxaqueña & Baila y lanza dulces de su canasta & KeyFrames \\ \hline
+  \end{tabular}
+  \caption{Animaciones del proyecto.}
+\end{table}
+
+\pendiente{para cada animación: cómo se hizo (variables, estados, tiempos), qué teclas la controlan y una captura o secuencia de capturas. Para la de KeyFrames: cuántos cuadros tiene, qué variables guarda cada cuadro, cómo se interpola entre ellos y de qué archivo se leen.}
+
+% =====================================================================
+\section{Cronograma: planeado contra real}
+
+En la propuesta el trabajo se repartió en siete semanas, del 6 de octubre al 23 de noviembre. En la práctica el orden cambió: primero se armó todo el escenario y la iluminación, después la escena se rediseñó, y los personajes y las animaciones se dejaron para el final.
+
+\begin{figure}[H]
+  \centering
+  \footnotesize
+  \begin{ganttchart}[
+      time slot format=isodate,
+      x unit=0.205cm, y unit chart=0.5cm, y unit title=0.55cm,
+      vgrid={*6{draw=none}, *1{linea, dotted}},
+      title/.style={draw=linea, fill=fondo},
+      title label font=\color{texto}\footnotesize,
+      group/.style={draw=morado, fill=morado},
+      group label font=\color{morado}\bfseries\footnotesize,
+      bar/.style={draw=azul, fill=azul},
+      bar label font=\color{texto}\footnotesize,
+      bar incomplete/.append style={fill=fondo, draw=rosa},
+      progress label text={},
+      milestone/.style={draw=rosa, fill=rosa},
+      milestone label font=\color{rosa}\footnotesize,
+      group right shift=0, group top shift=0.6, group height=0.15
+    ]{2026-10-06}{2026-11-23}
+    \gantttitle{Octubre}{26} \gantttitle{Noviembre}{23} \\
+    \ganttgroup{Planeado (propuesta)}{2026-10-06}{2026-11-23} \\
+    \ganttbar{Investigación y estructura}{2026-10-06}{2026-10-12} \\
+    \ganttbar{Santo Domingo y fachadas}{2026-10-13}{2026-10-19} \\
+    \ganttbar{Personajes}{2026-10-20}{2026-10-26} \\
+    \ganttbar{Integración, texturas y luces}{2026-10-27}{2026-11-02} \\
+    \ganttbar{KeyFrames}{2026-11-03}{2026-11-09} \\
+    \ganttbar{Cámaras, audio y pruebas}{2026-11-10}{2026-11-16} \\
+    \ganttbar{Documentación}{2026-11-17}{2026-11-23} \\
+    \ganttgroup{Real}{2026-10-06}{2026-11-18} \\
+    \ganttbar{Propuesta e investigación}{2026-10-06}{2026-10-13} \\
+    \ganttbar{Base, escenario y luces (fases 1 y 2)}{2026-10-10}{2026-10-17} \\
+    \ganttbar{Cámaras (fase 3)}{2026-10-19}{2026-10-19} \\
+    \ganttbar{Personaje jerárquico (fase 4)}{2026-10-20}{2026-10-21} \\
+    \ganttbar{Rediseño: andador}{2026-11-02}{2026-11-04} \\
+    \ganttmilestone{Reporte de avances}{2026-11-03} \\
+    \ganttbar{Edificios y Zócalo}{2026-11-03}{2026-11-05} \\
+    \ganttbar{Vegetación y adornos}{2026-11-05}{2026-11-11} \\
+    \ganttbar{Retoque de texturas y cielo}{2026-11-11}{2026-11-13} \\
+    \ganttbar[progress=0]{Personajes y animaciones}{2026-11-13}{2026-11-14} \\
+    \ganttbar[progress=0]{Videos y manuales}{2026-11-13}{2026-11-17} \\
+    \ganttmilestone{Entrega}{2026-11-18}
+  \end{ganttchart}
+  \caption{Cronograma de la propuesta (arriba) contra el real (abajo). Las barras con borde rosa son lo que falta al momento de escribir este documento.}
+\end{figure}
+
+\subsection{Diferencias y sus causas}
+
+\begin{itemize}
+  \item \textbf{El escenario se adelantó y los personajes se atrasaron.} La propuesta ponía los personajes en la tercera semana. Se decidió primero tener la escena completa (calles, edificios, luces y cámaras), porque el recorrido y las posiciones de los personajes dependen de ella.
+  \item \textbf{Rediseño de la escena.} El 2 de noviembre se cambió el circuito por el andador Macedonio Alcalá. Esto obligó a rehacer los pisos, las casas y las posiciones de todo, pero hizo que la escena se pareciera al lugar real.
+  \item \textbf{Modelos y texturas tomaron más tiempo.} Los edificios se armaron a partir de fotos y cada modelo de internet se revisó, se ajustó y se probó con la luz del programa antes de usarlo. Las texturas se retocaron al final para que todas tuvieran el mismo estilo.
+  \item \textbf{Pausa del 22 de octubre al 1 de noviembre.}
+\end{itemize}
+
+\pendiente{explicar la causa de la pausa de finales de octubre y actualizar las barras de personajes, animaciones, videos y manuales con las fechas reales al terminar.}
+
+% =====================================================================
+\section{Roles y responsabilidades}
+\label{sec:roles}
+
+\begin{table}[H]
+  \centering
+  \small
+  \begin{tabular}{|p{0.36\linewidth}|>{\centering\arraybackslash}p{0.12\linewidth}|>{\centering\arraybackslash}p{0.12\linewidth}|>{\centering\arraybackslash}p{0.12\linewidth}|>{\centering\arraybackslash}p{0.12\linewidth}|}
+    \hline
+    & \multicolumn{2}{c|}{\textbf{Planeado}} & \multicolumn{2}{c|}{\textbf{Real}} \\ \hline
+    \textbf{Actividad} & \textbf{Alejandro} & \textbf{Andrea} & \textbf{Alejandro} & \textbf{Andrea} \\ \hline
+    Investigación y documentación & R / A & C & R / A & -- \\ \hline
+    Modelado 3D y texturizado & C & R / A & R / A & -- \\ \hline
+    Programación OpenGL y KeyFrames & R / A & C & R / A & -- \\ \hline
+    Cámaras, luces y audio & R & C & R / A & -- \\ \hline
+    Pruebas, integración y manual & A & R & R / A & -- \\ \hline
+  \end{tabular}
+  \caption{Matriz RACI de la propuesta y la real (R: responsable, A: aprueba, C: consultado).}
+\end{table}
+
+\pendiente{confirmar cómo quedó la participación de Andrea: desde cuándo el proyecto es individual y por qué, y si hizo alguna parte. Con eso se corrige la columna real y se explica la diferencia.}
+
+% =====================================================================
+\section{Metodología de trabajo}
+
+La propuesta planeaba el trabajo por semanas, una actividad tras otra. En la práctica se trabajó de forma \textbf{iterativa e incremental, con un tablero tipo Kanban}:
+
+\begin{itemize}
+  \item El trabajo se dividió en fases (escenario, iluminación, cámaras, personaje jerárquico, escena del andador, personajes, animaciones, KeyFrames, audio y cierre). Después del rediseño, la escena del andador se dividió en cinco iteraciones chicas.
+  \item Cada tarea estaba en un tablero con tres estados: por hacer, en curso y probada. Solo se trabajaba una tarea a la vez.
+  \item Cada iteración seguía el mismo ciclo: revisar qué modelos y texturas hacían falta, integrarlos, compilar y probar en Visual Studio, tomar capturas, escribir su sección de evidencias y hacer su commit. Hasta que una iteración estaba probada y subida no se empezaba la siguiente.
+\end{itemize}
+
+Se cambió a iteraciones chicas después del rediseño del 2 de noviembre: los cambios grandes de golpe eran difíciles de probar y, si algo salía mal, era difícil saber qué parte lo había causado.
+
+La evidencia de su uso está en el historial de commits del repositorio (una fase o iteración por commit, con fecha), en las capturas de \texttt{docs/evidencias/} y en el archivo \texttt{EVIDENCIAS.md}, que tiene una sección por cada iteración.
+
+\pendiente{agregar una captura del tablero con las tareas por hacer, en curso y probadas, y una del historial de commits.}
+
+% =====================================================================
+\section{Herramientas colaborativas}
+
+\begin{itemize}
+  \item \textbf{GitHub}: repositorio privado del proyecto. Cada fase o iteración terminada es un commit con una descripción de lo que se agregó.
+  \item \textbf{Tablero de tareas}: lista de fases con sus tareas marcadas como pendientes o terminadas.
+  \item \textbf{Diagrama de Gantt}: el de este documento, que compara lo planeado con lo real.
+\end{itemize}
+
+\pendiente{capturas de GitHub (página del repositorio, lista de commits y, si se usa, el tablero de GitHub Projects con las tareas de la última semana).}
+
+% =====================================================================
+\section{Aprendizaje autónomo de herramientas nuevas}
+
+\subsection{Alejandro: CMake con VS Code y Blender}
+
+\pendiente{escribir en primera persona qué herramienta se aprendió fuera de clase, cómo se aprendió (documentación, videos, prueba y error), qué problemas hubo y cómo se resolvieron. Ideas: compilar con CMake desde VS Code (presets, depurador de MSVC, archivos fuera de Drive) o usar Blender para revisar, escalar y exportar modelos a .obj con normales, coordenadas de textura y el origen en el lugar correcto.}
+
+% =====================================================================
+\section{Individual reflection (English)}
+
+\pendiente{texto propio en inglés (de media a una página) sobre la experiencia: qué parte del proyecto se hizo, qué fue lo más difícil, qué se aprendió y qué se haría distinto.}
+
+% =====================================================================
+\section{Conclusiones}
+
+\subsection{Técnicas}
+
+Con lo visto en la materia (transformaciones, modelado jerárquico, texturas, iluminación de Phong, skybox, transparencias y cámaras) se pudo armar una escena grande de unos 300 metros de largo con 42 modelos distintos, 16 luces puntuales y dos horarios. Lo que más pesó en el resultado no fue una técnica avanzada, sino cuidar los detalles: el tamaño real de cada cosa, que las normales apunten hacia afuera, el orden en que se dibujan los transparentes, que los modelos no tengan demasiados triángulos y que las texturas tengan un estilo parejo.
+
+\subsection{Sociales y culturales}
+
+Un recorrido virtual permite conocer la calenda y el centro de Oaxaca sin viajar ni esperar a julio. Para que no fuera una imagen genérica de ``México'', cada edificio, planta y objeto se eligió y se ubicó a partir de fotos y mapas del lugar real, y se cuidó que los personajes y la información cultural expliquen qué significa cada elemento.
+
+\subsection{Económicas}
+
+Todas las herramientas son gratuitas (Visual Studio Community, Blender, Git) y los modelos de internet tienen licencias libres, así que el costo en licencias fue de cero pesos. El costo real es el tiempo de desarrollo.
+
+\subsection{Ambientales}
+
+El proyecto no usa materiales físicos. Un recorrido virtual puede sustituir parte de los viajes para conocer un lugar, y reducir el número de triángulos y el tamaño de las texturas hace que el programa pida menos a la tarjeta de video, y por lo tanto menos energía.
+
+\pendiente{completar las conclusiones con los resultados finales: las animaciones, la información cultural, las horas reales de trabajo y su costo comparado con los \$8,000 estimados en la propuesta.}
+
+% =====================================================================
+\section{Créditos y licencias}
+\label{sec:creditos}
+
+Los edificios principales, las casas, el kiosco, la fuente, las bancas, los carritos, los puestos y las texturas de los pisos y fachadas se hicieron o se ajustaron para este proyecto. Los recursos de otras personas que se usan en el programa son:
+
+\begin{longtable}{|p{0.3\linewidth}|p{0.2\linewidth}|p{0.13\linewidth}|p{0.27\linewidth}|}
+  \hline
+  \textbf{Recurso} & \textbf{Autor y fuente} & \textbf{Licencia} & \textbf{Cambios} \\ \hline
+  \endhead
+  Street Lamp (farola de brazo) & bez\_glaza, Sketchfab & CC BY 4.0 & Tamaño y formato \\ \hline
+  Roanoke Street Lamp (farola de globos) & loganh96, Sketchfab & CC BY 4.0 & Menos triángulos, metal negro \\ \hline
+  Foto del templo de Santo Domingo de Guzmán & nan palmero, Wikimedia Commons & CC BY 2.0 & Enderezada, recortada y con color corregido \\ \hline
+  Cobblestone Floor 08 (empedrado) & Poly Haven & CC0 & -- \\ \hline
+  Plaster001 (aplanado) y Planks013 (madera) & ambientCG & CC0 & -- \\ \hline
+  Agave Sisalana Plant & Md Mahmudur Rahman Bappy, Sketchfab & CC BY 4.0 & Menos triángulos, una sola planta \\ \hline
+  Chinese flame tree (flamboyán) & PlantCatalog, Sketchfab & CC BY 4.0 & Menos triángulos, hojas en planos, flores rojas \\ \hline
+  Frangipani tree (cacaloxóchitl) & PlantCatalog, Sketchfab & CC BY 4.0 & Menos triángulos, hojas ajustadas \\ \hline
+  Blue jacaranda & PlantCatalog, Sketchfab & CC BY 4.0 & Rehecho como árbol ligero \\ \hline
+  Trees Low Poly & Igor\_K., Sketchfab & CC BY 4.0 & Dos árboles separados \\ \hline
+  Tree low poly lowpoly & 00amza, Sketchfab & CC BY 4.0 & Árboles separados, hojas ajustadas \\ \hline
+  Flower Pot & empierz, Sketchfab & CC BY 4.0 & Con tierra y plantas \\ \hline
+  Saintpaulia flowers low-poly & Elena FF, Sketchfab & CC BY 4.0 & Solo las flores \\ \hline
+  Low poly trees, flowers and grass & Márcio Meireles (MMC Works), Sketchfab & CC BY 4.0 & Flores y pasto separados \\ \hline
+  Clay mug with face & Martin Teichmann, Sketchfab & CC BY 4.0 & Formato y tamaño \\ \hline
+  Oaxacan Birb (alebrije) & DrLemurpants, Sketchfab & CC BY 4.0 & Menos triángulos \\ \hline
+  Perrito (alebrije) & aromeromyt, Sketchfab & CC BY 4.0 & Menos triángulos, limpieza \\ \hline
+  Petate & ocelotlmx, Sketchfab & CC BY 4.0 & Formato \\ \hline
+\end{longtable}
+
+El alebrije de coyote está basado en una pieza de Pablo Franco y Nelly Ramírez.
+Las librerías son de código abierto: GLFW (licencia zlib), GLEW (BSD y MIT), GLM (MIT), Assimp (BSD de 3 cláusulas) y stb\_image (dominio público o MIT).
+
+\pendiente{agregar los modelos de los personajes y el audio, si se usan, con su autor y licencia.}
+
+% =====================================================================
+\section{Referencias}
+
+\begin{itemize}[label={}, leftmargin=1.27cm, itemindent=-1.27cm]
+  \item Assimp Development Team. (s.~f.). \textit{Open Asset Import Library (assimp)} [Software]. GitHub. \url{https://github.com/assimp/assimp}
+  \item Blender Foundation. (2026). \textit{Blender} (versión 5.2) [Software]. \url{https://www.blender.org}
+  \item de Vries, J. (2020). \textit{Learn OpenGL: Learn modern OpenGL graphics programming in a step-by-step fashion}. Kendall \& Welles. \url{https://learnopengl.com}
+  \item Embajada de México ante la Santa Sede. (s.~f.). \textit{La Guelaguetza}. Secretaría de Relaciones Exteriores. \url{https://embamex.sre.gob.mx/vaticano/index.php/noticias/771-la-guelaguetza}
+  \item Gobierno del Estado de Oaxaca. (2026). \textit{Guelaguetza Oaxaca 2026}. \url{https://guelaguetza.oaxaca.gob.mx/}
+  \item Hughes, J. F., van Dam, A., McGuire, M., Sklar, D. F., Foley, J. D., Feiner, S. K., \& Akeley, K. (2013). \textit{Computer graphics: Principles and practice} (3.ª ed.). Addison-Wesley.
+  \item Instituto Nacional de Antropología e Historia. (s.~f.). \textit{Museo de las Culturas de Oaxaca}. \url{https://lugares.inah.gob.mx/en/node/4252}
+  \item México Desconocido. (s.~f.). \textit{Las calendas de Oaxaca, explosión de color, música y tradición que inunda las calles}. \url{https://www.mexicodesconocido.com.mx/las-calendas-de-oaxaca.html}
+  \item UNESCO World Heritage Centre. (s.~f.). \textit{Historic Centre of Oaxaca and Archaeological Site of Monte Albán}. \url{https://whc.unesco.org/en/list/415}
+  \item Wright, R. S., Lipchak, B., \& Haemel, N. (2010). \textit{OpenGL SuperBible: Comprehensive tutorial and reference} (5.ª ed.). Addison-Wesley.
+\end{itemize}
+
+\pendiente{revisar que todas las páginas sigan abiertas y agregar las fuentes culturales nuevas en orden alfabético.}
+
+\end{document}

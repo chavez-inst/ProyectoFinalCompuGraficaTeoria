@@ -1,0 +1,140 @@
+% Manual de usuario del proyecto final de Computacion Grafica
+% Se compila con latexmk (ver latexmkrc). Las capturas se toman de ../docs/evidencias/ y de img/
+% Lo que falta se marca con \pendiente{...}
+\documentclass[11pt,a4paper]{article}
+\input{estilo}
+
+\begin{document}
+
+\encabezado{Manual de usuario}
+
+\tableofcontents
+
+\section{Qué es este programa}
+
+Es un recorrido en 3D por el centro de Oaxaca durante una calenda, el desfile con música, chinas oaxaqueñas, marmotas y toritos que recorre las calles para anunciar la fiesta de la Guelaguetza.
+El recorrido empieza en el atrio del templo de Santo Domingo, baja por el andador Macedonio Alcalá y termina en el Zócalo, frente al kiosco.
+
+Dentro del programa se puede caminar libremente por las calles, ver la escena desde cinco cámaras, cambiar entre la tarde y la noche, ver pasar el desfile y acercarse a los edificios y personajes para leer qué son y qué significan.
+
+\unafoto{retoque_texturas/02_santo_domingo}{El templo de Santo Domingo de Guzmán desde la cámara de la fachada.}
+
+\section{Qué se necesita}
+
+\begin{itemize}
+  \item Windows 10 u 11 de 64 bits.
+  \item Una tarjeta de video que soporte OpenGL 4.3 (casi cualquiera de los últimos diez años, incluidas las integradas de Intel y AMD).
+  \item Para compilar: Visual Studio 2022 o 2026 con la carga de trabajo \textbf{Desarrollo para el escritorio con C++}.
+  \item Unos 500 MB libres, contando lo que genera Visual Studio al compilar.
+\end{itemize}
+
+\section{Cómo abrir y ejecutar el proyecto}
+
+\subsection{Con Visual Studio}
+
+\begin{enumerate}
+  \item Descomprimir el proyecto en una carpeta (de preferencia con una ruta corta, por ejemplo \texttt{C:\textbackslash Proyectos}).
+  \item Descomprimir \texttt{Librerias.zip} dentro de la carpeta del proyecto, de forma que quede la carpeta \texttt{Librerias} junto a \texttt{src}, \texttt{Models} y \texttt{Textures}.
+  \item Abrir \texttt{Proyecto\_Final.slnx}. Si Visual Studio pregunta si se quiere cambiar la versión de las herramientas de compilación, aceptar.
+  \item Arriba, elegir la configuración \textbf{Debug} o \textbf{Release} y la plataforma \textbf{x64}.
+  \item Presionar \tecla{F5} (o el botón verde de \textbf{Depurador local de Windows}).
+\end{enumerate}
+
+Al compilar, las DLL de las librerías se copian solas junto al ejecutable, así que no hay que mover nada a mano.
+
+\subsection{Al abrir}
+
+El programa abre una ventana maximizada del tamaño del monitor. La primera vez tarda alrededor de 30 segundos en mostrar la escena porque tiene que cargar todos los modelos y texturas; mientras tanto la ventana se queda en blanco. Es normal, no hay que cerrarla.
+
+La escena empieza de tarde, con la cámara libre parada en el andador frente al atrio de Santo Domingo y viendo hacia el sur.
+
+\unafoto{retoque_texturas/01_vista_inicial}{Lo primero que se ve al abrir el programa.}
+
+\section{Controles}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|>{\centering\arraybackslash}p{0.2\linewidth}|p{0.7\linewidth}|}
+    \hline
+    \textbf{Tecla} & \textbf{Qué hace} \\ \hline
+    \tecla{W} \tecla{A} \tecla{S} \tecla{D} & Caminar con la cámara libre: adelante, izquierda, atrás y derecha \\ \hline
+    Mouse & Voltear la cámara libre hacia los lados y hacia arriba o abajo \\ \hline
+    \tecla{Shift} & Mantener presionada junto con WASD para ir tres veces más rápido \\ \hline
+    \tecla{1} a \tecla{5} & Ir directo a una cámara (ver la sección \ref{sec:camaras}) \\ \hline
+    \tecla{C} & Pasar a la siguiente cámara \\ \hline
+    \tecla{F} & Soltar una cámara fija: la cámara libre aparece en ese mismo lugar y desde ahí se puede caminar \\ \hline
+    \tecla{N} & Cambiar entre tarde y noche \\ \hline
+    \tecla{ESC} & Cerrar el programa \\ \hline
+  \end{tabular}
+  \caption{Controles del recorrido.}
+\end{table}
+
+\pendiente{agregar las teclas del desfile, de la información cultural y del audio cuando estén en el programa, y quitar de aquí cualquier tecla de prueba que ya no exista.}
+
+\section{Cámaras}
+\label{sec:camaras}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|>{\centering\arraybackslash}p{0.08\linewidth}|p{0.25\linewidth}|p{0.55\linewidth}|}
+    \hline
+    \textbf{Tecla} & \textbf{Cámara} & \textbf{Qué muestra} \\ \hline
+    \tecla{1} & Libre & Se mueve con WASD y el mouse. No deja salir de la ciudad ni subir más de 30 m \\ \hline
+    \tecla{2} & Fachada & La fachada de Santo Domingo desde el atrio, donde empieza la calenda \\ \hline
+    \tecla{3} & Desfile & Vista de lado del andador para ver pasar el desfile \\ \hline
+    \tecla{4} & Zócalo & La plaza en diagonal desde la esquina noroeste, con el kiosco al centro \\ \hline
+    \tecla{5} & Aérea & Todo el recorrido desde 300 m de altura, con el norte hacia arriba \\ \hline
+  \end{tabular}
+  \caption{Las cinco cámaras.}
+\end{table}
+
+\dosfotos{retoque_texturas/03_andador}{Cámara del desfile (3)}{retoque_texturas/04_zocalo}{Cámara del Zócalo (4)}{Dos de las cámaras fijas.}
+
+La vista aérea sirve como mapa: el atrio de Santo Domingo queda arriba a la derecha, el andador baja por el centro y el Zócalo está abajo.
+Desde cualquier cámara fija se puede presionar \tecla{F} para seguir caminando desde ahí. Si se suelta la aérea, la cámara baja a 30 m, que es lo más alto que llega la libre.
+
+\unafoto{retoque_texturas/05_aerea}{Cámara aérea (5): el recorrido completo, del atrio al Zócalo.}
+
+\pendiente{cuando la cámara 3 siga al desfile, cambiar su descripción y su captura.}
+
+\section{Tarde y noche}
+
+Con \tecla{N} se cambia la hora. De tarde el sol está bajo al poniente y pinta de naranja la cantera; de noche el cielo tiene estrellas, la luz es azul y se encienden las farolas del andador y del Zócalo y los reflectores de los templos y del kiosco.
+
+\dosfotos{retoque_texturas/04_zocalo}{Zócalo de tarde}{retoque_texturas/07_zocalo_noche}{Zócalo de noche}{El mismo lugar en los dos horarios.}
+
+\section{El recorrido}
+
+Estos son los lugares principales, en el orden en que los recorre la calenda:
+
+\begin{enumerate}
+  \item \textbf{Atrio de Santo Domingo.} Explanada frente al templo, con jardineras de agaves, flamboyanes de flores rojas, palmeras y dos puestos de artesanías sobre petates (barro y pan, y alebrijes).
+  \item \textbf{Andador Macedonio Alcalá.} Calle peatonal de losas de cantera con casas de colores, papel picado colgado de lado a lado, macetas y bugambilias en las fachadas.
+  \item \textbf{Templo de la Sangre de Cristo.} Del lado poniente del andador, con su fachada de cantera viendo a la calle.
+  \item \textbf{Jardín Labastida.} Pequeña plaza con jacarandas, bugambilias y un puesto de textiles.
+  \item \textbf{Zócalo.} La plaza principal, con el kiosco al centro, la fuente, jardineras, bancas de hierro, carritos de elotes y los portales alrededor.
+\end{enumerate}
+
+\pendiente{agregar una sección ``El desfile'' con lo que hace cada personaje (china oaxaqueña, danzante con marmota, torito, músicos, globos y espectadores), con una captura de cada uno y las teclas para controlarlo.}
+
+\section{Información cultural}
+
+\pendiente{explicar cómo se consulta la información: a qué lugares o personajes hay que acercarse, qué aviso aparece, qué tecla se presiona y cómo se cierra la tarjeta. Agregar una captura del aviso y otra de una tarjeta abierta.}
+
+\section{Problemas comunes}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|p{0.35\linewidth}|p{0.55\linewidth}|}
+    \hline
+    \textbf{Qué pasa} & \textbf{Qué hacer} \\ \hline
+    Al compilar sale \texttt{Falta la carpeta Librerias} & Descomprimir \texttt{Librerias.zip} dentro de la carpeta del proyecto (paso 2) \\ \hline
+    La ventana se queda en blanco al abrir & Esperar unos 30 segundos: está cargando los modelos \\ \hline
+    No encuentra modelos o texturas (salen objetos blancos o no salen) & Ejecutar desde Visual Studio, que abre el programa en la carpeta del proyecto. Si se abre el .exe directo, debe estar en una carpeta que tenga \texttt{Models}, \texttt{Textures} y \texttt{shaders} \\ \hline
+    El teclado o el mouse no mueven la cámara & Dar clic dentro de la ventana para que tenga el foco \\ \hline
+    Va lento & Usar la configuración Release en lugar de Debug \\ \hline
+  \end{tabular}
+  \caption{Problemas comunes y cómo resolverlos.}
+\end{table}
+
+\end{document}

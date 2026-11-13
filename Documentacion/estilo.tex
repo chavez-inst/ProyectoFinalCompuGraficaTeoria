@@ -1,0 +1,89 @@
+% Estilo comun de los manuales, el mismo de la propuesta y del reporte de avances:
+% fondo oscuro, titulos morados y recuadro de encabezado. Se carga con \input{estilo}.
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-noshorthands,es-tabla]{babel}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage[table]{xcolor}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{pgfgantt}
+\usepackage{hyperref}
+
+\definecolor{fondo}{HTML}{1E1E2E}
+\definecolor{texto}{HTML}{CDCDD6}
+\definecolor{morado}{HTML}{B48EDB}
+\definecolor{azul}{HTML}{8AADF4}
+\definecolor{rosa}{HTML}{E3A8D6}
+\definecolor{verde}{HTML}{A6DA95}
+\definecolor{linea}{HTML}{55556A}
+
+\pagecolor{fondo}
+\color{texto}
+\hypersetup{colorlinks=true, linkcolor=azul, urlcolor=azul, citecolor=azul}
+\arrayrulecolor{texto}
+\graphicspath{{../docs/evidencias/}{img/}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% secciones numeradas, moradas y con una linea abajo
+\titleformat{\section}{\Large\bfseries\color{morado}}{\thesection.}{8pt}{}[{\color{linea}\titlerule}]
+\titleformat{\subsection}{\large\bfseries\color{azul}}{\thesubsection}{8pt}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{rosa}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{18pt}{10pt}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+
+\setlist[itemize,1]{label=\scriptsize$\blacksquare$}
+\setlist{itemsep=3pt}
+
+% lo que falta por escribir o por confirmar; se busca con "pendiente" para no dejar ninguno
+\newcommand{\pendiente}[1]{%
+  \begin{tcolorbox}[colback=fondo, colframe=rosa, coltext=rosa, arc=2mm, boxrule=0.8pt, left=6pt, right=6pt, top=4pt, bottom=4pt]
+    \textbf{Pendiente:} #1
+  \end{tcolorbox}}
+
+% tecla con recuadro
+\newcommand{\tecla}[1]{\tcbox[on line, colback=fondo, colframe=azul, coltext=azul, arc=1mm, boxrule=0.6pt, left=2pt, right=2pt, top=0pt, bottom=0pt]{\small\ttfamily #1}}
+
+\newcommand{\dosfotos}[5]{%
+  \begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+      \includegraphics[width=\linewidth]{#1}
+      \caption{#2}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+      \includegraphics[width=\linewidth]{#3}
+      \caption{#4}
+    \end{subfigure}
+    \caption{#5}
+  \end{figure}}
+
+\newcommand{\unafoto}[2]{%
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{#1}
+    \caption{#2}
+  \end{figure}}
+
+% encabezado en recuadro: titulo del documento
+\newcommand{\encabezado}[1]{%
+  \begin{tcolorbox}[colback=fondo, colframe=morado, coltext=texto, arc=4mm, boxrule=0.8pt, left=10pt, right=10pt, top=8pt, bottom=8pt]
+    \centering
+    {\Large\bfseries\color{azul} #1 $\|$ Calenda de Oaxaca}\\[4pt]
+    {\large\bfseries Facultad de Ingeniería -- UNAM}\\[10pt]
+    \begin{tabular}{@{}p{0.47\linewidth}p{0.47\linewidth}@{}}
+      {\color{rosa}\textbf{Equipo:}} 16 & {\color{rosa}\textbf{Materia:}} Computación Gráfica e I.H.C. \\
+      {\color{rosa}\textbf{Número de cuenta:}} 421112601 & {\color{rosa}\textbf{Grupo:}} 01 \\
+      {\color{rosa}\textbf{Semestre:}} 2027-1 & {\color{rosa}\textbf{Entrega:}} 18 de noviembre de 2026 \\
+    \end{tabular}
+  \end{tcolorbox}}

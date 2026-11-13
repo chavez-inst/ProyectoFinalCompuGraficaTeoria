@@ -1,0 +1,6 @@
+# los archivos temporales van a build/ y cada PDF queda junto a su .tex
+$pdf_mode = 1;
+$out_dir = 'build';
+$aux_dir = 'build';
+$success_cmd = 'perl -e "use File::Copy; copy(q(build/%R.pdf), q(%R.pdf));"';
+$pdflatex = "pdflatex -interaction=nonstopmode -halt-on-error %O %S";
