@@ -20,6 +20,9 @@ Release/
 *.suo
 *.user
 
+# configuracion personal de VS Code
+.vscode/
+
 # basura de Windows
 Thumbs.db
 desktop.ini
@@ -41,3 +44,12 @@ Fuentes/
 
 # reporte de avances en LaTeX, se entrega aparte
 Reporte_avances/
+
+# texturas en proceso de retoque, las que se usan ya estan en Textures/
+Texturas_retoque/
+
+# requerimientos del profesor
+Requerimientos*.pdf
+
+# temporales de LaTeX de los manuales
+Documentacion/build/

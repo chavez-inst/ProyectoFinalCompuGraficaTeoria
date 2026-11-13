@@ -22,6 +22,13 @@
 
 Si al compilar sale `Falta la carpeta Librerias...` es que el paso 2 no quedo bien.
 
+### Con VS Code (opcional)
+
+Tambien se puede compilar con VS Code usando `CMakeLists.txt`. Hace falta tener Visual Studio instalado (de ahi sale el
+compilador) y las extensiones C/C++ y CMake Tools. Se abre la carpeta, se elige el preset **debug** o **release**, se
+compila con **Ctrl+Shift+B** y se ejecuta con **F5**. Los archivos `.cpp` de `src/` se agregan solos, sin tocar nada mas.
+El ejecutable queda en `%LOCALAPPDATA%\Proyecto_Final_CG_Teo\<preset>\`.
+
 ## Controles
 
 | Tecla       | Que hace                     |
@@ -194,7 +201,7 @@ Si sale muy grande o muy chico, ajustar con `glm::scale`.
    ```cpp
    MeshModel* obj = new MeshModel();
    obj->CreateMeshModel(vertices, indices, numFloats, numIndices);
-   meshListModel.push_back(obj); //meshListModel[10]
+   meshListModel.push_back(obj); //meshListModel[11]
    ```
    El tercer parametro es la **cantidad de floats** del arreglo, o sea el numero de vertices por 8,
    y no la cantidad de vertices. La malla queda en el siguiente indice libre de `meshListModel`.
@@ -270,6 +277,7 @@ El orden tiene que ser: **rt, lf, dn, up, bk, ft** (derecha, izquierda, abajo, a
 Crear el archivo dentro de `src/` y agregarlo al proyecto con clic derecho en la carpeta virtual >
 Agregar > Elemento existente. Si se usa "Agregar > Clase", cambiar la ubicacion a la carpeta `src`
 (VS los pone en la raiz por defecto). Despues hacer commit tambien del `.vcxproj` y el `.vcxproj.filters`.
+Con CMake (VS Code) no hace falta: los `.cpp` de `src/` entran solos.
 
 ---
 
