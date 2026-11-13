@@ -9,7 +9,7 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 
-//compila el vertex shader y el fragment shader y guarda donde quedo cada uniform
+//compila los shaders y guarda la ubicacion de cada uniform
 class Shader
 {
 public:
@@ -27,7 +27,7 @@ public:
 	GLuint GetEyePositionLocation();
 	GLuint getColorLocation();
 
-	//mandan al shader los datos de las luces, se llaman en cada vuelta del while
+	//se llama en cada vuelta del while
 	void SetDirectionalLight(DirectionalLight * dLight);
 	void SetPointLights(PointLight * pLight, unsigned int lightCount);
 	void SetSpotLights(SpotLight * sLight, unsigned int lightCount);

@@ -9,7 +9,7 @@ Skybox::Skybox()
 	uniformView = 0;
 }
 
-//faceLocations trae las 6 imagenes en este orden: rt, lf, dn, up, bk, ft
+//caras en el orden rt, lf, dn, up, bk, ft
 Skybox::Skybox(std::vector<std::string> faceLocations)
 {
 	skyShader = new Shader();
@@ -17,7 +17,7 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 	uniformProjection = skyShader->GetProjectionLocation();
 	uniformView = skyShader->GetViewLocation();
 
-	//la malla del skybox es un cubo de lado 2
+	//cubo de lado 2
 	unsigned int skyboxIndices[] = {
 		// front
 		0, 1, 2,
@@ -39,7 +39,7 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 		3, 6, 7
 	};
 
-	//solo se usa la posicion, UV y normales van en 0 porque la textura se toma con la direccion del vertice
+	//solo se usa la posicion, UV y normal van en 0
 	float skyboxVertices[] = {
 		-1.0f, 1.0f, -1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//v0
 		-1.0f, -1.0f, -1.0f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//v1
@@ -56,7 +56,7 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 	glGenTextures(1, &textureId);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
 
-	//voltear las imagenes igual que en Texture.cpp
+	//igual que en Texture.cpp
 	stbi_set_flip_vertically_on_load(true);
 	int width, height, bitDepth;
 	for (size_t i = 0; i < 6; i++)
@@ -64,7 +64,7 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 		unsigned char *texData = stbi_load(faceLocations[i].c_str(), &width, &height, &bitDepth, STBI_rgb);
 		if (!texData)
 		{
-			//si falta una cara el skybox se ve negro, pero el programa sigue
+			//si falta una cara el skybox se ve negro
 			printf("No se encontro la cara del skybox: %s\n", faceLocations[i].c_str());
 			return;
 		}
@@ -72,7 +72,7 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texData);
 		stbi_image_free(texData);
 	}
-	//CLAMP_TO_EDGE para que no se noten las uniones entre caras
+	//para que no se noten las uniones entre caras
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -83,10 +83,10 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 //se dibuja antes que el resto de la escena
 void Skybox::DrawSkybox(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
-	//se le quita la traslacion a la vista para que el skybox siempre rodee a la camara
+	//quita la traslacion para que el skybox rodee siempre a la camara
 	viewMatrix = glm::mat4(glm::mat3(viewMatrix));
 
-	//sin escribir profundidad, asi todo lo demas se dibuja encima
+	//sin escribir profundidad, lo demas se dibuja encima
 	glDepthMask(false);
 	skyShader->UseShader();
 	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));

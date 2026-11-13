@@ -7,8 +7,8 @@ class Texture
 public:
 	Texture();
 	Texture(const char* FileLoc);
-	bool LoadTexture();  //para imagenes RGB sin transparencia, como .jpg
-	bool LoadTextureA(); //para imagenes RGBA con canal alfa, como .png o .tga
+	bool LoadTexture();  //sin transparencia, como .jpg
+	bool LoadTextureA(); //con canal alfa, como .png o .tga
 	void UseTexture();
 	void ClearTexture();
 	~Texture();

@@ -12,7 +12,7 @@ DirectionalLight::DirectionalLight(GLfloat red, GLfloat green, GLfloat blue,
 	direction = glm::vec3(xDir, yDir, zDir);
 }
 
-//manda los datos de la luz a los uniforms del shader
+//manda los datos al shader
 void DirectionalLight::UseLight(GLuint ambientIntensityLocation, GLuint ambientcolorLocation,
 	GLuint diffuseIntensityLocation, GLuint directionLocation)
 {

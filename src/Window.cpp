@@ -49,14 +49,21 @@ int Window::Initialise()
 		glfwTerminate();
 		return 1;
 	}
-	//se pide la version 4.3 de OpenGL
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	//core profile, solo deja usar OpenGL moderno sin las funciones viejas
+	//core profile, sin las funciones viejas
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	//crear la ventana, el texto es su titulo
+	//ventana maximizada del tamano del monitor, con su barra de titulo para poder
+	//cambiar de ventana y tomar capturas; no se deja cambiar de tamano porque
+	//la proyeccion se calcula una sola vez al inicio
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode* modo = glfwGetVideoMode(monitor);
+	width = modo->width;
+	height = modo->height;
+	glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+
 	mainWindow = glfwCreateWindow(width, height, "Proyecto Final", NULL, NULL);
 
 	if (!mainWindow)
@@ -65,13 +72,13 @@ int Window::Initialise()
 		glfwTerminate();
 		return 1;
 	}
-	//medidas reales del area donde se dibuja
+	//ya maximizada se le quita lo ajustable, asi respeta la barra de tareas
+	glfwSetWindowAttrib(mainWindow, GLFW_RESIZABLE, GLFW_FALSE);
+	//tamano real del area de dibujo
 	glfwGetFramebufferSize(mainWindow, &bufferWidth, &bufferHeight);
 
-	//le dice a OpenGL que se va a dibujar en esta ventana
 	glfwMakeContextCurrent(mainWindow);
 
-	//teclado y mouse
 	createCallbacks();
 
 	//permitir extensiones nuevas
@@ -85,10 +92,10 @@ int Window::Initialise()
 		return 1;
 	}
 
-	glEnable(GL_DEPTH_TEST); //buffer de profundidad, para que lo de atras no tape lo de enfrente
+	glEnable(GL_DEPTH_TEST); //lo de atras no tapa lo de enfrente
 
 	glViewport(0, 0, bufferWidth, bufferHeight);
-	//guarda esta clase dentro de la ventana para poder usarla en los callbacks, que son static
+	//los callbacks son static, por eso se guarda la clase aqui
 	glfwSetWindowUserPointer(mainWindow, this);
 
 	return 0;
@@ -100,7 +107,7 @@ void Window::createCallbacks()
 	glfwSetCursorPosCallback(mainWindow, ManejaMouse);
 }
 
-//regresan cuanto se movio el mouse desde la ultima vez y lo reinician en 0
+//regresan cuanto se movio el mouse y lo reinician
 GLfloat Window::getXChange()
 {
 	GLfloat theChange = xChange;
@@ -115,7 +122,7 @@ GLfloat Window::getYChange()
 	return theChange;
 }
 
-//regresa si se presiono F y lo reinicia en false, asi la camara solo se suelta una vez por tecla
+//regresa si se presiono F y lo reinicia
 bool Window::getsoltarCamara()
 {
 	bool soltar = soltarCamara;
@@ -123,7 +130,7 @@ bool Window::getsoltarCamara()
 	return soltar;
 }
 
-//se llama una vez por cada evento de teclado, ya sea al presionar, mantener o soltar una tecla
+//se llama en cada evento de teclado, al presionar, mantener o soltar
 void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode)
 {
 	Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
@@ -132,17 +139,17 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
-	//N alterna entre atardecer y noche, solo al presionar para que no parpadee si se deja apretada
+	//solo al presionar, para que no parpadee si se deja apretada
 	if (key == GLFW_KEY_N && action == GLFW_PRESS)
 	{
 		theWindow->esNoche = !theWindow->esNoche;
 	}
-	//C pasa a la siguiente camara y despues de la ultima regresa a la primera
+	//vuelve a la primera despues de la ultima
 	if (key == GLFW_KEY_C && action == GLFW_PRESS)
 	{
 		theWindow->camaraActiva = (theWindow->camaraActiva + 1) % 5;
 	}
-	//las teclas 1 a 5 van directo a cada camara, la 1 es la libre
+	//van directo a cada camara
 	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
 	{
 		theWindow->camaraActiva = 0;
@@ -163,15 +170,14 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow->camaraActiva = 4;
 	}
-	//F suelta la camara fija, se pasa a la libre y en main.cpp la libre toma el lugar de la fija
+	//se pasa a la libre, que en main.cpp toma el lugar de la fija
 	if (key == GLFW_KEY_F && action == GLFW_PRESS && theWindow->camaraActiva != 0)
 	{
 		theWindow->soltarCamara = true;
 		theWindow->camaraActiva = 0;
 	}
 
-	//guarda que teclas estan presionadas, la camara y el muneco lo leen con getsKeys()
-	//las teclas WASD ya las usa la camara
+	//guarda las teclas presionadas, la camara y el muneco las leen con getsKeys()
 	if (key >= 0 && key < 1024)
 	{
 		if (action == GLFW_PRESS)
@@ -189,7 +195,7 @@ void Window::ManejaMouse(GLFWwindow* window, double xPos, double yPos)
 {
 	Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
-	//la primera vez no hay posicion anterior, asi que se toma la actual para que la camara no brinque
+	//la primera vez se toma la posicion actual para que la camara no brinque
 	if (theWindow->mouseFirstMoved)
 	{
 		theWindow->lastX = xPos;

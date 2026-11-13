@@ -27,10 +27,9 @@ bool Texture::LoadTexture()
 	return LoadTextureFile(false);
 }
 
-//carga la imagen de fileLocation y crea la textura, regresa false si no encuentra el archivo
+//regresa false si no encuentra el archivo
 bool Texture::LoadTextureFile(bool useAlpha)
 {
-	//RGBA guarda transparencia, RGB no
 	int canales = STBI_rgb;
 	GLenum formato = GL_RGB;
 	if (useAlpha)
@@ -39,32 +38,27 @@ bool Texture::LoadTextureFile(bool useAlpha)
 		formato = GL_RGBA;
 	}
 
-	//las imagenes empiezan arriba a la izquierda y OpenGL abajo a la izquierda, por eso se voltean
+	//las imagenes empiezan arriba a la izquierda y OpenGL abajo, por eso se voltean
 	stbi_set_flip_vertically_on_load(true);
-	//texData son los bytes de la imagen, o sea los pixeles
 	unsigned char *texData = stbi_load(fileLocation, &width, &height, &bitDepth, canales);
 	if (!texData)
 	{
 		printf("No se encontro la textura: %s\n", fileLocation);
 		return false;
 	}
-	glGenTextures(1, &textureID); //se crea la textura y se le da un id, parecido al VAO
-	glBindTexture(GL_TEXTURE_2D, textureID); //textura 2D, para superficies es suficiente
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 
-	//lo que pasa cuando las UV se salen del rango de 0 a 1
-	//GL_REPEAT repite la imagen, GL_MIRRORED_REPEAT la repite en espejo y GL_CLAMP_TO_EDGE estira el borde
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); //eje S, que es como X
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); //eje T, que es como Y
-	//MIN_FILTER se usa cuando la textura se ve mas chica, de lejos, y MAG_FILTER cuando se ve mas grande, de cerca
-	//GL_LINEAR mezcla los texels cercanos y se ve suave, GL_NEAREST toma el mas cercano y se ve pixeleado
-	//de lejos se usa GL_LINEAR_MIPMAP_LINEAR, que toma los mipmaps, copias mas chicas de la imagen que hace glGenerateMipmap
-	//sin ellos las texturas con detalle fino, como las losas o el azulejo, titilan y hacen rayas al mover la camara
+	//GL_REPEAT repite la imagen cuando las UV salen de 0 a 1
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//los mipmaps evitan que las texturas finas, como las losas, titilen al moverse de lejos
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, formato, width, height, 0, formato, GL_UNSIGNED_BYTE, texData);
 	glGenerateMipmap(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, 0); //unbind
-	stbi_image_free(texData); //ya se copio a la GPU, se libera la imagen
+	glBindTexture(GL_TEXTURE_2D, 0);
+	stbi_image_free(texData); //ya esta en la GPU
 	return true;
 }
 void Texture::ClearTexture()
@@ -78,7 +72,7 @@ void Texture::ClearTexture()
 }
 void Texture::UseTexture()
 {
-	//texture unit 0, es la que lee el sampler theTexture del shader
+	//unit 0, el que lee el sampler theTexture del shader
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 

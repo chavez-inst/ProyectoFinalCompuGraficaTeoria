@@ -1,8 +1,8 @@
 #pragma once
 #include "PointLight.h"
 
-//luz puntual que solo alumbra dentro de un cono, como una linterna
-//edg es la apertura del cono en grados
+//luz puntual dentro de un cono, como una linterna
+//apertura del cono en grados
 class SpotLight :
 	public PointLight
 {
@@ -21,7 +21,7 @@ public:
 		GLuint constantLocation, GLuint linearLocation, GLuint exponentLocation,
 		GLuint edgeLocation);
 
-	//para mover la luz dentro del while, SetFlash cambia la posicion y la direccion, y SetPos solo la posicion
+	//SetFlash mueve posicion y direccion, SetPos solo la posicion
 	void SetFlash(glm::vec3 pos, glm::vec3 dir);
 	void SetPos(glm::vec3 pos);
 	~SpotLight();

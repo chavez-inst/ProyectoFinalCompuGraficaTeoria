@@ -8,8 +8,7 @@
 #include "Mesh_tn.h"
 #include "Texture.h"
 
-//modelo cargado con Assimp desde un archivo como .obj o .fbx
-//sus texturas se buscan en la carpeta Textures, sin importar la ruta que diga el archivo del modelo
+//modelo cargado con Assimp; las texturas se buscan en Textures/
 class Model
 {
 public:
@@ -17,7 +16,7 @@ public:
 
 	void LoadModel(const std::string& fileName);
 	void RenderModel();
-	void ClearModel(); //libera las mallas y texturas del modelo, despues de esto ya no se puede dibujar
+	void ClearModel(); //despues de esto ya no se puede dibujar
 
 	~Model();
 
@@ -27,5 +26,5 @@ private:
 	void LoadMaterials(const aiScene* scene);
 	std::vector<MeshModel*>MeshList;
 	std::vector<Texture*>TextureList;
-	std::vector<unsigned int>meshTotex; //que material, o sea que textura, usa cada malla
+	std::vector<unsigned int>meshTotex; //textura que usa cada malla
 };

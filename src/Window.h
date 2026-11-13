@@ -3,7 +3,7 @@
 #include<glew.h>
 #include<glfw3.h>
 
-//crea la ventana con GLFW y guarda lo que pasa con el teclado y el mouse
+//ventana GLFW, teclado y mouse
 class Window
 {
 public:
@@ -33,12 +33,11 @@ private:
 	GLfloat lastY;
 	GLfloat xChange;
 	GLfloat yChange;
-	//vale false de tarde y true de noche, cambia con la tecla N
+	//false de tarde, true de noche
 	bool esNoche;
-	//camara que se usa, 0 es la libre, 1 la de la fachada de Santo Domingo, 2 la lateral del desfile, 3 la del Zocalo y 4 la aerea
-	//cambia con las teclas 1 a 5 o pasando una por una con la C
+	//camara activa, 0 es la libre y de 1 a 4 las fijas
 	int camaraActiva;
-	//se vuelve true al presionar F en una camara fija, para que la libre siga desde donde estaba esa camara
+	//true al soltar una camara fija con F
 	bool soltarCamara;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);

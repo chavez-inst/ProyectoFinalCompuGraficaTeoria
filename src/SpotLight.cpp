@@ -17,7 +17,7 @@ SpotLight::SpotLight(GLfloat red, GLfloat green, GLfloat blue,
 	direction = glm::normalize(glm::vec3(xDir, yDir, zDir));
 
 	edge = edg;
-	//el shader compara cosenos, por eso se guarda el coseno del angulo y no el angulo
+	//el shader compara cosenos, por eso se guarda el coseno
 	procEdge = cosf(glm::radians(edge));
 }
 
@@ -26,12 +26,11 @@ void SpotLight::UseLight(GLuint ambientIntensityLocation, GLuint ambientcolorLoc
 	GLuint constantLocation, GLuint linearLocation, GLuint exponentLocation,
 	GLuint edgeLocation)
 {
-	//color, intensidades, posicion y atenuacion se mandan igual que en PointLight
+	//lo demas se manda igual que en PointLight
 	PointLight::UseLight(ambientIntensityLocation, ambientcolorLocation,
 		diffuseIntensityLocation, positionLocation,
 		constantLocation, linearLocation, exponentLocation);
 
-	//lo que solo tiene la SpotLight es la direccion y la apertura del cono
 	glUniform3f(directionLocation, direction.x, direction.y, direction.z);
 	glUniform1f(edgeLocation, procEdge);
 }

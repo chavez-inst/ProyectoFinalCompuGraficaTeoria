@@ -1,4 +1,4 @@
-﻿//esto solo va aqui y en ningun otro archivo, porque si no da error de simbolos repetidos
+﻿//solo aqui, si no da error de simbolos repetidos
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <vector>
@@ -30,43 +30,77 @@ const float toRadians = 3.14159265f / 180.0f;
 // ================== 1. VARIABLES GLOBALES ==================
 
 Window mainWindow;
-std::vector<MeshModel*> meshListModel; //mallas hechas a mano, cada vertice lleva posicion, coordenadas de textura y normal
+std::vector<MeshModel*> meshListModel; //mallas hechas a mano
 std::vector<Shader> shaderList;
 
-//de las cinco camaras solo la libre, que es camera, se mueve con teclado y mouse, y las demas son fijas
+//la libre es camera, las demas son fijas
 Camera camera;
 Camera camaraFachada;
 Camera camaraDesfile;
 Camera camaraZocalo;
 Camera camaraAerea;
 
-//texturas, sus archivos van en la carpeta Textures
-Texture andadorTexture;		//losas de cantera del andador
-Texture empedradoTexture;	//calles que cruzan el andador
-Texture banquetaTexture;	//banquetas de las manzanas
-Texture plazaTexture;		//losas grandes del atrio, el jardin Labastida y el Zocalo
-Texture plainTexture;		//textura blanca, con ella el objeto se ve solo con el color que se le pase
-//fachadas de las casas, las de aplanado son claras para pintarlas con el color de cada casa
-Texture fachadaCasa1Texture;	//casa de un piso
-Texture fachadaCasa2Texture;	//casa de dos pisos con balcones
-Texture fachadaCanteraTexture;	//edificio de cantera, no se pinta
-Texture fachadaPortalTexture;	//portales del Zocalo con dos arcos abajo, ya viene pintada
+//texturas en Textures/
+Texture andadorTexture;
+Texture empedradoTexture;
+Texture banquetaTexture;
+Texture plazaTexture;
+Texture plainTexture;		//blanca, el objeto se ve con el color que se le pase
+//aplanados claros, para pintarlos con el color de cada casa
+Texture fachadaCasa1Texture;
+Texture fachadaCasa2Texture;
+Texture fachadaCanteraTexture;	//cantera, no se pinta
+Texture fachadaPortalTexture;	//ya viene pintada
 //jardineras del atrio y del Zocalo
-Texture canteraTexture;			//cantera verde en bloques de las orillas, la imagen cubre 2 m
-Texture tierraTexture;			//tierra roja de adentro, la imagen cubre 2 m
-//tiene canal alfa y se dibuja al final con transparencia
-Texture telonTexture;		//calle que sigue, al final de cada calle que cruza
+Texture canteraTexture;			//la imagen cubre 2 m
+Texture tierraTexture;			//la imagen cubre 2 m
+//canal alfa, se dibuja al final con transparencia
+Texture telonTexture;
+Texture papelPicadoTexture;
+Texture maderaTexture;		//tablones, para las estanterias de macetas
 
-//modelos, sus archivos van en la carpeta Models y sus texturas en Textures
-Model farolaBrazo;		//farola con el farol colgado de un brazo, para el andador
-Model farolaGlobos;		//farola de dos globos, para el Zocalo
-Model santoDomingo;		//templo, torres y ex convento, con la fachada hacia Z positivo
-Model sangreDeCristo;	//templo con su plataforma y escalones, con la fachada hacia Z positivo
-Model kiosco;			//kiosco del Zocalo con su base de cantera, centrado en el origen
-Model fuenteZocalo;		//fuente redonda con el agua y la escultura, centrada en el origen
-Model agave;			//un agave de 1.5 m de ancho, se repite en filas en las jardineras del atrio
+//archivos en Models/, texturas en Textures/
+Model farolaBrazo;
+Model farolaGlobos;
+Model santoDomingo;		//fachada hacia Z positivo
+Model sangreDeCristo;	//fachada hacia Z positivo
+Model kiosco;			//centrado en el origen
+Model fuenteZocalo;		//centrada en el origen
+Model agave;			//1.5 m de ancho
+Model flamboyan;		//7 m, hojas en planos con transparencia
+Model palmera;			//8.7 m, pencas en planos con transparencia
+//de 7 y 5.5 m, se van turnando
+Model arbolZocalo1;
+Model arbolZocalo2;
+//los ligeros de 8 y 7.5 m, la jacaranda de 9 m
+Model arbolLigero1;
+Model arbolLigero2;
+Model jacaranda;
+Model cacaloxochitl;	//4 m
+//se van turnando en las estanterias de las fachadas
+const int numModelosMaceta = 6;
+Model macetas[numModelosMaceta];
+//flores sin maceta para las jardineras, miden de 36 a 45 cm
+const int numModelosFlor = 6;
+Model flores[numModelosFlor];
+Model banca;			//1.8 m, respaldo hacia Z negativo
+Model carritoElotes;	//letrero hacia Z positivo
+Model bugambilia;		//3.7 m
+Model bugambiliaMuro;	//el muro va en Z cero
+//puestos y lo que se vende en ellos
+Model mesaToldo;
+Model tendedero;		//de frente hacia Z positivo
+Model canasta;
+Model petate;			//1.2 por 1.6 m
+Model cazuela;
+Model olla;
+Model taza;
+Model panMuerto;
+Model alebrijeCoyote;
+Model alebrijePajaro;
+Model alebrijePerrito;
 
-//un cielo para la tarde y otro para la noche, se dibuja uno u otro segun la tecla N
+//uno para la tarde y otro para la noche, segun la tecla N
 Skybox skyboxTarde;
 Skybox skyboxNoche;
 
@@ -78,23 +112,22 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
-//luz direccional que hace de sol, hay una de tarde y otra de noche y al shader se manda solo una segun la tecla N
+//sol de tarde y sol de noche, se manda uno segun la tecla N
 DirectionalLight luzTarde;
 DirectionalLight luzNoche;
-//arreglos de luces, el maximo de cada una esta en CommonValues.h
+//maximo en CommonValues.h
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
 
-//shaders que usan todos los objetos menos el skybox, que carga los suyos en Skybox.cpp
+//el skybox carga los suyos
 static const char* vShader = "shaders/shader_light.vert";
 static const char* fShader = "shaders/shader_light.frag";
 
 
 // ================== 2. GEOMETRIA HECHA A MANO ==================
 
-//agrega a una malla un rectangulo acostado que va de (x0, z0) a (x1, z1) a la altura y, con la normal hacia arriba
-//u y v salen de dividir x y z entre los metros que cubre la imagen, asi la textura queda pegada al mundo
-//y dos pedazos vecinos siempre coinciden
+//rectangulo acostado de (x0, z0) a (x1, z1) a la altura y, normal hacia arriba
+//u y v son x y z entre los metros de la imagen, asi los pedazos vecinos coinciden
 void AgregarRectanguloPiso(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 	float x0, float z0, float x1, float z1, float y, float metrosImagen)
 {
@@ -107,8 +140,8 @@ void AgregarRectanguloPiso(std::vector<GLfloat>& vertices, std::vector<unsigned 
 	indices.insert(indices.end(), { primero, primero + 2, primero + 1, primero + 1, primero + 2, primero + 3 });
 }
 
-//agrega un rectangulo parado que va del punto (xa, za) al (xb, zb) y de la altura y0 a la y1
-//nx y nz es la direccion hacia donde ve la cara, que debe ser hacia afuera del objeto
+//rectangulo parado de (xa, za) a (xb, zb), de y0 a y1
+//nx y nz apuntan hacia afuera del objeto
 void AgregarRectanguloPared(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 	float xa, float za, float xb, float zb, float y0, float y1, float nx, float nz, float metrosImagen)
 {
@@ -124,7 +157,7 @@ void AgregarRectanguloPared(std::vector<GLfloat>& vertices, std::vector<unsigned
 	indices.insert(indices.end(), { primero, primero + 1, primero + 2, primero + 2, primero + 3, primero });
 }
 
-//bloque bajo con su tapa y sus cuatro lados, sirve para las banquetas y las plazas que estan un poco arriba de la calle
+//bloque bajo con tapa y cuatro lados, para banquetas y plazas
 void AgregarPlataforma(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 	float x0, float z0, float x1, float z1, float alto, float metrosImagen)
 {
@@ -135,7 +168,7 @@ void AgregarPlataforma(std::vector<GLfloat>& vertices, std::vector<unsigned int>
 	AgregarRectanguloPared(vertices, indices, x1, z1, x1, z0, 0.0f, alto, 1.0f, 0.0f, metrosImagen);	//lado oriente
 }
 
-//copia los vertices a la GPU como una malla nueva y la mete al final de meshListModel
+//copia los vertices a la GPU y la mete a meshListModel
 void GuardarMalla(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices)
 {
 	MeshModel* malla = new MeshModel();
@@ -143,7 +176,7 @@ void GuardarMalla(std::vector<GLfloat>& vertices, std::vector<unsigned int>& ind
 	meshListModel.push_back(malla);
 }
 
-//cada malla que se crea aqui se mete a meshListModel y luego se dibuja con su indice
+//las mallas se dibujan por su indice en meshListModel
 void CreateObjects()
 {
 	unsigned int floorIndices[] = {
@@ -151,8 +184,7 @@ void CreateObjects()
 		1, 2, 3
 	};
 
-	//piso lejano de 1000 por 1000 metros, un poco abajo de las calles
-	//llena todo lo que queda fuera de la ciudad, asi desde arriba nunca se ve la orilla del mundo
+	//piso lejano de 1000 por 1000 m, llena lo que queda fuera de la ciudad
 	GLfloat floorVertices[] = {
 		//	x      y      z			u	  v			nx	  ny    nz
 		-470.0f, -0.05f, -540.0f,	0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
@@ -161,7 +193,7 @@ void CreateObjects()
 		530.0f, -0.05f, 460.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f
 	};
 
-	//dos planos cruzados para plantas o cosas con transparencia
+	//dos planos cruzados para plantas
 	unsigned int vegetacionIndices[] = {
 	   0, 1, 2,
 	   0, 2, 3,
@@ -169,7 +201,7 @@ void CreateObjects()
 	   4, 6, 7
 	};
 
-	//mismas normales que el piso para que se ilumine igual de los dos lados
+	//normales como el piso
 	GLfloat vegetacionVertices[] = {
 		-0.5f, -0.5f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
 		0.5f, -0.5f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f,
@@ -182,7 +214,6 @@ void CreateObjects()
 		0.0f, 0.5f, -0.5f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
 	};
 
-	//CreateMeshModel recibe los vertices, los indices, cuantos floats tiene el arreglo y cuantos indices son
 	MeshModel* piso = new MeshModel();
 	piso->CreateMeshModel(floorVertices, floorIndices, 32, 6);
 	meshListModel.push_back(piso); //meshListModel[0]
@@ -201,10 +232,10 @@ void CreateShaders()
 }
 
 
-//cubo de lado 1 centrado en el origen, con la imagen completa en cada cara
+//cubo de lado 1 centrado en el origen
 void CrearCubo()
 {
-	//cada normal apunta hacia afuera de su cara, igual que en Blender
+	//normales hacia afuera, como en Blender
 	unsigned int cubo_indices[] = {
 		// front
 		0, 1, 2,
@@ -240,7 +271,7 @@ void CrearCubo()
 		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  1.0f,  0.0f,  0.0f,
 		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  1.0f,  0.0f,  0.0f,
 
-		// back, la S va al reves para que la imagen no salga en espejo
+		// back, la S va al reves para que no salga en espejo
 		-0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  0.0f,  0.0f, -1.0f,
 		 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
 		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  0.0f,  0.0f, -1.0f,
@@ -271,9 +302,7 @@ void CrearCubo()
 }
 
 
-//rectangulo parado de 1 por 1 con la base en el origen y la cara hacia Z positivo
-//sirve para las fachadas, los telones y todo lo que es una imagen pegada en un plano
-//se crea despues de los pisos de la ciudad, por eso queda en meshListModel[7]
+//plano de 1 por 1, base en el origen, cara hacia Z positivo
 void CrearPlano()
 {
 	unsigned int planoIndices[] = {
@@ -293,10 +322,10 @@ void CrearPlano()
 
 
 // ================== 3. TRAZADO DE LA ESCENA ==================
-//1 unidad es 1 metro, el norte esta hacia Z negativo y el sur hacia Z positivo
-//el andador va de norte a sur sobre x = 0, la calle mide 8 m, de -4 a 4, y cada banqueta 2 m
+//1 unidad es 1 metro, norte hacia Z negativo, sur hacia Z positivo
+//andador de norte a sur sobre x cero, calle de 8 m (de -4 a 4), banquetas de 2 m
 
-//un rectangulo en el piso, de la esquina noroeste (x0, z0) a la sureste (x1, z1)
+//rectangulo en el piso, de la esquina noroeste a la sureste
 struct Rectangulo
 {
 	float x0, z0, x1, z1;
@@ -304,12 +333,12 @@ struct Rectangulo
 
 const float altoBanqueta = 0.15f;
 
-//manzanas, en cada una va una banqueta de 15 cm y las casas empiezan 2 m adentro de la orilla
+//banqueta de 15 cm, casas 2 m adentro de la orilla
 const int numManzanas = 12;
 const Rectangulo manzanas[numManzanas] = {
-	{ -56.0f, -204.0f, 110.0f, -188.0f },	//fila al norte de Gurrion
-	{ 56.0f, -180.0f, 110.0f, -108.0f },	//templo y ex convento de Santo Domingo
-	{ -56.0f, -180.0f, -4.0f, -84.0f },		//poniente del atrio y del primer tramo, con la Sangre de Cristo
+	{ -56.0f, -204.0f, 110.0f, -188.0f },	//al norte de Gurrion
+	{ 56.0f, -180.0f, 110.0f, -108.0f },	//Santo Domingo
+	{ -56.0f, -180.0f, -4.0f, -84.0f },		//poniente del atrio, con la Sangre de Cristo
 	{ -56.0f, -76.0f, -4.0f, -24.0f },		//poniente del segundo tramo
 	{ -56.0f, -16.0f, -4.0f, 32.0f },		//poniente del tercer tramo
 	{ 4.0f, -108.0f, 70.0f, -84.0f },		//oriente del primer tramo
@@ -321,15 +350,15 @@ const Rectangulo manzanas[numManzanas] = {
 	{ -56.0f, 112.0f, 70.0f, 128.0f }		//portales del sur del Zocalo
 };
 
-//plazas con losas grandes, tambien 15 cm arriba de la calle
+//tambien 15 cm arriba de la calle
 const int numPlazas = 3;
 const Rectangulo plazas[numPlazas] = {
-	{ 4.0f, -180.0f, 56.0f, -108.0f },		//atrio de Santo Domingo, tan largo como el frente del templo
+	{ 4.0f, -180.0f, 56.0f, -108.0f },		//atrio de Santo Domingo
 	{ 4.0f, -76.0f, 40.0f, -46.0f },		//jardin Labastida
 	{ -35.0f, 42.0f, 35.0f, 112.0f }		//Zocalo
 };
 
-//tramos del andador entre las calles que cruzan, en los cruces se ve el empedrado de la calle
+//en los cruces se ve el empedrado de la calle
 const int numTramos = 3;
 const Rectangulo tramosAndador[numTramos] = {
 	{ -4.0f, -180.0f, 4.0f, -84.0f },		//de Gurrion a Abasolo
@@ -337,31 +366,33 @@ const Rectangulo tramosAndador[numTramos] = {
 	{ -4.0f, -16.0f, 4.0f, 32.0f }			//de Morelos a Independencia
 };
 
-//las dos primeras jardineras son las del atrio, con agaves, y quedan a los lados del paso que va a la puerta de Santo Domingo
-//las otras cuatro son las del Zocalo en las esquinas alrededor del kiosco, dejan libres los pasillos hacia el kiosco
-const int numJardineras = 6;
+//las dos primeras son del atrio, con agaves, a los lados del paso a la puerta
+//las cuatro que siguen son del Zocalo, alrededor del kiosco, dejando libres los pasillos
+//la de los flamboyanes va junto a Gurrion y los macetones de las palmeras al final
+const int numJardineras = 10;
 const int numJardinerasAtrio = 2;
 const Rectangulo jardineras[numJardineras] = {
 	{ 20.0f, -166.5f, 46.0f, -146.5f }, { 20.0f, -132.5f, 46.0f, -112.5f },
 	{ -29.0f, 49.0f, -11.0f, 63.0f }, { 11.0f, 49.0f, 29.0f, 63.0f },
-	{ -29.0f, 91.0f, -11.0f, 105.0f }, { 11.0f, 91.0f, 29.0f, 105.0f }
+	{ -29.0f, 91.0f, -11.0f, 105.0f }, { 11.0f, 91.0f, 29.0f, 105.0f },
+	{ 7.0f, -178.5f, 49.0f, -175.0f },
+	{ 8.8f, -111.2f, 11.2f, -108.8f }, { 24.8f, -111.2f, 27.2f, -108.8f }, { 40.8f, -111.2f, 43.2f, -108.8f }
 };
 const float altoJardinera = 0.6f;	//lo que sobresalen del piso de la plaza
 const float orillaJardinera = 0.5f;	//ancho del borde de cantera que rodea la tierra
 
-//arma las mallas de las calles, el andador, las banquetas y las plazas con los rectangulos de arriba
+//mallas de calles, andador, banquetas y plazas
 void CrearEscenario()
 {
 	std::vector<GLfloat> vertices;
 	std::vector<unsigned int> indices;
 
-	//todo el piso de la ciudad es empedrado, la imagen cubre 2 m
-	//el segundo rectangulo es el pedazo que queda detras de Santo Domingo
+	//empedrado de 2 m, el segundo rectangulo queda detras de Santo Domingo
 	AgregarRectanguloPiso(vertices, indices, -58.0f, -206.0f, 72.0f, 130.0f, 0.0f, 2.0f);
 	AgregarRectanguloPiso(vertices, indices, 72.0f, -206.0f, 112.0f, -106.0f, 0.0f, 2.0f);
 	GuardarMalla(vertices, indices); //meshListModel[3]
 
-	//el andador va 1 cm arriba del empedrado para que no parpadeen al estar a la misma altura
+	//1 cm arriba del empedrado para que no parpadee
 	vertices.clear();
 	indices.clear();
 	for (int i = 0; i < numTramos; i++)
@@ -378,7 +409,7 @@ void CrearEscenario()
 	}
 	GuardarMalla(vertices, indices); //meshListModel[5]
 
-	//en las plazas la imagen cubre 4 m porque las losas son mas grandes
+	//la imagen cubre 4 m, las losas son mas grandes
 	vertices.clear();
 	indices.clear();
 	for (int i = 0; i < numPlazas; i++)
@@ -388,10 +419,9 @@ void CrearEscenario()
 	GuardarMalla(vertices, indices); //meshListModel[6]
 }
 
-//jardineras, una malla con los bloques de cantera y otra con la tierra de encima
-//los lados del bloque empiezan en 0, pero lo que queda abajo de la plaza no se ve
-//la tierra va 1 cm arriba de la cantera para que no parpadeen
-//se crean despues del plano, por eso quedan en meshListModel[8] y [9]
+//una malla con la cantera y otra con la tierra
+//la tierra va 1 cm arriba para que no parpadee
+//meshListModel[8] y [9]
 void CrearJardineras()
 {
 	std::vector<GLfloat> vertices;
@@ -413,9 +443,43 @@ void CrearJardineras()
 	GuardarMalla(vertices, indices); //meshListModel[9]
 }
 
+//tira de papel picado de x -6 a 6, cara hacia Z positivo
+//el cordel baja en medio como una parabola, por eso se arma en tramos
+//cada banderita mide 50 cm, la imagen de ocho se repite tres veces
+const float anchoTira = 12.0f;
+const float caidaTira = 0.6f;		//cuanto baja el cordel en medio
+const float altoTira = 0.43f;		//alto de las banderitas, con la orilla transparente arriba
+const int tramosTira = 12;
+void CrearTiraPapelPicado()
+{
+	std::vector<GLfloat> vertices;
+	std::vector<unsigned int> indices;
+	for (int i = 0; i <= tramosTira; i++)
+	{
+		float x = -anchoTira / 2.0f + anchoTira * i / tramosTira;
+		//la caida es 0 en las orillas y caidaTira en medio
+		float mitad = anchoTira / 2.0f;
+		float yCordel = -caidaTira * (1.0f - (x / mitad) * (x / mitad));
+		float u = 3.0f * i / tramosTira;
+		vertices.insert(vertices.end(), {
+			x, yCordel - altoTira, 0.0f,	u, 0.0f,	0.0f, 0.0f, 1.0f,
+			x, yCordel, 0.0f,				u, 1.0f,	0.0f, 0.0f, 1.0f });
+	}
+	//une cada corte con el siguiente
+	for (int i = 0; i < tramosTira; i++)
+	{
+		unsigned int abajo = i * 2;
+		unsigned int arriba = i * 2 + 1;
+		unsigned int abajoSig = i * 2 + 2;
+		unsigned int arribaSig = i * 2 + 3;
+		indices.insert(indices.end(), { abajo, abajoSig, arribaSig, arribaSig, arriba, abajo });
+	}
+	GuardarMalla(vertices, indices); //meshListModel[10]
+}
 
-//dibuja el cubo como un bloque de color, donde posicion es el centro de su base y tamano es el ancho, alto y fondo en metros
-//se sube la mitad de su alto para que quede apoyado sobre el piso
+
+//dibuja el cubo como bloque de color, posicion es el centro de la base
+//se sube la mitad del alto para apoyarlo en el piso
 void DibujarBloque(glm::vec3 posicion, glm::vec3 tamano, glm::vec3 color, GLuint uniformModel, GLuint uniformColor)
 {
 	glm::mat4 model(1.0);
@@ -426,8 +490,8 @@ void DibujarBloque(glm::vec3 posicion, glm::vec3 tamano, glm::vec3 color, GLuint
 	meshListModel[2]->RenderMeshModel();
 }
 
-//dibuja un plano parado, posicion es el centro de su orilla de abajo y giro son los grados sobre Y
-//con giro 0 la imagen ve hacia Z positivo, con 90 hacia X positivo, con -90 hacia X negativo y con 180 hacia Z negativo
+//plano parado, posicion es el centro de su orilla de abajo
+//giro 0 ve hacia Z positivo, 90 hacia X positivo, 180 hacia Z negativo
 void DibujarPlano(glm::vec3 posicion, float giro, float ancho, float alto, glm::vec3 color, GLuint uniformModel, GLuint uniformColor)
 {
 	glm::mat4 model(1.0);
@@ -439,14 +503,25 @@ void DibujarPlano(glm::vec3 posicion, float giro, float ancho, float alto, glm::
 	meshListModel[7]->RenderMeshModel();
 }
 
+//modelo de Assimp con el centro de su base en posicion
+void DibujarModelo(Model& modelo, glm::vec3 posicion, float giro, float escala, GLuint uniformModel)
+{
+	glm::mat4 model(1.0);
+	model = glm::translate(model, posicion);
+	model = glm::rotate(model, giro * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(escala, escala, escala));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	modelo.RenderModel();
+}
 
-//filas de casas, cada casa es un cubo de color con su fachada en un plano 2 cm enfrente
-//las medidas y los colores se van turnando para que no haya dos casas seguidas iguales
+
+//cada casa es un cubo de color, la fachada va en un plano 2 cm enfrente
+//medidas y colores se van turnando
 const int numModelosCasa = 7;
 const float anchosCasa[numModelosCasa] = { 8.0f, 6.5f, 10.0f, 7.0f, 9.0f, 6.0f, 11.0f };
 const float altosCasa[numModelosCasa] = { 6.0f, 7.5f, 5.5f, 8.0f, 6.5f, 7.2f, 5.8f };
 const int numColoresCasa = 8;
-//colores de fachadas como los del centro de Oaxaca, la textura clara de la fachada se pinta con ellos
+//colores de fachadas del centro de Oaxaca
 const glm::vec3 coloresCasa[numColoresCasa] = {
 	glm::vec3(0.95f, 0.78f, 0.35f), glm::vec3(0.80f, 0.32f, 0.28f), glm::vec3(0.38f, 0.56f, 0.88f),
 	glm::vec3(0.93f, 0.64f, 0.68f), glm::vec3(0.96f, 0.94f, 0.88f), glm::vec3(0.88f, 0.58f, 0.30f),
@@ -454,14 +529,13 @@ const glm::vec3 coloresCasa[numColoresCasa] = {
 };
 
 //estilos de las filas
-const int estiloColores = 0;	//casas de uno o dos pisos pintadas de colores
-const int estiloCantera = 1;	//edificios de cantera de dos pisos, como los del tercer tramo
-const int estiloPortal = 2;		//portales del Zocalo, todos del mismo ancho y alto
+const int estiloColores = 0;	//pintadas de colores
+const int estiloCantera = 1;	//edificios de cantera de dos pisos
+const int estiloPortal = 2;		//todos del mismo ancho y alto
 
-//inicio es la esquina donde empieza la fila al pie de la fachada, y giro es hacia donde ven las fachadas
-//con giro 0 ven hacia Z positivo, con 90 hacia X positivo, con -90 hacia X negativo y con 180 hacia Z negativo
-//la fila avanza hacia la derecha de quien ve las fachadas de frente, largo y fondo van en metros
-//primera escoge con que medida y color empieza, asi cada fila se ve distinta
+//inicio es la esquina donde empieza la fila
+//la fila avanza a la derecha de quien ve las fachadas, largo y fondo en metros
+//primera elige con que medida y color empieza
 void DibujarFilaCasas(glm::vec3 inicio, float giro, float largo, float fondo, int estilo, int primera,
 	GLuint uniformModel, GLuint uniformColor)
 {
@@ -489,14 +563,14 @@ void DibujarFilaCasas(glm::vec3 inicio, float giro, float largo, float fondo, in
 			colorCuerpo = glm::vec3(0.90f, 0.80f, 0.60f);
 			colorFachada = glm::vec3(1.0f, 1.0f, 1.0f);
 		}
-		//la ultima casa se recorta para no pasarse del largo de la fila
+		//la ultima casa se recorta al largo de la fila
 		if (avance + ancho > largo)
 		{
 			ancho = largo - avance;
 		}
 		glm::vec3 centroFrente = inicio + aLoLargo * (avance + ancho / 2.0f);
 
-		//cuerpo de la casa, que va del frente hacia atras
+		//cuerpo de la casa, del frente hacia atras
 		glm::mat4 model(1.0);
 		model = glm::translate(model, centroFrente - haciaLaCalle * (fondo / 2.0f) + glm::vec3(0.0f, alto / 2.0f, 0.0f));
 		model = glm::rotate(model, giro * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -513,7 +587,7 @@ void DibujarFilaCasas(glm::vec3 inicio, float giro, float largo, float fondo, in
 				glm::vec3(1.0f, 1.3f, 1.0f), glm::vec3(0.12f, 0.12f, 0.13f), uniformModel, uniformColor);
 		}
 
-		//fachada, las casas altas son de dos pisos
+		//las casas altas son de dos pisos
 		if (estilo == estiloCantera)
 		{
 			fachadaCanteraTexture.UseTexture();
@@ -532,8 +606,8 @@ void DibujarFilaCasas(glm::vec3 inicio, float giro, float largo, float fondo, in
 		}
 		DibujarPlano(centroFrente + haciaLaCalle * 0.02f, giro, ancho, alto, colorFachada, uniformModel, uniformColor);
 
-		//la primera y la ultima casa de la fila quedan en esquina, asi que tambien llevan fachada en el costado que da a la otra calle
-		//en los portales no se pone porque sus costados son muy largos y los arcos se verian estirados
+		//la primera y la ultima casa llevan fachada en el costado de la esquina
+		//en los portales no, los arcos se verian estirados
 		glm::vec3 centroCostado = centroFrente - haciaLaCalle * (fondo / 2.0f);
 		if (avance == 0.0f && estilo != estiloPortal)
 		{
@@ -553,7 +627,7 @@ void DibujarFilaCasas(glm::vec3 inicio, float giro, float largo, float fondo, in
 void DibujarCasas(GLuint uniformModel, GLuint uniformColor)
 {
 	//poniente del andador, las fachadas ven hacia X positivo
-	//la primera fila empieza junto al costado norte de la Sangre de Cristo
+	//la primera fila empieza junto a la Sangre de Cristo
 	DibujarFilaCasas(glm::vec3(-6.0f, 0.0f, -101.0f), 90.0f, 77.0f, 12.0f, estiloColores, 0, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(-6.0f, 0.0f, -26.0f), 90.0f, 48.0f, 12.0f, estiloColores, 2, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(-6.0f, 0.0f, 30.0f), 90.0f, 44.0f, 12.0f, estiloCantera, 1, uniformModel, uniformColor);
@@ -564,15 +638,15 @@ void DibujarCasas(GLuint uniformModel, GLuint uniformColor)
 
 	//calles que cruzan, del lado poniente
 	DibujarFilaCasas(glm::vec3(-18.0f, 0.0f, -178.0f), 180.0f, 36.0f, 12.0f, estiloColores, 5, uniformModel, uniformColor);
-	//esta llega hasta la parte de atras de la Sangre de Cristo, en x = -27
+	//llega hasta la parte de atras de la Sangre de Cristo, en x -27
 	DibujarFilaCasas(glm::vec3(-54.0f, 0.0f, -86.0f), 0.0f, 27.0f, 12.0f, estiloColores, 3, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(-18.0f, 0.0f, -74.0f), 180.0f, 36.0f, 12.0f, estiloColores, 4, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(-54.0f, 0.0f, -26.0f), 0.0f, 36.0f, 12.0f, estiloColores, 6, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(-18.0f, 0.0f, -14.0f), 180.0f, 36.0f, 12.0f, estiloColores, 3, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(-54.0f, 0.0f, 30.0f), 0.0f, 36.0f, 12.0f, estiloCantera, 0, uniformModel, uniformColor);
 
-	//calles que cruzan, del lado oriente, y las casas que ven al atrio y al jardin Labastida
-	//la manzana entre el atrio y Manuel Bravo es angosta, por eso las casas que ven al atrio y las de Manuel Bravo tienen menos fondo
+	//calles que cruzan del lado oriente, y las que ven al atrio y al jardin Labastida
+	//la manzana entre el atrio y Manuel Bravo es angosta, por eso tienen menos fondo
 	DibujarFilaCasas(glm::vec3(56.0f, 0.0f, -106.0f), 180.0f, 38.0f, 9.0f, estiloColores, 1, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(18.0f, 0.0f, -86.0f), 0.0f, 50.0f, 11.0f, estiloColores, 6, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(42.0f, 0.0f, -74.0f), -90.0f, 28.0f, 12.0f, estiloColores, 2, uniformModel, uniformColor);
@@ -582,17 +656,17 @@ void DibujarCasas(GLuint uniformModel, GLuint uniformColor)
 	DibujarFilaCasas(glm::vec3(68.0f, 0.0f, -14.0f), 180.0f, 50.0f, 12.0f, estiloColores, 6, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(18.0f, 0.0f, 30.0f), 0.0f, 50.0f, 12.0f, estiloCantera, 4, uniformModel, uniformColor);
 
-	//fila al norte de Gurrion, cierra la vista al norte
+	//cierra la vista al norte
 	DibujarFilaCasas(glm::vec3(-54.0f, 0.0f, -190.0f), 0.0f, 162.0f, 12.0f, estiloColores, 0, uniformModel, uniformColor);
 
-	//portales del Zocalo en el poniente, el oriente y el sur
+	//portales del Zocalo al poniente, oriente y sur
 	DibujarFilaCasas(glm::vec3(-35.0f, 0.0f, 112.0f), 90.0f, 70.0f, 20.0f, estiloPortal, 0, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(35.0f, 0.0f, 42.0f), -90.0f, 70.0f, 35.0f, estiloPortal, 0, uniformModel, uniformColor);
 	DibujarFilaCasas(glm::vec3(70.0f, 0.0f, 112.0f), 180.0f, 126.0f, 16.0f, estiloPortal, 0, uniformModel, uniformColor);
 
-	//relleno del centro de cada manzana, mas bajo que las casas, para que desde arriba no se vea hueco
-	//queda 6 m adentro de la orilla, asi sus lados quedan escondidos dentro de las casas
-	//las dos primeras manzanas no llevan relleno porque una es la fila del norte y la otra es Santo Domingo
+	//relleno del centro de cada manzana, mas bajo que las casas
+	//queda 6 m adentro de la orilla, escondido dentro de las casas
+	//las dos primeras no llevan relleno
 	plainTexture.UseTexture();
 	for (int i = 2; i < numManzanas; i++)
 	{
@@ -605,15 +679,12 @@ void DibujarCasas(GLuint uniformModel, GLuint uniformColor)
 
 
 // ================== 4. PERSONAJE JERARQUICO ==================
-//cada parte se dibuja a partir de la matriz de su padre, del cuerpo salen la cabeza, los brazos y las piernas
-//y del brazo sale el antebrazo, asi al girar el hombro tambien se mueve el antebrazo
+//cada parte se dibuja desde la matriz de su padre, asi al girar el hombro se mueve el antebrazo
 
 //angulos de las articulaciones, en grados
-//el hombro gira hacia adelante sobre X, donde un angulo negativo sube el brazo al frente,
-//y hacia el lado sobre Z, donde uno positivo mueve la mano hacia X positivo
-//codos, caderas y rodillas giran sobre X, con un angulo negativo el codo dobla hacia el frente
-//y con uno positivo la rodilla dobla hacia atras
-//la cabeza gira sobre Y para voltear
+//el hombro gira sobre X, con negativo sube el brazo al frente
+//y sobre Z, con positivo mueve la mano hacia X positivo
+//codos, caderas y rodillas giran sobre X, con negativo el codo dobla al frente y con positivo la rodilla hacia atras
 struct PosePersona
 {
 	float hombroIzqAdelante, hombroIzqLado, codoIzq;
@@ -623,23 +694,22 @@ struct PosePersona
 	float cabeza;
 };
 
-//pose del muneco, empieza parado con todos los angulos en 0
-//los valores van en el mismo orden que en PosePersona, primero el brazo izquierdo, luego el derecho, despues las piernas y al final la cabeza
+//pose del muneco, parado con todos los angulos en 0
 PosePersona poseMuneco = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 
 //medidas del esqueleto en metros
 const float alturaCadera = 0.92f;							//del piso al origen del cuerpo
 const glm::vec3 posHombro = glm::vec3(0.2f, 0.47f, 0.0f);	//hombro izquierdo, el derecho usa la misma posicion con x negativa
 const glm::vec3 posCuello = glm::vec3(0.0f, 0.55f, 0.0f);
-const glm::vec3 posCadera = glm::vec3(0.095f, -0.02f, 0.0f);	//cadera izquierda
+const glm::vec3 posCadera = glm::vec3(0.095f, -0.02f, 0.0f);
 const float largoBrazo = 0.28f;		//del hombro al codo
 const float largoAntebrazo = 0.29f;	//del codo a la mano
 const float largoMuslo = 0.44f;		//de la cadera a la rodilla
 const float largoPierna = 0.46f;	//de la rodilla a la planta del pie
 
 //dibuja una parte del muneco con el cubo
-//articulacion es la matriz del punto donde gira la parte y centro es donde queda el centro del cubo respecto a ese punto
-//la escala solo se aplica a esta copia de la matriz, asi no deforma a las partes hijas
+//articulacion es el punto donde gira, centro es el centro del cubo desde ahi
+//la escala solo va en esta copia, para no deformar a las partes hijas
 void DibujarParte(glm::mat4 articulacion, glm::vec3 centro, glm::vec3 tamano, glm::vec3 color, GLuint uniformModel, GLuint uniformColor)
 {
 	glm::mat4 model = glm::translate(articulacion, centro);
@@ -649,9 +719,73 @@ void DibujarParte(glm::mat4 articulacion, glm::vec3 centro, glm::vec3 tamano, gl
 	meshListModel[2]->RenderMeshModel();
 }
 
-//dibuja un brazo o una pierna de dos partes, la primera gira en la articulacion
-//y la segunda cuelga de ella y se dobla en el codo o la rodilla
-//las dos partes cuelgan hacia Y negativo desde su articulacion
+//estanteria de madera de dos escalones pegada a una fachada, con tres macetas en cada escalon
+//posicion es el centro de su orilla de atras, junto al muro, y con giro 0 el frente ve hacia Z positivo
+//primera es el modelo de maceta con el que empieza, para que no todas las estanterias sean iguales
+void DibujarEstanteMacetas(glm::vec3 posicion, float giro, int primera, GLuint uniformModel, GLuint uniformColor)
+{
+	glm::mat4 estante(1.0);
+	estante = glm::translate(estante, posicion);
+	estante = glm::rotate(estante, giro * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::vec3 blanco = glm::vec3(1.0f, 1.0f, 1.0f);
+
+	//el escalon de enfrente es el bajo y el de atras el alto, asi las macetas de atras se asoman
+	maderaTexture.UseTexture();
+	DibujarParte(estante, glm::vec3(0.0f, 0.38f, 0.45f), glm::vec3(1.6f, 0.04f, 0.3f), blanco, uniformModel, uniformColor);
+	DibujarParte(estante, glm::vec3(0.0f, 0.83f, 0.15f), glm::vec3(1.6f, 0.04f, 0.3f), blanco, uniformModel, uniformColor);
+	for (int lado = -1; lado <= 1; lado += 2)
+	{
+		DibujarParte(estante, glm::vec3(lado * 0.77f, 0.2f, 0.57f), glm::vec3(0.06f, 0.4f, 0.06f), blanco, uniformModel, uniformColor);
+		DibujarParte(estante, glm::vec3(lado * 0.77f, 0.425f, 0.03f), glm::vec3(0.06f, 0.85f, 0.06f), blanco, uniformModel, uniformColor);
+		DibujarParte(estante, glm::vec3(lado * 0.77f, 0.3f, 0.3f), glm::vec3(0.04f, 0.04f, 0.54f), blanco, uniformModel, uniformColor);
+	}
+
+	for (int i = 0; i < 6; i++)
+	{
+		float x = (i % 3 - 1) * 0.5f;
+		float y = 0.4f;
+		float z = 0.45f;
+		if (i >= 3)
+		{
+			y = 0.85f;
+			z = 0.15f;
+		}
+		glm::mat4 model = glm::translate(estante, glm::vec3(x, y, z));
+		model = glm::rotate(model, (i * 75.0f) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		macetas[(primera + i) % numModelosMaceta].RenderModel();
+	}
+}
+
+//llena una jardinera con flores sueltas cada tantos metros, sin pegarlas a la orilla ni a los arboles
+//guarda las posiciones en flores a partir de cuantas y regresa cuantas hay ahora
+int LlenarJardinera(Rectangulo r, float paso, glm::vec3 arboles[], int numArboles, glm::vec3 flores[], int cuantas, int maximo)
+{
+	float y = altoBanqueta + altoJardinera + 0.01f;
+	for (float x = r.x0 + orillaJardinera + 0.6f; x < r.x1 - orillaJardinera - 0.3f; x += paso)
+	{
+		for (float z = r.z0 + orillaJardinera + 0.6f; z < r.z1 - orillaJardinera - 0.3f; z += paso)
+		{
+			bool cercaDeArbol = false;
+			for (int i = 0; i < numArboles; i++)
+			{
+				if (glm::distance(glm::vec2(x, z), glm::vec2(arboles[i].x, arboles[i].z)) < 1.5f)
+				{
+					cercaDeArbol = true;
+				}
+			}
+			if (!cercaDeArbol && cuantas < maximo)
+			{
+				flores[cuantas] = glm::vec3(x, y, z);
+				cuantas++;
+			}
+		}
+	}
+	return cuantas;
+}
+
+//brazo o pierna de dos partes, la segunda se dobla en el codo o la rodilla
+//las partes cuelgan hacia Y negativo
 void DibujarExtremidad(glm::mat4 padre, glm::vec3 articulacion, float adelante, float lado,
 	float largo1, float grosor1, glm::vec3 color1, float doblez, float largo2, float grosor2, glm::vec3 color2,
 	GLuint uniformModel, GLuint uniformColor)
@@ -661,39 +795,38 @@ void DibujarExtremidad(glm::mat4 padre, glm::vec3 articulacion, float adelante, 
 	model = glm::rotate(model, lado * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 	DibujarParte(model, glm::vec3(0.0f, -largo1 / 2.0f, 0.0f), glm::vec3(grosor1, largo1, grosor1), color1, uniformModel, uniformColor);
 
-	//el codo o la rodilla esta al final de la primera parte
+	//codo o rodilla, al final de la primera parte
 	model = glm::translate(model, glm::vec3(0.0f, -largo1, 0.0f));
 	model = glm::rotate(model, doblez * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 	DibujarParte(model, glm::vec3(0.0f, -largo2 / 2.0f, 0.0f), glm::vec3(grosor2, largo2, grosor2), color2, uniformModel, uniformColor);
 }
 
-//base es la posicion y el giro del muneco sobre el piso, y el muneco mira hacia Z positivo de la base
+//base es la posicion y giro del muneco, mira hacia Z positivo
 void DibujarMuneco(glm::mat4 base, PosePersona pose, GLuint uniformModel, GLuint uniformColor)
 {
 	glm::vec3 colorCamisa = glm::vec3(0.80f, 0.20f, 0.20f);
 	glm::vec3 colorPiel = glm::vec3(0.85f, 0.65f, 0.50f);
 	glm::vec3 colorNariz = glm::vec3(0.60f, 0.40f, 0.30f);
 	glm::vec3 colorPantalon = glm::vec3(0.20f, 0.25f, 0.55f);
-	glm::vec3 colorEspinilla = glm::vec3(0.12f, 0.15f, 0.35f); //mas oscuro que el muslo para distinguir la rodilla
+	glm::vec3 colorEspinilla = glm::vec3(0.12f, 0.15f, 0.35f); //mas oscuro para distinguir la rodilla
 
-	//el cuerpo es la raiz de la jerarquia y su origen esta a la altura de la cadera
+	//raiz de la jerarquia, a la altura de la cadera
 	glm::mat4 cuerpo = glm::translate(base, glm::vec3(0.0f, alturaCadera, 0.0f));
 	DibujarParte(cuerpo, glm::vec3(0.0f, 0.25f, 0.0f), glm::vec3(0.30f, 0.60f, 0.20f), colorCamisa, uniformModel, uniformColor);
 
-	//la cabeza gira en el cuello y la nariz sirve para ver hacia donde mira
+	//la cabeza gira en el cuello, la nariz muestra hacia donde mira
 	glm::mat4 cabeza = glm::translate(cuerpo, posCuello);
 	cabeza = glm::rotate(cabeza, pose.cabeza * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 	DibujarParte(cabeza, glm::vec3(0.0f, 0.18f, 0.0f), glm::vec3(0.22f, 0.26f, 0.24f), colorPiel, uniformModel, uniformColor);
 	DibujarParte(cabeza, glm::vec3(0.0f, 0.16f, 0.13f), glm::vec3(0.05f, 0.05f, 0.05f), colorNariz, uniformModel, uniformColor);
 
-	//brazos que van del hombro al codo y del codo a la mano, el derecho usa la x del hombro en negativo
+	//el brazo derecho usa la x del hombro en negativo
 	glm::vec3 hombroDer = glm::vec3(-posHombro.x, posHombro.y, posHombro.z);
 	DibujarExtremidad(cuerpo, posHombro, pose.hombroIzqAdelante, pose.hombroIzqLado,
 		largoBrazo, 0.09f, colorCamisa, pose.codoIzq, largoAntebrazo, 0.08f, colorPiel, uniformModel, uniformColor);
 	DibujarExtremidad(cuerpo, hombroDer, pose.hombroDerAdelante, pose.hombroDerLado,
 		largoBrazo, 0.09f, colorCamisa, pose.codoDer, largoAntebrazo, 0.08f, colorPiel, uniformModel, uniformColor);
 
-	//piernas que van de la cadera a la rodilla y de la rodilla al pie
 	glm::vec3 caderaDer = glm::vec3(-posCadera.x, posCadera.y, posCadera.z);
 	DibujarExtremidad(cuerpo, posCadera, pose.caderaIzq, 0.0f,
 		largoMuslo, 0.13f, colorPantalon, pose.rodillaIzq, largoPierna, 0.11f, colorEspinilla, uniformModel, uniformColor);
@@ -701,13 +834,13 @@ void DibujarMuneco(glm::mat4 base, PosePersona pose, GLuint uniformModel, GLuint
 		largoMuslo, 0.13f, colorPantalon, pose.rodillaDer, largoPierna, 0.11f, colorEspinilla, uniformModel, uniformColor);
 }
 
-//teclas de prueba que giran las articulaciones del muneco
-//aqui se escribe la pose y el dibujo en el while solo la lee
+//teclas de prueba que giran las articulaciones
+//la pose se escribe aqui, el while solo la dibuja
 void ProbarArticulaciones(bool* keys, GLfloat deltaTime)
 {
-	float paso = 1.5f * deltaTime; //grados que gira en este frame mientras la tecla esta presionada
+	float paso = 1.5f * deltaTime; //grados por frame mientras la tecla esta presionada
 
-	//en hombros y caderas cada lado gira al reves que el otro, como al caminar
+	//en hombros y caderas cada lado gira al reves, como al caminar
 	if (keys[GLFW_KEY_Y])
 	{
 		poseMuneco.hombroIzqAdelante -= paso;
@@ -758,7 +891,7 @@ void ProbarArticulaciones(bool* keys, GLfloat deltaTime)
 		poseMuneco.cabeza -= paso;
 	}
 
-	//limites para que ninguna articulacion se doble hacia donde no puede una persona
+	//limites para que ninguna articulacion se doble de mas
 	poseMuneco.hombroIzqAdelante = glm::clamp(poseMuneco.hombroIzqAdelante, -90.0f, 90.0f);
 	poseMuneco.hombroDerAdelante = glm::clamp(poseMuneco.hombroDerAdelante, -90.0f, 90.0f);
 	poseMuneco.codoIzq = glm::clamp(poseMuneco.codoIzq, -140.0f, 0.0f);
@@ -773,36 +906,37 @@ void ProbarArticulaciones(bool* keys, GLfloat deltaTime)
 
 int main()
 {
-	mainWindow = Window(1366, 768);
+	//el tamano lo toma del monitor en Initialise
+	mainWindow = Window();
 	mainWindow.Initialise();
 	CreateObjects();
 	CrearCubo();
 	CrearEscenario();
 	CrearPlano();
 	CrearJardineras();
+	CrearTiraPapelPicado();
 	CreateShaders();
 
-	//Camera recibe la posicion inicial, el vector up, yaw, pitch, la velocidad de movimiento y la velocidad de giro
-	//con yaw de 90 la camara mira hacia Z positivo, con 0 hacia X positivo y con 180 hacia X negativo
-	//la vista inicial esta sobre el andador frente al atrio, a 10 m de altura, mirando hacia el sur
+	//posicion, up, yaw, pitch, velocidad de movimiento y de giro
+	//yaw 90 mira hacia Z positivo, 0 hacia X positivo
+	//sobre el andador frente al atrio, a 10 m, mirando hacia el sur
 	camera = Camera(glm::vec3(0.0f, 10.0f, -150.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -15.0f, 0.3f, 0.5f);
-	//la de la fachada esta en el atrio y mira hacia el oriente, donde esta Santo Domingo, un poco hacia arriba para ver las torres
-	//velocidades en 0 porque esta camara no se mueve
+	//en el atrio, mira hacia el oriente a Santo Domingo, un poco arriba para ver las torres
+	//velocidades en 0, no se mueve
 	camaraFachada = Camera(glm::vec3(12.0f, 9.0f, -144.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 12.0f, 0.0f, 0.0f);
-	//la del desfile esta en la esquina del atrio junto al andador y mira hacia el sur, un poco cargada hacia la Sangre de Cristo
+	//esquina del atrio, mira hacia el sur y un poco a la Sangre de Cristo
 	camaraDesfile = Camera(glm::vec3(5.0f, 2.6f, -112.0f), glm::vec3(0.0f, 1.0f, 0.0f), 110.0f, -8.0f, 0.0f, 0.0f);
-	//la del Zocalo esta en la esquina noroeste de la plaza y mira en diagonal hacia el kiosco, con la fuente a la izquierda
+	//esquina noroeste de la plaza, mira en diagonal hacia el kiosco
 	camaraZocalo = Camera(glm::vec3(-30.0f, 10.0f, 46.0f), glm::vec3(0.0f, 1.0f, 0.0f), 46.0f, -8.0f, 0.0f, 0.0f);
-	//la aerea esta a 300 m sobre el centro de la escena y mira hacia abajo, con el norte hacia arriba de la pantalla
-	//el pitch llega a -89 y no a -90 porque mirando derecho hacia abajo no se puede saber cual es la derecha de la camara
+	//a 300 m sobre el centro, mira hacia abajo con el norte arriba
+	//pitch -89 y no -90, mirando derecho hacia abajo no se sabe cual es la derecha
 	camaraAerea = Camera(glm::vec3(27.0f, 300.0f, -38.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -89.0f, 0.0f, 0.0f);
-	//camara con la que se dibuja la escena, cambia en el while segun las teclas 1 a 5 o la C
+	//camara con la que se dibuja, cambia en el while
 	Camera* camaraActual = &camera;
 
 	// ================== 5. CARGA DE RECURSOS ==================
 
-	//en las texturas primero se asigna la ruta y luego se carga
-	//LoadTextureA es para imagenes con canal alfa como png o tga, y LoadTexture para las que no tienen, como jpg
+	//primero la ruta, luego se carga
 	andadorTexture = Texture("Textures/cantera_losas.jpg");
 	andadorTexture.LoadTexture();
 	empedradoTexture = Texture("Textures/empedrado.jpg");
@@ -823,12 +957,16 @@ int main()
 	fachadaPortalTexture.LoadTexture();
 	telonTexture = Texture("Textures/telon.png");
 	telonTexture.LoadTextureA();
+	papelPicadoTexture = Texture("Textures/papel_picado.png");
+	papelPicadoTexture.LoadTextureA();
+	maderaTexture = Texture("Textures/madera.jpg");
+	maderaTexture.LoadTexture();
 	canteraTexture = Texture("Textures/cantera_muro.jpg");
 	canteraTexture.LoadTexture();
 	tierraTexture = Texture("Textures/tierra_roja.jpg");
 	tierraTexture.LoadTexture();
 
-	//los modelos traen su propia textura, que se busca en la carpeta Textures
+	//las texturas de los modelos van en Textures/
 	farolaBrazo = Model();
 	farolaBrazo.LoadModel("Models/farola_brazo.obj");
 	farolaGlobos = Model();
@@ -843,8 +981,71 @@ int main()
 	fuenteZocalo.LoadModel("Models/fuente_zocalo.obj");
 	agave = Model();
 	agave.LoadModel("Models/agave.obj");
+	flamboyan = Model();
+	flamboyan.LoadModel("Models/arbol_flamboyan.obj");
+	palmera = Model();
+	palmera.LoadModel("Models/palmera.obj");
+	arbolZocalo1 = Model();
+	arbolZocalo1.LoadModel("Models/arbol_igor_1.obj");
+	arbolZocalo2 = Model();
+	arbolZocalo2.LoadModel("Models/arbol_igor_2.obj");
+	arbolLigero1 = Model();
+	arbolLigero1.LoadModel("Models/arbol_ligero_1.obj");
+	arbolLigero2 = Model();
+	arbolLigero2.LoadModel("Models/arbol_ligero_2.obj");
+	jacaranda = Model();
+	jacaranda.LoadModel("Models/jacaranda.obj");
+	cacaloxochitl = Model();
+	cacaloxochitl.LoadModel("Models/cacaloxochitl.obj");
+	const char* archivosMaceta[numModelosMaceta] = {
+		"Models/maceta_margaritas.obj", "Models/maceta_planta_verde.obj", "Models/maceta_narcisos.obj",
+		"Models/maceta_anemonas.obj", "Models/maceta_pasto.obj", "Models/maceta_violetas.obj"
+	};
+	for (int i = 0; i < numModelosMaceta; i++)
+	{
+		macetas[i] = Model();
+		macetas[i].LoadModel(archivosMaceta[i]);
+	}
+	const char* archivosFlor[numModelosFlor] = {
+		"Models/margarita_1.obj", "Models/narciso_amarillo.obj", "Models/anemona.obj",
+		"Models/margarita_2.obj", "Models/pasto_paquete_1.obj", "Models/narciso_blanco.obj"
+	};
+	for (int i = 0; i < numModelosFlor; i++)
+	{
+		flores[i] = Model();
+		flores[i].LoadModel(archivosFlor[i]);
+	}
+	banca = Model();
+	banca.LoadModel("Models/banca.obj");
+	carritoElotes = Model();
+	carritoElotes.LoadModel("Models/carrito_elotes.obj");
+	bugambilia = Model();
+	bugambilia.LoadModel("Models/bugambilia.obj");
+	bugambiliaMuro = Model();
+	bugambiliaMuro.LoadModel("Models/bugambilia_muro.obj");
+	mesaToldo = Model();
+	mesaToldo.LoadModel("Models/mesa_toldo.obj");
+	tendedero = Model();
+	tendedero.LoadModel("Models/tendedero.obj");
+	canasta = Model();
+	canasta.LoadModel("Models/canasta.obj");
+	petate = Model();
+	petate.LoadModel("Models/petate.obj");
+	cazuela = Model();
+	cazuela.LoadModel("Models/cazuela.obj");
+	olla = Model();
+	olla.LoadModel("Models/olla.obj");
+	taza = Model();
+	taza.LoadModel("Models/taza_barro_cara.obj");
+	panMuerto = Model();
+	panMuerto.LoadModel("Models/pan_muerto.obj");
+	alebrijeCoyote = Model();
+	alebrijeCoyote.LoadModel("Models/alebrije_coyote.obj");
+	alebrijePajaro = Model();
+	alebrijePajaro.LoadModel("Models/alebrije_pajaro.obj");
+	alebrijePerrito = Model();
+	alebrijePerrito.LoadModel("Models/perrito.obj");
 
-	//las 6 caras del skybox van en este orden: rt, lf, dn, up, bk, ft
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/tarde_rt.jpg");
 	skyboxFaces.push_back("Textures/Skybox/tarde_lf.jpg");
@@ -854,7 +1055,7 @@ int main()
 	skyboxFaces.push_back("Textures/Skybox/tarde_ft.jpg");
 	skyboxTarde = Skybox(skyboxFaces);
 
-	//se vacia la lista para reusarla con las caras de la noche
+	//reusa la lista para las caras de la noche
 	skyboxFaces.clear();
 	skyboxFaces.push_back("Textures/Skybox/noche_rt.jpg");
 	skyboxFaces.push_back("Textures/Skybox/noche_lf.jpg");
@@ -864,30 +1065,29 @@ int main()
 	skyboxFaces.push_back("Textures/Skybox/noche_ft.jpg");
 	skyboxNoche = Skybox(skyboxFaces);
 
-	//Material recibe la intensidad especular y el shininess
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
 
 	// ---------- luces ----------
 	//orden de los parametros de cada tipo de luz
-	//DirectionalLight recibe el color r g b, la intensidad ambiental y la difusa, y la direccion x y z
-	//PointLight recibe el color r g b, la intensidad ambiental y la difusa, la posicion x y z, y la atenuacion constante, lineal y exponencial
-	//SpotLight recibe lo mismo que PointLight pero con la direccion x y z despues de la posicion, y al final el angulo del cono
+	//DirectionalLight recibe color, ambiental, difusa y direccion
+	//PointLight recibe color, ambiental, difusa, posicion y atenuacion
+	//SpotLight recibe lo de PointLight, la direccion despues de la posicion y al final el angulo del cono
 
 	//siempre tiene que haber una luz direccional
-	//de tarde es un sol naranja y bajo que viene del oeste, asi le pega de frente a la fachada de Santo Domingo
+	//sol naranja y bajo desde el oeste, le pega de frente a Santo Domingo
 	luzTarde = DirectionalLight(1.0f, 0.75f, 0.5f,
 		0.35f, 0.5f,
 		1.0f, -0.4f, 0.3f);
-	//de noche es una luz azul tenue casi desde arriba, como la luna
+	//luz azul tenue casi desde arriba, como la luna
 	luzNoche = DirectionalLight(0.4f, 0.45f, 0.7f,
 		0.12f, 0.15f,
 		0.2f, -1.0f, 0.3f);
 
-	//farolas en las banquetas del andador, una de cada lado cada 16 m mas o menos, y cuatro en el Zocalo alrededor del kiosco
-	//estan sobre la banqueta, por eso su base esta a la altura de la banqueta
-	//las primeras 12 son de brazo y las ultimas 4, las del Zocalo, son de globos
+	//farolas en las banquetas del andador, cada 16 m mas o menos, y cuatro en el Zocalo
+	//su base esta a la altura de la banqueta
+	//las primeras 12 son de brazo y las ultimas 4 de globos
 	const int numFarolas = 16; //no debe pasar de MAX_POINT_LIGHTS
 	const int numFarolasAndador = 12;
 	glm::vec3 posicionFarolas[numFarolas] = {
@@ -898,15 +1098,15 @@ int main()
 		glm::vec3(-10.0f, altoBanqueta, 62.0f), glm::vec3(10.0f, altoBanqueta, 62.0f),
 		glm::vec3(-10.0f, altoBanqueta, 92.0f), glm::vec3(10.0f, altoBanqueta, 92.0f)
 	};
-	//el farol de la farola de brazo cuelga 22 cm hacia X negativo de su centro, a 3.85 m de alto
-	//las de la banqueta poniente se giran 180 grados para que el farol quede del lado de la calle
+	//el farol cuelga 22 cm hacia X negativo, a 3.85 m de alto
+	//las del poniente se giran 180 grados para que el farol quede hacia la calle
 	float giroFarolas[numFarolas];
 	glm::vec3 posicionFaroles[numFarolas];
 	for (int i = 0; i < numFarolas; i++)
 	{
 		if (i >= numFarolasAndador)
 		{
-			//en la de globos la luz va entre los dos globos
+			//la luz va entre los dos globos
 			giroFarolas[i] = 0.0f;
 			posicionFaroles[i] = posicionFarolas[i] + glm::vec3(0.0f, 3.9f, 0.0f);
 		}
@@ -921,8 +1121,7 @@ int main()
 			posicionFaroles[i] = posicionFarolas[i] + glm::vec3(-0.22f, 3.85f, 0.0f);
 		}
 	}
-	//cada farola tiene una luz puntual amarilla en su farol
-	//la atenuacion hace que alumbre un circulo de unos 6 m de radio alrededor del poste
+	//luz puntual amarilla en cada farola, alumbra un circulo de unos 6 m de radio
 	for (int i = 0; i < numFarolas; i++)
 	{
 		pointLights[i] = PointLight(1.0f, 0.8f, 0.5f,
@@ -930,12 +1129,12 @@ int main()
 			posicionFaroles[i].x, posicionFaroles[i].y, posicionFaroles[i].z,
 			1.0f, 0.09f, 0.032f);
 	}
-	//contador de luces puntuales, en el while cambia a 0 de tarde y a numFarolas de noche
+	//en el while, 0 de tarde y numFarolas de noche
 	unsigned int pointLightCount = 0;
 
-	//contador de spotlights, no puede pasar de MAX_SPOT_LIGHTS
+	//no puede pasar de MAX_SPOT_LIGHTS
 	unsigned int spotLightCount = 0;
-	//luz de la fachada de Santo Domingo, sale del piso del atrio y apunta hacia arriba y hacia la fachada
+	//sale del piso del atrio y apunta hacia la fachada
 	spotLights[0] = SpotLight(1.0f, 0.9f, 0.75f,
 		0.0f, 1.2f,
 		36.0f, 0.5f, -142.0f,
@@ -944,7 +1143,7 @@ int main()
 		45.0f);
 	spotLightCount++;
 
-	//luz del kiosco, esta debajo del techo y apunta hacia abajo para alumbrar la plataforma donde toca la banda
+	//debajo del techo, apunta hacia abajo a la plataforma de la banda
 	spotLights[1] = SpotLight(1.0f, 0.85f, 0.6f,
 		0.0f, 1.5f,
 		0.0f, 7.0f, 77.0f,
@@ -953,7 +1152,7 @@ int main()
 		55.0f);
 	spotLightCount++;
 
-	//luz de la fachada de la Sangre de Cristo, sale del piso del andador frente a la puerta y apunta hacia el poniente y hacia arriba
+	//sale del piso frente a la puerta y apunta hacia el poniente
 	spotLights[2] = SpotLight(1.0f, 0.88f, 0.7f,
 		0.0f, 1.6f,
 		3.0f, 0.3f, -93.6f,
@@ -966,8 +1165,7 @@ int main()
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	GLuint uniformColor = 0;
 
-	//telones al final de cada calle que cruza, con la imagen de la calle que sigue
-	//de cada uno se guarda el centro de su orilla de abajo y hacia donde ve
+	//telones al final de cada calle que cruza, centro de su orilla de abajo
 	const int numTelones = 8;
 	glm::vec3 posicionTelones[numTelones] = {
 		glm::vec3(-56.0f, 0.0f, -184.0f), glm::vec3(110.0f, 0.0f, -184.0f),	//Gurrion
@@ -975,10 +1173,115 @@ int main()
 		glm::vec3(-56.0f, 0.0f, -20.0f), glm::vec3(70.0f, 0.0f, -20.0f),		//Morelos
 		glm::vec3(-56.0f, 0.0f, 37.0f), glm::vec3(70.0f, 0.0f, 37.0f)			//Independencia
 	};
-	//los de la orilla poniente ven hacia X positivo y los de la oriente hacia X negativo
+	//el poniente ve hacia X positivo, el oriente hacia X negativo
 	float giroTelones[numTelones] = { 90.0f, -90.0f, 90.0f, -90.0f, 90.0f, -90.0f, 90.0f, -90.0f };
 
-	//el angulo de glm::perspective va en radianes, por eso 45.0f da una vista de unos 58 grados y no de 45
+	//cada 4 m, solo donde hay casas de los dos lados
+	//cuatro entre Abasolo y Morelos, once entre Morelos e Independencia
+	const int numPapelPicado = 15;
+	float zPapelPicado[numPapelPicado] = {
+		-42.0f, -38.0f, -34.0f, -30.0f,
+		-12.0f, -8.0f, -4.0f, 0.0f, 4.0f, 8.0f, 12.0f, 16.0f, 20.0f, 24.0f, 28.0f
+	};
+	const float altoPapelPicado = 5.2f;		//altura del cordel, abajo de la casa mas baja
+
+	//arboles del jardin Labastida, en el piso de la plaza
+	const int numArbolesLabastida = 8;
+	glm::vec3 posicionArbolesLabastida[numArbolesLabastida] = {
+		glm::vec3(12.0f, altoBanqueta, -70.0f), glm::vec3(24.0f, altoBanqueta, -68.0f), glm::vec3(35.0f, altoBanqueta, -71.0f),
+		glm::vec3(14.0f, altoBanqueta, -54.0f), glm::vec3(27.0f, altoBanqueta, -51.0f), glm::vec3(36.0f, altoBanqueta, -58.0f),
+		glm::vec3(20.0f, altoBanqueta, -61.0f), glm::vec3(31.0f, altoBanqueta, -63.0f)
+	};
+
+	//jacarandas en la franja del atrio junto al andador, lejos de la camara de la fachada
+	const int numArbolesAtrio = 2;
+	glm::vec3 posicionArbolesAtrio[numArbolesAtrio] = {
+		glm::vec3(10.0f, altoBanqueta, -166.0f), glm::vec3(10.0f, altoBanqueta, -127.0f)
+	};
+
+	//ocho sobre las jardineras, dos en cada una, y los demas en el piso
+	//en las esquinas que no quedan en la diagonal al kiosco, para no tapar la vista
+	//la esquina noroeste se deja libre por la camara del Zocalo
+	const int numArbolesZocalo = 13;
+	const float ySobreJardinera = altoBanqueta + altoJardinera + 0.01f;
+	glm::vec3 posicionArbolesZocalo[numArbolesZocalo] = {
+		glm::vec3(-26.0f, ySobreJardinera, 60.0f), glm::vec3(-14.0f, ySobreJardinera, 52.0f),
+		glm::vec3(26.0f, ySobreJardinera, 60.0f), glm::vec3(14.0f, ySobreJardinera, 52.0f),
+		glm::vec3(-26.0f, ySobreJardinera, 94.0f), glm::vec3(-14.0f, ySobreJardinera, 102.0f),
+		glm::vec3(26.0f, ySobreJardinera, 94.0f), glm::vec3(14.0f, ySobreJardinera, 102.0f),
+		glm::vec3(-31.0f, altoBanqueta, 77.0f), glm::vec3(31.0f, altoBanqueta, 77.0f),
+		glm::vec3(31.0f, altoBanqueta, 50.0f), glm::vec3(-31.0f, altoBanqueta, 104.0f), glm::vec3(31.0f, altoBanqueta, 104.0f)
+	};
+
+	//flores en las cuatro jardineras del Zocalo y en la de los flamboyanes
+	glm::vec3 posicionFlamboyanes[5];
+	for (int i = 0; i < 5; i++)
+	{
+		posicionFlamboyanes[i] = glm::vec3(10.0f + i * 9.0f, ySobreJardinera, -176.75f);
+	}
+	const int maxFlores = 1200;
+	glm::vec3 posicionFlores[maxFlores];
+	int numFlores = 0;
+	for (int i = 2; i < 6; i++)
+	{
+		numFlores = LlenarJardinera(jardineras[i], 0.9f, posicionArbolesZocalo, numArbolesZocalo, posicionFlores, numFlores, maxFlores);
+	}
+	numFlores = LlenarJardinera(jardineras[6], 0.9f, posicionFlamboyanes, 5, posicionFlores, numFlores, maxFlores);
+
+	//banqueta poniente, frente al atrio
+	const int numCacaloxochitl = 2;
+	glm::vec3 posicionCacaloxochitl[numCacaloxochitl] = {
+		glm::vec3(-5.0f, altoBanqueta, -160.0f), glm::vec3(-5.0f, altoBanqueta, -128.0f)
+	};
+
+	//estanterias de macetas pegadas a las fachadas, donde no estorban farolas ni cacaloxochitl
+	//las del poniente ven hacia X positivo y las del oriente hacia X negativo
+	const int numEstantes = 13;
+	glm::vec3 posicionEstantes[numEstantes] = {
+		glm::vec3(-5.97f, altoBanqueta, -167.0f), glm::vec3(-5.97f, altoBanqueta, -135.0f), glm::vec3(-5.97f, altoBanqueta, -103.0f),
+		glm::vec3(-5.97f, altoBanqueta, -71.0f), glm::vec3(-5.97f, altoBanqueta, -55.0f), glm::vec3(-5.97f, altoBanqueta, -39.0f),
+		glm::vec3(-5.97f, altoBanqueta, -11.0f), glm::vec3(-5.97f, altoBanqueta, 5.0f), glm::vec3(-5.97f, altoBanqueta, 21.0f),
+		glm::vec3(5.97f, altoBanqueta, -103.0f), glm::vec3(5.97f, altoBanqueta, -41.0f), glm::vec3(5.97f, altoBanqueta, -11.0f),
+		glm::vec3(5.97f, altoBanqueta, 13.0f)
+	};
+
+	//bancas del Zocalo, respaldo pegado a las jardineras
+	//las seis primeras ven hacia el sur y las otras seis hacia el norte
+	const int numBancas = 12;
+	glm::vec3 posicionBancas[numBancas] = {
+		glm::vec3(-26.0f, altoBanqueta, 63.5f), glm::vec3(-20.0f, altoBanqueta, 63.5f), glm::vec3(-14.0f, altoBanqueta, 63.5f),
+		glm::vec3(14.0f, altoBanqueta, 63.5f), glm::vec3(20.0f, altoBanqueta, 63.5f), glm::vec3(26.0f, altoBanqueta, 63.5f),
+		glm::vec3(-26.0f, altoBanqueta, 90.5f), glm::vec3(-20.0f, altoBanqueta, 90.5f), glm::vec3(-14.0f, altoBanqueta, 90.5f),
+		glm::vec3(14.0f, altoBanqueta, 90.5f), glm::vec3(20.0f, altoBanqueta, 90.5f), glm::vec3(26.0f, altoBanqueta, 90.5f)
+	};
+
+	//junto a los portales, letrero hacia el kiosco
+	const int numCarritos = 2;
+	glm::vec3 posicionCarritos[numCarritos] = {
+		glm::vec3(-32.0f, altoBanqueta, 70.0f), glm::vec3(32.0f, altoBanqueta, 84.0f)
+	};
+	float giroCarritos[numCarritos] = { 90.0f, -90.0f };
+
+	//dos arbolitos en el sur del jardin Labastida
+	//y cuatro que cuelgan de fachadas, 2 cm enfrente del muro
+	const int numBugambilias = 2;
+	glm::vec3 posicionBugambilias[numBugambilias] = {
+		glm::vec3(10.0f, altoBanqueta, -49.0f), glm::vec3(37.0f, altoBanqueta, -49.0f)
+	};
+	const int numBugambiliasMuro = 4;
+	glm::vec3 posicionBugambiliasMuro[numBugambiliasMuro] = {
+		glm::vec3(-5.98f, 0.0f, -150.0f), glm::vec3(-5.98f, 0.0f, -60.0f), glm::vec3(-5.98f, 0.0f, -45.0f),
+		glm::vec3(5.98f, 0.0f, -37.0f)
+	};
+	//las del poniente ven hacia X positivo, la del oriente hacia X negativo
+	float giroBugambiliasMuro[numBugambiliasMuro] = { 90.0f, 90.0f, 90.0f, -90.0f };
+
+	//puesto de textiles junto al andador, todo viendo hacia el andador
+	//se turnan mesas con toldo y tendederos
+	const int numPuestosTextiles = 6;
+	float zPuestosTextiles[numPuestosTextiles] = { -73.0f, -69.5f, -66.0f, -62.5f, -59.0f, -55.5f };
+
+	//glm::perspective usa radianes, 45.0f da unos 58 grados
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
 	// ================== 6. CICLO PRINCIPAL ==================
@@ -993,11 +1296,10 @@ int main()
 		//eventos de teclado y mouse
 		glfwPollEvents();
 
-		//el cambio del mouse se lee siempre, aunque no se use, para que no se acumule mientras hay una camara fija
+		//el mouse se lee siempre para que no se acumule con una camara fija
 		GLfloat cambioX = mainWindow.getXChange();
 		GLfloat cambioY = mainWindow.getYChange();
-		//al soltar una camara fija, camaraActual todavia es la del ciclo anterior,
-		//asi que la libre copia esa vista y se sigue moviendo desde ahi
+		//al soltar una camara fija, la libre copia la vista de camaraActual
 		if (mainWindow.getsoltarCamara())
 		{
 			camera.tomarVistaDe(*camaraActual);
@@ -1023,18 +1325,17 @@ int main()
 			camaraActual = &camera;
 			camera.keyControl(mainWindow.getsKeys(), deltaTime);
 			camera.mouseControl(cambioX, cambioY);
-			//la camara libre no puede salir de la ciudad ni subir mas de 30 m, asi no se ve donde se acaba la escena
+			//la libre no sale de la ciudad ni sube mas de 30 m, asi no se ve el borde de la escena
 			camera.limitarPosicion(glm::vec3(-54.0f, 1.0f, -200.0f), glm::vec3(68.0f, 30.0f, 126.0f));
 		}
 
-		//las teclas de prueba escriben la pose del muneco y el dibujo de abajo solo la lee
+		//las teclas de prueba escriben la pose, el dibujo de abajo solo la lee
 		ProbarArticulaciones(mainWindow.getsKeys(), deltaTime);
 
-		//limpiar la pantalla
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//el skybox va primero, antes que todo lo demas
+		//el skybox va primero
 		if (mainWindow.getesNoche())
 		{
 			skyboxNoche.DrawSkybox(camaraActual->calculateViewMatrix(), projection);
@@ -1051,7 +1352,6 @@ int main()
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
 
-		//intensidad especular y brillo del material
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
@@ -1059,7 +1359,7 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camaraActual->calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camaraActual->getCameraPosition().x, camaraActual->getCameraPosition().y, camaraActual->getCameraPosition().z);
 
-		//con la tecla N, de noche cambia la luz direccional y se encienden las farolas
+		//con la tecla N cambia el sol y se encienden las farolas
 		if (mainWindow.getesNoche())
 		{
 			shaderList[0].SetDirectionalLight(&luzNoche);
@@ -1071,20 +1371,19 @@ int main()
 			pointLightCount = 0;
 		}
 
-		//mandar todas las luces al shader
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
 		glm::mat4 model(1.0);
-		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f); //con blanco la textura se ve con sus colores normales
+		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f); //blanco, la textura se ve con sus colores normales
 
 		// ---------- objetos opacos ----------
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
-		//los pisos ya tienen sus coordenadas puestas en el mundo, asi que van con la matriz identidad
+		//los pisos ya estan en el mundo, con matriz identidad
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
-		//el piso lejano usa la textura blanca con un color parecido al de los techos
+		//el piso lejano, blanco con un color parecido al de los techos
 		plainTexture.UseTexture();
 		glUniform3fv(uniformColor, 1, glm::value_ptr(glm::vec3(0.55f, 0.50f, 0.45f)));
 		meshListModel[0]->RenderMeshModel();
@@ -1101,10 +1400,9 @@ int main()
 
 		DibujarCasas(uniformModel, uniformColor);
 
-		//Santo Domingo en el oriente del atrio, con la puerta en x = 56 y la fachada hacia el poniente
-		//el modelo tiene la fachada hacia Z positivo, por eso se gira -90 grados para que vea hacia X negativo
-		//asi el ex convento, que en el modelo esta hacia X negativo, queda al norte
-		//los barandales y las rejas son png con transparencia, el discard del shader quita lo que no se ve aunque se dibujen aqui
+		//Santo Domingo en el oriente del atrio, puerta en x 56
+		//el modelo tiene la fachada hacia Z positivo, se gira -90 para verla hacia X negativo
+		//los barandales son png, el discard del shader deja ver lo de atras
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(56.0f, altoBanqueta, -139.5f));
 		model = glm::rotate(model, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1112,22 +1410,22 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		santoDomingo.RenderModel();
 
-		//Sangre de Cristo en la esquina noroeste de Abasolo, con la fachada hacia el oriente, que da al andador
-		//el modelo tiene la fachada hacia Z positivo, por eso se gira 90 grados para que vea hacia X positivo
-		//la fachada queda en x = -9 y la orilla de los escalones en x = -6, junto a la banqueta, y su costado sur da a Abasolo
+		//Sangre de Cristo, fachada hacia el oriente, al andador
+		//se gira 90 grados para que la fachada vea hacia X positivo
+		//la fachada queda en x -9, la orilla de los escalones en x -6
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-9.0f, altoBanqueta, -93.6f));
 		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		sangreDeCristo.RenderModel();
 
-		//kiosco al centro del Zocalo, sus escaleras ven hacia los cuatro lados
+		//kiosco al centro del Zocalo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, altoBanqueta, 77.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		kiosco.RenderModel();
 
-		//jardineras, igual que los pisos ya tienen sus coordenadas en el mundo
+		//jardineras, ya tienen sus coordenadas en el mundo
 		model = glm::mat4(1.0);
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		canteraTexture.UseTexture();
@@ -1135,8 +1433,8 @@ int main()
 		tierraTexture.UseTexture();
 		meshListModel[9]->RenderMeshModel();
 
-		//agaves en las jardineras del atrio, diez a lo largo y siete a lo ancho, cada uno al centro de su cuadro
-		//cada uno se gira distinto para que no se vean todos iguales
+		//agaves en las jardineras del atrio, 10 por 7 en cada una
+		//cada uno gira distinto
 		for (int i = 0; i < numJardinerasAtrio; i++)
 		{
 			const Rectangulo& j = jardineras[i];
@@ -1156,8 +1454,7 @@ int main()
 			}
 		}
 
-		//farolas, el mismo modelo se dibuja en cada lugar con su giro
-		//los modelos usan su propia textura, solo se les pone el color blanco para que se vea tal cual
+		//farolas, mismo modelo en cada lugar con su giro, en blanco para que se vea tal cual
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		for (int i = 0; i < numFarolas; i++)
 		{
@@ -1175,27 +1472,202 @@ int main()
 			}
 		}
 
-		//muneco de cubos sobre el andador, frente a la Sangre de Cristo, mirando hacia el sur
-		//se sube 1 cm igual que el andador para que los pies queden encima de el
+		//muneco de cubos sobre el andador, mirando hacia el sur
+		//1 cm arriba del andador, para que los pies queden encima
 		plainTexture.UseTexture();
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.01f, -100.0f));
 		DibujarMuneco(model, poseMuneco, uniformModel, uniformColor);
 
 		// ---------- objetos con transparencia ----------
-		//van al final, despues de todos los opacos, para que se vea lo que esta detras de las partes transparentes
+		//van al final, para que se vea lo que esta detras
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		//telones al final de las calles que cruzan, con la imagen de la calle que sigue
+		//telones al final de las calles que cruzan
 		telonTexture.UseTexture();
 		for (int i = 0; i < numTelones; i++)
 		{
 			DibujarPlano(posicionTelones[i], giroTelones[i], 12.0f, 12.0f, color, uniformModel, uniformColor);
 		}
 
-		//fuente al norte del kiosco, a un lado del pasillo por donde llega el desfile
-		//va aqui porque su agua es un poco transparente y deja ver el fondo de la pila
+		//una tira si y otra no va girada, para que los colores no queden en fila
+		papelPicadoTexture.UseTexture();
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		for (int i = 0; i < numPapelPicado; i++)
+		{
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(0.0f, altoBanqueta + altoPapelPicado, zPapelPicado[i]));
+			if (i % 2 == 1)
+			{
+				model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			}
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			meshListModel[10]->RenderMeshModel();
+		}
+
+		//van aqui porque sus hojas tienen orillas transparentes
+		//flamboyanes cada 9 m sobre la jardinera del norte, se agrandan un poco, son de unos 9 m
+		//cada uno gira distinto
+		for (int i = 0; i < 5; i++)
+		{
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(10.0f + i * 9.0f, ySobreJardinera, -176.75f));
+			model = glm::rotate(model, (i * 70.0f) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			model = glm::scale(model, glm::vec3(1.3f, 1.3f, 1.3f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			flamboyan.RenderModel();
+		}
+
+		//palmeras en los macetones del sur del atrio
+		for (int i = 0; i < 3; i++)
+		{
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(10.0f + i * 16.0f, ySobreJardinera, -110.0f));
+			model = glm::rotate(model, (i * 120.0f) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			palmera.RenderModel();
+		}
+
+		//arboles del jardin Labastida, jacaranda y ligeros turnandose
+		for (int i = 0; i < numArbolesLabastida; i++)
+		{
+			model = glm::mat4(1.0);
+			model = glm::translate(model, posicionArbolesLabastida[i]);
+			model = glm::rotate(model, (i * 55.0f) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			if (i % 2 == 1)
+			{
+				jacaranda.RenderModel();
+			}
+			else if (i % 4 == 0)
+			{
+				arbolLigero1.RenderModel();
+			}
+			else
+			{
+				arbolLigero2.RenderModel();
+			}
+		}
+
+		for (int i = 0; i < numArbolesAtrio; i++)
+		{
+			DibujarModelo(jacaranda, posicionArbolesAtrio[i], i * 100.0f, 1.0f, uniformModel);
+		}
+
+		//arboles del Zocalo, se agrandan un poco
+		for (int i = 0; i < numArbolesZocalo; i++)
+		{
+			model = glm::mat4(1.0);
+			model = glm::translate(model, posicionArbolesZocalo[i]);
+			model = glm::rotate(model, (i * 55.0f) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			model = glm::scale(model, glm::vec3(1.4f, 1.4f, 1.4f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			if (i % 2 == 0)
+			{
+				arbolZocalo1.RenderModel();
+			}
+			else
+			{
+				arbolZocalo2.RenderModel();
+			}
+		}
+
+		for (int i = 0; i < numCacaloxochitl; i++)
+		{
+			model = glm::mat4(1.0);
+			model = glm::translate(model, posicionCacaloxochitl[i]);
+			model = glm::rotate(model, (i * 90.0f) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			cacaloxochitl.RenderModel();
+		}
+
+		for (int i = 0; i < numEstantes; i++)
+		{
+			float giro = 90.0f;
+			if (posicionEstantes[i].x > 0.0f)
+			{
+				giro = -90.0f;
+			}
+			DibujarEstanteMacetas(posicionEstantes[i], giro, i, uniformModel, uniformColor);
+		}
+
+		//flores sueltas, se agrandan un poco y cada una gira distinto
+		for (int i = 0; i < numFlores; i++)
+		{
+			DibujarModelo(flores[i % numModelosFlor], posicionFlores[i], i * 47.0f, 2.4f, uniformModel);
+		}
+
+		//bancas, las segundas se giran hacia el norte
+		for (int i = 0; i < numBancas; i++)
+		{
+			float giro = 0.0f;
+			if (i >= numBancas / 2)
+			{
+				giro = 180.0f;
+			}
+			DibujarModelo(banca, posicionBancas[i], giro, 1.0f, uniformModel);
+		}
+
+		for (int i = 0; i < numCarritos; i++)
+		{
+			DibujarModelo(carritoElotes, posicionCarritos[i], giroCarritos[i], 1.0f, uniformModel);
+		}
+
+		for (int i = 0; i < numBugambilias; i++)
+		{
+			DibujarModelo(bugambilia, posicionBugambilias[i], i * 130.0f, 1.0f, uniformModel);
+		}
+		for (int i = 0; i < numBugambiliasMuro; i++)
+		{
+			DibujarModelo(bugambiliaMuro, posicionBugambiliasMuro[i], giroBugambiliasMuro[i], 1.0f, uniformModel);
+		}
+
+		//puesto de textiles, mesas en los pares y tendederos en los nones, todo girado -90 grados
+		for (int i = 0; i < numPuestosTextiles; i++)
+		{
+			if (i % 2 == 0)
+			{
+				DibujarModelo(mesaToldo, glm::vec3(6.2f, altoBanqueta, zPuestosTextiles[i]), -90.0f, 1.0f, uniformModel);
+			}
+			else
+			{
+				DibujarModelo(tendedero, glm::vec3(5.6f, altoBanqueta, zPuestosTextiles[i]), -90.0f, 1.0f, uniformModel);
+			}
+		}
+
+		//puestos de artesanias en la orilla norte del jardin Labastida, junto a los textiles
+		//cada uno en un petate, con las piezas viendo hacia el sur
+		float yPetate = altoBanqueta + 0.01f;
+		//puesto de barro y pan
+		DibujarModelo(petate, glm::vec3(10.0f, altoBanqueta, -73.5f), 180.0f, 1.0f, uniformModel);
+		DibujarModelo(cazuela, glm::vec3(9.6f, yPetate, -73.1f), 0.0f, 1.0f, uniformModel);
+		DibujarModelo(olla, glm::vec3(9.55f, yPetate, -73.5f), 0.0f, 1.0f, uniformModel);
+		DibujarModelo(taza, glm::vec3(9.6f, yPetate, -73.85f), 0.0f, 1.0f, uniformModel);
+		DibujarModelo(taza, glm::vec3(9.8f, yPetate, -74.05f), 30.0f, 1.0f, uniformModel);
+		//los panes van apilados en la canasta, que tiene el fondo a 6 cm y la orilla a 28 cm,
+		//para que los de arriba se asomen; el asa queda de norte a sur y no les estorba
+		glm::vec3 canastaPan = glm::vec3(10.3f, yPetate, -73.4f);
+		DibujarModelo(canasta, canastaPan, 90.0f, 1.0f, uniformModel);
+		DibujarModelo(panMuerto, canastaPan + glm::vec3(-0.075f, 0.06f, 0.0f), 90.0f, 1.0f, uniformModel);
+		DibujarModelo(panMuerto, canastaPan + glm::vec3(0.075f, 0.06f, 0.0f), 60.0f, 1.0f, uniformModel);
+		DibujarModelo(panMuerto, canastaPan + glm::vec3(0.0f, 0.13f, -0.08f), 130.0f, 1.0f, uniformModel);
+		DibujarModelo(panMuerto, canastaPan + glm::vec3(0.0f, 0.13f, 0.08f), 170.0f, 1.0f, uniformModel);
+		DibujarModelo(panMuerto, canastaPan + glm::vec3(-0.09f, 0.21f, 0.0f), 100.0f, 1.0f, uniformModel);
+		DibujarModelo(panMuerto, canastaPan + glm::vec3(0.09f, 0.21f, 0.0f), 150.0f, 1.0f, uniformModel);
+		DibujarModelo(canasta, glm::vec3(9.1f, altoBanqueta, -74.7f), 90.0f, 1.0f, uniformModel);
+		//puesto de alebrijes
+		DibujarModelo(petate, glm::vec3(16.0f, altoBanqueta, -73.5f), 180.0f, 1.0f, uniformModel);
+		DibujarModelo(alebrijeCoyote, glm::vec3(15.7f, yPetate, -73.1f), 0.0f, 1.0f, uniformModel);
+		DibujarModelo(alebrijePajaro, glm::vec3(15.55f, yPetate, -73.4f), 0.0f, 1.0f, uniformModel);
+		DibujarModelo(alebrijePerrito, glm::vec3(15.65f, yPetate, -73.8f), 0.0f, 1.0f, uniformModel);
+		DibujarModelo(alebrijeCoyote, glm::vec3(16.4f, yPetate, -73.2f), -30.0f, 1.0f, uniformModel);
+		DibujarModelo(alebrijePajaro, glm::vec3(16.4f, yPetate, -73.8f), 30.0f, 1.0f, uniformModel);
+		DibujarModelo(alebrijePerrito, glm::vec3(16.45f, yPetate, -73.45f), -10.0f, 1.0f, uniformModel);
+		DibujarModelo(canasta, glm::vec3(15.1f, altoBanqueta, -74.7f), 90.0f, 1.0f, uniformModel);
+
+		//fuente al norte del kiosco, a un lado del pasillo del desfile
+		//va aqui porque el agua es transparente
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(7.0f, altoBanqueta, 55.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));

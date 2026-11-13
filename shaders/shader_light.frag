@@ -7,7 +7,7 @@ in vec4 vColor;
 
 out vec4 color;
 
-//tienen que ser iguales a los de src/CommonValues.h
+//iguales a src/CommonValues.h
 const int MAX_POINT_LIGHTS = 16;
 const int MAX_SPOT_LIGHTS = 4;
 
@@ -58,12 +58,12 @@ uniform Material material;
 
 uniform vec3 eyePosition;
 
-//modelo de Phong, la luz se forma sumando la ambiental, la difusa y la especular
+//modelo de Phong, suma ambiental, difusa y especular
 vec4 CalcLightByDirection(Light light, vec3 direction)
 {
 	vec4 ambientcolor = vec4(light.color, 1.0f) * light.ambientIntensity;
-	//el producto punto entre la normal y la direccion de la luz da el coseno del angulo, por eso se normalizan las dos
-	//direction va de la luz hacia el fragmento, se niega para compararla con la normal, que apunta hacia afuera
+	//el producto punto da el coseno, por eso se normalizan las dos
+	//direction va de la luz al fragmento, por eso se niega
 	float diffuseFactor = max(dot(normalize(Normal), -normalize(direction)), 0.0f);
 	vec4 diffusecolor = vec4(light.color * light.diffuseIntensity * diffuseFactor, 1.0f);
 
@@ -71,7 +71,7 @@ vec4 CalcLightByDirection(Light light, vec3 direction)
 
 	if(diffuseFactor > 0.0f)
 	{
-		//solo hay brillo especular si la luz le pega a la cara, y depende de donde esta la camara
+		//el brillo depende de donde esta la camara
 		vec3 fragToEye = normalize(eyePosition - FragPos);
 		vec3 reflectedVertex = normalize(reflect(direction, normalize(Normal)));
 
@@ -98,7 +98,7 @@ vec4 CalcPointLight(PointLight pLight)
 	direction = normalize(direction);
 
 	vec4 color = CalcLightByDirection(pLight.base, direction);
-	//atenuacion, entre mas lejos esta la luz mas se divide
+	//atenuacion, mas lejos se divide mas
 	float attenuation = pLight.exponent * distance * distance +
 						pLight.linear * distance +
 						pLight.constant;
@@ -111,7 +111,7 @@ vec4 CalcSpotLight(SpotLight sLight)
 	vec3 rayDirection = normalize(FragPos - sLight.base.position);
 	float slFactor = dot(rayDirection, sLight.direction);
 
-	//si el fragmento esta dentro del cono se ilumina como luz puntual, y se va difuminando hacia el borde
+	//dentro del cono como luz puntual, difuminando hacia el borde
 	if(slFactor > sLight.edge)
 	{
 		vec4 color = CalcPointLight(sLight.base);
@@ -151,11 +151,10 @@ void main()
 	vec4 finalcolor = CalcDirectionalLight();
 	finalcolor += CalcPointLights();
 	finalcolor += CalcSpotLights();
-	//los pixeles casi transparentes de la textura, como lo que rodea a una hoja o al papel picado, no se dibujan
-	//para que no tapen lo que esta atras aunque se dibujen antes
+	//los pixeles casi transparentes no se dibujan, para no tapar lo que esta atras
 	vec4 colorTextura = texture(theTexture, TexCoord);
 	if (colorTextura.a < 0.1)
 		discard;
-	//el color final es la textura por el color del objeto, que es el uniform color, por toda la luz que le llega
+	//textura por color del objeto, por la luz que le llega
 	color = colorTextura*vColor*finalcolor;
 }

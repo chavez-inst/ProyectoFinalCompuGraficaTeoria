@@ -19,7 +19,7 @@ PointLight::PointLight(GLfloat red, GLfloat green, GLfloat blue,
 	exponent = exp;
 }
 
-//manda los datos de la luz a los uniforms del shader
+//manda los datos al shader
 void PointLight::UseLight(GLuint ambientIntensityLocation, GLuint ambientcolorLocation,
 							GLuint diffuseIntensityLocation, GLuint positionLocation,
 							GLuint constantLocation, GLuint linearLocation, GLuint exponentLocation)

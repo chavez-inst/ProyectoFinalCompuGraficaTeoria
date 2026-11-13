@@ -1,9 +1,9 @@
 #pragma once
 #include "Light.h"
 
-//luz que sale de un punto hacia todos lados y se va apagando con la distancia, como un foco
-//la luz se divide entre exp por la distancia al cuadrado, mas lin por la distancia, mas con
-//con los valores 1, 0 y 0 no se atenua nada, y entre mas grandes sean lin y exp menos alcance tiene
+//luz que sale de un punto, como un foco
+//la luz se divide entre con, mas lin por la distancia y exp por la distancia al cuadrado
+//con 1, 0 y 0 no se atenua nada
 class PointLight :
 	public Light
 {

@@ -20,7 +20,7 @@ void Shader::CreateFromFiles(const char* vertexLocation, const char* fragmentLoc
 	CompileShader(vertexCode, fragmentCode);
 }
 
-//lee todo el archivo del shader y lo regresa como texto
+//regresa el archivo del shader como texto
 std::string Shader::ReadFile(const char* fileLocation)
 {
 	std::string content;
@@ -76,8 +76,7 @@ void Shader::CompileShader(const char* vertexCode, const char* fragmentCode)
 		return;
 	}
 
-	//los nombres entre comillas tienen que ser iguales a los uniforms de los shaders
-	//si un nombre esta mal no truena, simplemente ese dato no llega al shader
+	//los nombres deben ser iguales a los uniforms, si no el dato no llega y no truena
 	uniformProjection = glGetUniformLocation(shaderID, "projection");
 	uniformModel = glGetUniformLocation(shaderID, "model");
 	uniformView = glGetUniformLocation(shaderID, "view");
@@ -92,7 +91,7 @@ void Shader::CompileShader(const char* vertexCode, const char* fragmentCode)
 
 	uniformPointLightCount = glGetUniformLocation(shaderID, "pointLightCount");
 
-	//los arreglos de luces se buscan uno por uno armando el nombre, por ejemplo "pointLights[0].position"
+	//los arreglos de luces se buscan armando el nombre, como "pointLights[0].position"
 	for (size_t i = 0; i < MAX_POINT_LIGHTS; i++)
 	{
 		char locBuff[100] = { '\0' };
@@ -261,7 +260,7 @@ void Shader::AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderT
 	glGetShaderiv(theShader, GL_COMPILE_STATUS, &result);
 	if (!result)
 	{
-		//el mensaje trae la linea del error dentro del shader
+		//el mensaje trae la linea del error
 		glGetShaderInfoLog(theShader, sizeof(eLog), NULL, eLog);
 		const char* tipo = (shaderType == GL_VERTEX_SHADER) ? "vertex" : "fragment";
 		printf("Error al compilar el %s shader: '%s'\n", tipo, eLog);
@@ -273,7 +272,5 @@ void Shader::AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderT
 
 Shader::~Shader()
 {
-	//aqui no se llama ClearShader a proposito, porque shaderList guarda copias de Shader y cuando el vector
-	//crece destruye las copias viejas, asi que si aqui se borrara el programa, al agregar otro shader
-	//el primero dejaria de funcionar y para borrarlo hay que llamar ClearShader() a mano
+	//no se llama ClearShader aqui: shaderList guarda copias y al crecer el vector se borraria el programa
 }

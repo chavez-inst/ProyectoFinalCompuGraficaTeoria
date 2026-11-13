@@ -9,9 +9,7 @@ Model::Model()
 void Model::LoadModel(const std::string & fileName)
 {
 	Assimp::Importer importer;
-	//Triangulate pasa los poligonos y quads a triangulos
-	//GenSmoothNormals genera normales si el modelo no trae
-	//JoinIdenticalVertices junta los vertices repetidos en uno solo
+	//pasa a triangulos, genera normales si faltan y junta vertices repetidos
 	const aiScene *scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
 	if (!scene)
 	{
@@ -38,7 +36,7 @@ void Model::ClearModel()
 		Texture* tex = TextureList[i];
 		if (tex)
 		{
-			//varios materiales pueden usar la misma textura, se quita de toda la lista para no borrarla dos veces
+			//quita la textura de toda la lista para no borrarla dos veces
 			for (unsigned int j = i; j < TextureList.size(); j++)
 			{
 				if (TextureList[j] == tex)
@@ -59,7 +57,6 @@ void Model::RenderModel()
 {
 	for (unsigned int i = 0; i < MeshList.size(); i++)
 	{
-		//cada malla usa la textura de su material
 		unsigned int materialIndex = meshTotex[i];
 		if (materialIndex < TextureList.size() && TextureList[materialIndex])
 		{
@@ -74,7 +71,7 @@ Model::~Model()
 {
 }
 
-//recorre el arbol de nodos del archivo y carga todas sus mallas
+//recorre los nodos del archivo
 void Model::LoadNode(aiNode * node, const aiScene * scene)
 {
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -87,7 +84,7 @@ void Model::LoadNode(aiNode * node, const aiScene * scene)
 	}
 }
 
-//pasa una malla de Assimp al formato de MeshModel, con posicion, coordenadas de textura y normal en cada vertice
+//pasa la malla de Assimp al formato de MeshModel
 void Model::LoadMesh(aiMesh * mesh, const aiScene * scene)
 {
 	std::vector<GLfloat> vertices;
@@ -104,7 +101,7 @@ void Model::LoadMesh(aiMesh * mesh, const aiScene * scene)
 		{
 			vertices.insert(vertices.end(), { 0.0f, 0.0f });
 		}
-		//las normales se usan tal cual vienen del archivo, apuntando hacia afuera igual que en Blender
+		//normales tal cual vienen, hacia afuera como en Blender
 		vertices.insert(vertices.end(), { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z });
 	}
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -122,11 +119,10 @@ void Model::LoadMesh(aiMesh * mesh, const aiScene * scene)
 	meshTotex.push_back(mesh->mMaterialIndex);
 }
 
-//carga la textura difusa de cada material, que es la que dice map_Kd en el .mtl
-//si no tiene o no se encuentra, usa Textures/plain.png
+//textura difusa de cada material, la que dice map_Kd en el .mtl
 void Model::LoadMaterials(const aiScene * scene)
 {
-	std::unordered_map<std::string, Texture*> loadedTextures; //para no cargar la misma textura dos veces
+	std::unordered_map<std::string, Texture*> loadedTextures; //para no cargar dos veces la misma textura
 	TextureList.resize(scene->mNumMaterials);
 	for (unsigned int i = 0; i < scene->mNumMaterials; i++)
 	{
@@ -137,14 +133,12 @@ void Model::LoadMaterials(const aiScene * scene)
 			aiString path;
 			if (material->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
 			{
-				//se queda solo con el nombre del archivo y quita las carpetas, o sea todo lo que esta antes de la ultima diagonal
-				//si no hay carpeta, idx + 1 vale 0 y se toma el nombre completo
+				//quita las carpetas de la ruta, si no hay ninguna se toma el nombre completo
 				std::string fullPath = std::string(path.data);
 				std::size_t idx = fullPath.find_last_of("\\/");
 				std::string filename = fullPath.substr(idx + 1);
 
 				std::string texPath = std::string("Textures/") + filename;
-				//si ya se cargo esta textura antes, se reutiliza
 				auto it = loadedTextures.find(texPath);
 				if (it != loadedTextures.end())
 				{
@@ -179,7 +173,7 @@ void Model::LoadMaterials(const aiScene * scene)
 				}
 			}
 		}
-		//si no tiene textura o no se pudo cargar, se le pone plain.png, que es blanca, para que no se vea negro
+		//sin textura, se usa plain.png (blanca) para que no se vea negro
 		if (!TextureList[i])
 		{
 			TextureList[i] = new Texture("Textures/plain.png");

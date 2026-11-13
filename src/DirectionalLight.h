@@ -1,7 +1,7 @@
 #pragma once
 #include "Light.h"
 
-//luz que le llega a toda la escena desde la misma direccion, como el sol
+//luz que llega igual a toda la escena, como el sol
 class DirectionalLight :
 	public Light
 {

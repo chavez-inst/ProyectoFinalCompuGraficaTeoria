@@ -2,9 +2,7 @@
 
 #include <glew.h>
 
-//material que se le pone a cada objeto antes de dibujarlo, controla el brillo especular
-//sIntensity es que tan fuerte se ve el brillo
-//shine es que tan concentrado esta el brillo, entre mas alto se ve mas chico y definido, como en el metal o el plastico
+//brillo especular, entre mas alto shine mas chico y definido
 class Material
 {
 public:

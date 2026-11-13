@@ -8,12 +8,12 @@ MeshModel::MeshModel()
 	indexCount = 0;
 }
 
-//numOfVertices es cuantos floats tiene el arreglo, o sea el numero de vertices por 8, y no cuantos vertices son
+//cuantos floats tiene el arreglo, vertices por 8
 void MeshModel::CreateMeshModel(GLfloat* vertices, unsigned int* indices, unsigned int numOfVertices, unsigned int numOfIndices)
 {
 	indexCount = numOfIndices;
 
-	glGenVertexArrays(1, &VAO); //crear 1 VAO
+	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
 	//indices
@@ -21,19 +21,19 @@ void MeshModel::CreateMeshModel(GLfloat* vertices, unsigned int* indices, unsign
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * numOfIndices, indices, GL_STATIC_DRAW);
 
-	//vertices, GL_STATIC_DRAW porque no se van a modificar despues
+	//GL_STATIC_DRAW porque no cambian despues
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * numOfVertices, vertices, GL_STATIC_DRAW);
 
 	//cada glVertexAttribPointer le dice al shader donde esta cada dato dentro de los 8 valores
-	//en location 0 va la posicion, que son 3 valores desde la posicion 0 del vertice
+	//location 0 es la posicion, 3 valores desde el 0
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 8, 0);
 	glEnableVertexAttribArray(0);
-	//en location 1 van las coordenadas de textura S y T, que son 2 valores desde la posicion 3
+	//location 1 es la textura, 2 valores desde el 3
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 8, (void*)(sizeof(vertices[0]) * 3));
 	glEnableVertexAttribArray(1);
-	//en location 2 va la normal, que son 3 valores desde la posicion 5
+	//location 2 es la normal, 3 valores desde el 5
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 8, (void*)(sizeof(vertices[0]) * 5));
 	glEnableVertexAttribArray(2);
 
@@ -43,7 +43,6 @@ void MeshModel::CreateMeshModel(GLfloat* vertices, unsigned int* indices, unsign
 	glBindVertexArray(0);
 }
 
-//dibuja la malla usando los indices
 void MeshModel::RenderMeshModel()
 {
 	glBindVertexArray(VAO);
@@ -53,7 +52,7 @@ void MeshModel::RenderMeshModel()
 	glBindVertexArray(0);
 }
 
-//borra los buffers de la GPU para no ocupar memoria
+//libera la memoria de la GPU
 void MeshModel::ClearMeshModel()
 {
 	if (IBO != 0)
