@@ -17,6 +17,8 @@ Window::Window()
 	desfilePausado = false;
 	reiniciarDesfile = false;
 	sinSonido = false;
+	usarCarta = false;
+	verTablero = false;
 	mouseFirstMoved = true;
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -40,6 +42,8 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	desfilePausado = false;
 	reiniciarDesfile = false;
 	sinSonido = false;
+	usarCarta = false;
+	verTablero = false;
 	mouseFirstMoved = true;
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -144,6 +148,14 @@ bool Window::getreiniciarDesfile()
 	return reiniciar;
 }
 
+//true solo en el frame en que se presiono la I
+bool Window::getusarCarta()
+{
+	bool usar = usarCarta;
+	usarCarta = false;
+	return usar;
+}
+
 //se llama en cada evento de teclado, al presionar, mantener o soltar
 void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode)
 {
@@ -201,6 +213,14 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_M && action == GLFW_PRESS)
 	{
 		theWindow->sinSonido = !theWindow->sinSonido;
+	}
+	if (key == GLFW_KEY_I && action == GLFW_PRESS)
+	{
+		theWindow->usarCarta = true;
+	}
+	if (key == GLFW_KEY_L && action == GLFW_PRESS)
+	{
+		theWindow->verTablero = !theWindow->verTablero;
 	}
 
 	//guarda las teclas presionadas, la camara y el muneco las leen con getsKeys()

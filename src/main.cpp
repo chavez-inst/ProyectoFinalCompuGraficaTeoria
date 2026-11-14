@@ -133,6 +133,17 @@ Texture ropaHombreTexture[numRopas];
 Texture ropaMujerTexture[numRopas];		//mangas, pantorrillas y zapatos, en la textura del hombre
 Texture blusaMujerTexture[numRopas];
 
+//cartas de loteria: el frente, la ficha del reverso y la pista que se ve en el tablero
+const int numCartas = 10;
+Texture frenteCartaTexture[numCartas];
+Texture fichaCartaTexture[numCartas];
+Texture pistaCartaTexture[numCartas];
+Texture avisoTomarTexture;
+Texture avisoVoltearTexture;
+Texture avisoGuardarTexture;
+Texture fondoTableroTexture;
+Texture loteriaTexture;
+
 //uno para la tarde y otro para la noche, segun la tecla N
 Skybox skyboxTarde;
 Skybox skyboxNoche;
@@ -545,6 +556,21 @@ void DibujarModelo(Model& modelo, glm::vec3 posicion, float giro, float escala, 
 	model = glm::scale(model, glm::vec3(escala, escala, escala));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	modelo.RenderModel();
+}
+
+//imagen en la pantalla con la proyeccion ortografica, donde la pantalla mide 2 de alto
+//(x, y) es su centro y el giro la voltea sobre su eje vertical
+void DibujarEnPantalla(Texture& textura, float x, float y, float ancho, float alto, float giro, GLuint uniformModel)
+{
+	glm::mat4 model(1.0);
+	model = glm::translate(model, glm::vec3(x, y, 0.0f));
+	model = glm::rotate(model, giro * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	//el plano tiene la base en el origen, se baja medio alto para centrarlo
+	model = glm::translate(model, glm::vec3(0.0f, -alto / 2.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(ancho, alto, 1.0f));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	textura.UseTexture();
+	meshListModel[7]->RenderMeshModel();
 }
 
 
@@ -1343,6 +1369,46 @@ glm::vec3 PosicionRecorrido(float distancia, float lado)
 	return glm::vec3(punto.x, AlturaPiso(punto.x, punto.y), punto.y);
 }
 
+//---------- cartas de loteria ----------
+//mismo orden que sus imagenes en Textures/cartas y sus audios en Audio/narracion
+const char* temaCarta[numCartas] = { "calenda", "marmota", "china", "torito", "banda",
+	"santo_domingo", "sangre_de_cristo", "kiosco", "alebrije", "tapete" };
+//las del desfile siguen a su personaje, que es su lugar en la fila; las fijas llevan -1
+const int personajeCarta[numCartas] = { -1, 0, 1, 8, 6, -1, -1, -1, -1, -1 };
+//lugar en el piso de las fijas; en las del desfile solo cuenta x, que las aparta a un lado del personaje
+const glm::vec3 lugarCarta[numCartas] = {
+	glm::vec3(28.0f, 0.0f, -135.5f),	//en el atrio, a un lado de por donde sale el desfile
+	glm::vec3(1.2f, 0.0f, 0.0f),		//junto a la marmota, para no chocar con el palo
+	glm::vec3(0.0f, 0.0f, 0.0f),
+	glm::vec3(0.0f, 0.0f, 0.0f),
+	glm::vec3(0.0f, 0.0f, 0.0f),
+	glm::vec3(53.0f, 0.0f, -139.5f),	//frente a la puerta de Santo Domingo
+	glm::vec3(-5.4f, 0.0f, -93.6f),		//en la banqueta frente a la Sangre de Cristo
+	glm::vec3(0.0f, 0.0f, 67.5f),		//entre el kiosco y donde se detiene el desfile
+	glm::vec3(16.0f, 0.0f, -73.5f),		//sobre el petate de los alebrijes
+	glm::vec3(4.7f, 0.0f, -64.25f)		//junto a los puestos de textiles
+};
+//altura de la orilla de abajo; las del desfile van arriba de la cabeza
+const float alturaCarta[numCartas] = { 1.3f, 1.9f, 2.4f, 3.3f, 2.1f, 1.3f, 1.3f, 1.3f, 0.9f, 1.3f };
+//con la misma proporcion que las imagenes
+const float anchoCarta = 0.7f;
+const float altoCarta = 1.07f;
+
+//centro de la orilla de abajo de la carta
+glm::vec3 PosicionCarta(int carta, float distanciaPrimero)
+{
+	int personaje = personajeCarta[carta];
+	if (personaje >= 0)
+	{
+		float distancia = distanciaPrimero - atrasDesfile[personaje];
+		glm::vec3 lugar = PosicionRecorrido(distancia, ladoDesfile[personaje] + lugarCarta[carta].x);
+		return lugar + glm::vec3(0.0f, alturaCarta[carta], 0.0f);
+	}
+	float x = lugarCarta[carta].x;
+	float z = lugarCarta[carta].z;
+	return glm::vec3(x, AlturaPiso(x, z) + alturaCarta[carta], z);
+}
+
 
 int main()
 {
@@ -1555,6 +1621,31 @@ int main()
 		ropaMujerTexture[i].LoadTexture();
 	}
 
+	//cartas de loteria
+	for (int i = 0; i < numCartas; i++)
+	{
+		std::string tema = temaCarta[i];
+		std::string frente = "Textures/cartas/frente_" + tema + ".png";
+		std::string ficha = "Textures/cartas/ficha_" + tema + ".png";
+		std::string pista = "Textures/cartas/pista_" + tema + ".png";
+		frenteCartaTexture[i] = Texture(frente.c_str());
+		frenteCartaTexture[i].LoadTextureA();
+		fichaCartaTexture[i] = Texture(ficha.c_str());
+		fichaCartaTexture[i].LoadTextureA();
+		pistaCartaTexture[i] = Texture(pista.c_str());
+		pistaCartaTexture[i].LoadTextureA();
+	}
+	avisoTomarTexture = Texture("Textures/cartas/aviso_tomar.png");
+	avisoTomarTexture.LoadTextureA();
+	avisoVoltearTexture = Texture("Textures/cartas/aviso_voltear.png");
+	avisoVoltearTexture.LoadTextureA();
+	avisoGuardarTexture = Texture("Textures/cartas/aviso_guardar.png");
+	avisoGuardarTexture.LoadTextureA();
+	fondoTableroTexture = Texture("Textures/cartas/fondo_tablero.png");
+	fondoTableroTexture.LoadTextureA();
+	loteriaTexture = Texture("Textures/cartas/loteria.png");
+	loteriaTexture.LoadTextureA();
+
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/tarde_rt.jpg");
 	skyboxFaces.push_back("Textures/Skybox/tarde_lf.jpg");
@@ -1673,6 +1764,7 @@ int main()
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	GLuint uniformColor = 0;
+	GLuint uniformSinLuz = 0;
 
 	//telones al final de cada calle que cruza, centro de su orilla de abajo
 	const int numTelones = 8;
@@ -1867,6 +1959,10 @@ int main()
 	Sonido campanas = Sonido("Audio/campanas.mp3");
 	Sonido cohete = Sonido("Audio/cohete.mp3");
 	Sonido coheteTrueno = Sonido("Audio/cohete_trueno.mp3");
+	Sonido narracionCarta[numCartas] = { Sonido("Audio/narracion/calenda.mp3"), Sonido("Audio/narracion/marmota.mp3"), Sonido("Audio/narracion/china.mp3"),
+		Sonido("Audio/narracion/torito.mp3"), Sonido("Audio/narracion/banda.mp3"), Sonido("Audio/narracion/santo_domingo.mp3"),
+		Sonido("Audio/narracion/sangre_de_cristo.mp3"), Sonido("Audio/narracion/kiosco.mp3"), Sonido("Audio/narracion/alebrije.mp3"),
+		Sonido("Audio/narracion/tapete.mp3") };
 	if (hayAudio)
 	{
 		for (int i = 0; i < numCanciones; i++)
@@ -1884,11 +1980,31 @@ int main()
 		campanas.PonerPosicion(glm::vec3(60.0f, 22.0f, -139.5f));
 		cohete.CargarSonido(&motorAudio, false, 40.0f);
 		coheteTrueno.CargarSonido(&motorAudio, false, 40.0f);
+		//la narracion se oye igual desde cualquier lugar
+		for (int i = 0; i < numCartas; i++)
+		{
+			narracionCarta[i].CargarSonido(&motorAudio, false, 0.0f);
+		}
 		murmullo.Tocar();
 	}
 
 	//glm::perspective usa radianes, 45.0f da unos 58 grados
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
+	//para lo que va encima de la escena: la pantalla mide 2 de alto y lo que da la proporcion de ancho
+	float aspecto = mainWindow.getBufferWidth() / mainWindow.getBufferHeight();
+	glm::mat4 proyeccionPantalla = glm::ortho(-aspecto, aspecto, -1.0f, 1.0f, -1.0f, 1.0f);
+
+	//---------- cartas ----------
+	bool cartaTomada[numCartas] = { false };
+	int cartasTomadas = 0;
+	int cartaCercana = -1;
+	//0 sin carta en pantalla, 1 se ve el frente y 2 la ficha
+	int estadoCarta = 0;
+	int cartaAbierta = 0;
+	float tiempoCartaAbierta = 0.0f;
+	float giroCartaAbierta = 0.0f;
+	//segundos que falta mostrar el letrero de loteria
+	float tiempoLoteria = 0.0f;
 
 	// ================== 6. CICLO PRINCIPAL ==================
 	//todo lo que esta dentro del while se repite cada frame hasta que se cierra la ventana
@@ -1971,6 +2087,56 @@ int main()
 		camaraDesfile.mirarHacia(PosicionRecorrido(distanciaPrimero + 4.0f, 3.0f) + glm::vec3(0.0f, 3.2f, 0.0f),
 			PosicionRecorrido(distanciaPrimero - 8.0f, 0.0f) + glm::vec3(0.0f, 1.0f, 0.0f));
 
+		//---------- cartas ----------
+		//se puede tomar la carta que falte mas cercana a la camara activa, a menos de 8 m
+		cartaCercana = -1;
+		float distanciaCercana = 8.0f;
+		for (int i = 0; i < numCartas; i++)
+		{
+			glm::vec3 centro = PosicionCarta(i, distanciaPrimero) + glm::vec3(0.0f, altoCarta / 2.0f, 0.0f);
+			float distancia = glm::distance(camaraActual->getCameraPosition(), centro);
+			if (!cartaTomada[i] && distancia < distanciaCercana)
+			{
+				cartaCercana = i;
+				distanciaCercana = distancia;
+			}
+		}
+		//la I toma la carta, luego la voltea para leer la ficha y al final la guarda
+		bool usarCarta = mainWindow.getusarCarta();
+		if (usarCarta && estadoCarta == 0 && cartaCercana >= 0 && !mainWindow.getverTablero())
+		{
+			cartaAbierta = cartaCercana;
+			cartaTomada[cartaAbierta] = true;
+			cartasTomadas++;
+			estadoCarta = 1;
+			tiempoCartaAbierta = 0.0f;
+			giroCartaAbierta = 0.0f;
+		}
+		else if (usarCarta && estadoCarta == 1)
+		{
+			estadoCarta = 2;
+			narracionCarta[cartaAbierta].DesdeInicio();
+		}
+		else if (usarCarta && estadoCarta == 2)
+		{
+			estadoCarta = 0;
+			narracionCarta[cartaAbierta].Pausar();
+			//al guardar la ultima se canta loteria con un cohete
+			if (cartasTomadas == numCartas)
+			{
+				tiempoLoteria = 5.0f;
+				coheteTrueno.PonerPosicion(camaraActual->getCameraPosition() + glm::vec3(0.0f, 15.0f, 0.0f));
+				coheteTrueno.DesdeInicio();
+			}
+		}
+		tiempoCartaAbierta += segundos;
+		//media vuelta en medio segundo
+		if (estadoCarta == 2)
+		{
+			giroCartaAbierta = glm::min(giroCartaAbierta + 360.0f * segundos, 180.0f);
+		}
+		tiempoLoteria = glm::max(tiempoLoteria - segundos, 0.0f);
+
 		//---------- audio ----------
 		if (hayAudio)
 		{
@@ -2014,6 +2180,17 @@ int main()
 				cancionActual = (cancionActual + 1) % numCanciones;
 				cancionesBanda[cancionActual].DesdeInicio();
 			}
+			//mientras se narra una carta, la banda y la gente se oyen bajito
+			if (estadoCarta == 2 && !narracionCarta[cartaAbierta].Termino())
+			{
+				cancionesBanda[cancionActual].PonerVolumen(0.25f);
+				murmullo.PonerVolumen(0.1f);
+			}
+			else
+			{
+				cancionesBanda[cancionActual].PonerVolumen(1.0f);
+				murmullo.PonerVolumen(0.35f);
+			}
 			//en pausa la banda deja de tocar y el torito de echar chispas
 			if (mainWindow.getdesfilePausado())
 			{
@@ -2046,6 +2223,8 @@ int main()
 		uniformView = shaderList[0].GetViewLocation();
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
+		uniformSinLuz = shaderList[0].GetSinLuzLocation();
+		glUniform1i(uniformSinLuz, 0);
 
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
@@ -2403,12 +2582,98 @@ int main()
 		DibujarModelo(alebrijePerrito, glm::vec3(16.45f, yPetate, -73.45f), -10.0f, 1.0f, uniformModel);
 		DibujarModelo(canasta, glm::vec3(15.1f, altoBanqueta, -74.7f), 90.0f, 1.0f, uniformModel);
 
+		//cartas que faltan por tomar, giran y suben y bajan; van sin luz para que se encuentren de noche
+		glUniform1i(uniformSinLuz, 1);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		float giroCartas = now * 60.0f;
+		float subeCartas = sin(now * 2.0f) * 0.08f;
+		for (int i = 0; i < numCartas; i++)
+		{
+			if (!cartaTomada[i])
+			{
+				model = glm::mat4(1.0);
+				model = glm::translate(model, PosicionCarta(i, distanciaPrimero) + glm::vec3(0.0f, subeCartas, 0.0f));
+				model = glm::rotate(model, giroCartas * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+				//el frente y la pista van en dos planos espalda con espalda, separados 1 cm
+				glm::mat4 frente = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.005f));
+				frente = glm::scale(frente, glm::vec3(anchoCarta, altoCarta, 1.0f));
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(frente));
+				frenteCartaTexture[i].UseTexture();
+				meshListModel[7]->RenderMeshModel();
+				glm::mat4 reverso = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+				reverso = glm::translate(reverso, glm::vec3(0.0f, 0.0f, 0.005f));
+				reverso = glm::scale(reverso, glm::vec3(anchoCarta, altoCarta, 1.0f));
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(reverso));
+				pistaCartaTexture[i].UseTexture();
+				meshListModel[7]->RenderMeshModel();
+			}
+		}
+		glUniform1i(uniformSinLuz, 0);
+
 		//fuente al norte del kiosco, a un lado del pasillo del desfile
 		//va aqui porque el agua es transparente
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(7.0f, altoBanqueta, 55.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		fuenteZocalo.RenderModel();
+
+		//---------- cartas en pantalla ----------
+		//van encima de todo: proyeccion ortografica, sin camara, sin luz y sin profundidad
+		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(proyeccionPantalla));
+		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0)));
+		glUniform1i(uniformSinLuz, 1);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glDisable(GL_DEPTH_TEST);
+		if (estadoCarta > 0)
+		{
+			//al tomarla crece rapido; al voltearla se ve el frente hasta los 90 grados y despues la ficha
+			float alto = 1.6f * glm::min(0.3f + tiempoCartaAbierta * 3.0f, 1.0f);
+			float ancho = alto * anchoCarta / altoCarta;
+			if (giroCartaAbierta <= 90.0f)
+			{
+				DibujarEnPantalla(frenteCartaTexture[cartaAbierta], 0.0f, 0.08f, ancho, alto, giroCartaAbierta, uniformModel);
+			}
+			else
+			{
+				DibujarEnPantalla(fichaCartaTexture[cartaAbierta], 0.0f, 0.08f, ancho, alto, giroCartaAbierta - 180.0f, uniformModel);
+			}
+			if (estadoCarta == 1)
+			{
+				DibujarEnPantalla(avisoVoltearTexture, 0.0f, -0.88f, 0.84f, 0.12f, 0.0f, uniformModel);
+			}
+			else
+			{
+				DibujarEnPantalla(avisoGuardarTexture, 0.0f, -0.88f, 0.84f, 0.12f, 0.0f, uniformModel);
+			}
+		}
+		else if (mainWindow.getverTablero())
+		{
+			//tablero de 5 por 2, las tomadas de frente y las que faltan boca abajo con su pista
+			DibujarEnPantalla(fondoTableroTexture, 0.0f, 0.0f, 2.0f * aspecto, 2.0f, 0.0f, uniformModel);
+			for (int i = 0; i < numCartas; i++)
+			{
+				float x = (i % 5 - 2) * 0.6f;
+				float y = 0.45f - (i / 5) * 0.9f;
+				if (cartaTomada[i])
+				{
+					DibujarEnPantalla(frenteCartaTexture[i], x, y, 0.512f, 0.78f, 0.0f, uniformModel);
+				}
+				else
+				{
+					DibujarEnPantalla(pistaCartaTexture[i], x, y, 0.512f, 0.78f, 0.0f, uniformModel);
+				}
+			}
+		}
+		else if (cartaCercana >= 0)
+		{
+			DibujarEnPantalla(avisoTomarTexture, 0.0f, -0.88f, 0.84f, 0.12f, 0.0f, uniformModel);
+		}
+		if (tiempoLoteria > 0.0f)
+		{
+			DibujarEnPantalla(loteriaTexture, 0.0f, 0.0f, 1.6f, 0.625f, 0.0f, uniformModel);
+		}
+		glEnable(GL_DEPTH_TEST);
+		glUniform1i(uniformSinLuz, 0);
 
 		glDisable(GL_BLEND);
 

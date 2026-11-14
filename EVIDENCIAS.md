@@ -200,3 +200,17 @@ La camara 3 ahora sigue al desfile desde un lado, un poco adelante del danzante 
 | ![Marmota](docs/evidencias/desfile/03_marmota.png) | ![Sangre de Cristo](docs/evidencias/desfile/04_sangre_de_cristo.png) |
 | **Desfile de noche, con espectadores y globos** | |
 | ![Noche](docs/evidencias/desfile/05_noche.png) | |
+
+## Cartas de loteria - Informacion cultural y narracion
+
+Para dar informacion de la calenda y del lugar se usan 10 cartas de la loteria mexicana. Cada una flota y gira en su lugar: la de la calenda en el atrio, la de Santo Domingo frente a su puerta, la de la Sangre de Cristo frente al templo, la del Zocalo junto al kiosco, la de los alebrijes sobre su puesto y la de los tapetes junto a los textiles. Las de la marmota, la china, la banda y el torito van con su personaje en el desfile. Por detras tienen una pista de donde estan, y se ven aunque sea de noche porque no les afecta la luz.
+
+Al acercarse a una carta aparece el aviso para tomarla con la I. La carta sale en grande en la pantalla; con otra I se voltea con media vuelta y del otro lado esta su ficha con la informacion, que al mismo tiempo se escucha narrada mientras la banda baja su volumen. Con la tercera I se guarda. La L muestra el tablero con las cartas que ya se tomaron y, de las que faltan, su pista. Al guardar las 10 aparece el letrero de loteria y truena un cohete.
+
+Las cartas en pantalla se dibujan al final con una proyeccion ortografica, encima de todo y sin prueba de profundidad. La media vuelta es un giro sobre el eje vertical: hasta los 90 grados se ve el frente y despues la ficha.
+
+| Carta de la marmota en el desfile (tecla 3) | Carta tomada |
+|---|---|
+| ![Carta en el desfile](docs/evidencias/cartas/01_carta_marmota.png) | ![Frente](docs/evidencias/cartas/02_frente.png) |
+| **Ficha al voltearla** | **Tablero con dos cartas tomadas** |
+| ![Ficha](docs/evidencias/cartas/03_ficha.png) | ![Tablero](docs/evidencias/cartas/04_tablero.png) |

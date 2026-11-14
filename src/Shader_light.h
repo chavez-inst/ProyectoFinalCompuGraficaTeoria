@@ -26,6 +26,7 @@ public:
 	GLuint GetShininessLocation();
 	GLuint GetEyePositionLocation();
 	GLuint getColorLocation();
+	GLuint GetSinLuzLocation();
 
 	//se llama en cada vuelta del while
 	void SetDirectionalLight(DirectionalLight * dLight);
@@ -39,7 +40,7 @@ public:
 
 private:
 	GLuint shaderID, uniformProjection, uniformModel, uniformColor, uniformView, uniformEyePosition,
-		uniformSpecularIntensity, uniformShininess;
+		uniformSpecularIntensity, uniformShininess, uniformSinLuz;
 
 	struct {
 		GLuint uniformcolor;

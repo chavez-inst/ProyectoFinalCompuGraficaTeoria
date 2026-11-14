@@ -43,6 +43,8 @@ El ejecutable queda en `%LOCALAPPDATA%\Proyecto_Final_CG_Teo\<preset>\`.
 | P           | Detener el desfile o hacer que siga |
 | R           | Regresar el desfile al atrio |
 | M           | Quitar o regresar el sonido |
+| I           | Junto a una carta de loteria: tomarla, voltearla para leer su ficha (se escucha la narracion) y guardarla |
+| L           | Ver u ocultar el tablero con las cartas tomadas y las pistas de las que faltan |
 | ESC         | Cerrar                       |
 
 Capturas de cada fase del proyecto: [EVIDENCIAS.md](EVIDENCIAS.md).

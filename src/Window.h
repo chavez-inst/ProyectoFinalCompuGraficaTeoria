@@ -20,6 +20,8 @@ public:
 	bool getdesfilePausado() { return desfilePausado; }
 	bool getreiniciarDesfile();
 	bool getsinSonido() { return sinSonido; }
+	bool getusarCarta();
+	bool getverTablero() { return verTablero; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -47,6 +49,9 @@ private:
 	bool reiniciarDesfile;
 	//la M apaga y prende todo el audio
 	bool sinSonido;
+	//la I toma, voltea y guarda una carta; la L abre y cierra el tablero
+	bool usarCarta;
+	bool verTablero;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);

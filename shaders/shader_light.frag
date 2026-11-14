@@ -57,6 +57,8 @@ uniform sampler2D theTexture;
 uniform Material material;
 
 uniform vec3 eyePosition;
+//en 1 el objeto se ve con su textura tal cual, sin luz; lo usan las cartas
+uniform int sinLuz;
 
 //modelo de Phong, suma ambiental, difusa y especular
 vec4 CalcLightByDirection(Light light, vec3 direction)
@@ -156,5 +158,8 @@ void main()
 	if (colorTextura.a < 0.1)
 		discard;
 	//textura por color del objeto, por la luz que le llega
-	color = colorTextura*vColor*finalcolor;
+	if (sinLuz == 1)
+		color = colorTextura*vColor;
+	else
+		color = colorTextura*vColor*finalcolor;
 }

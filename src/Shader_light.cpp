@@ -7,6 +7,7 @@ Shader::Shader()
 	uniformModel = 0;
 	uniformProjection = 0;
 	uniformColor = 0;
+	uniformSinLuz = 0;
 }
 
 void Shader::CreateFromFiles(const char* vertexLocation, const char* fragmentLocation)
@@ -88,6 +89,7 @@ void Shader::CompileShader(const char* vertexCode, const char* fragmentCode)
 	uniformShininess = glGetUniformLocation(shaderID, "material.shininess");
 	uniformEyePosition = glGetUniformLocation(shaderID, "eyePosition");
 	uniformColor = glGetUniformLocation(shaderID, "color");
+	uniformSinLuz = glGetUniformLocation(shaderID, "sinLuz");
 
 	uniformPointLightCount = glGetUniformLocation(shaderID, "pointLightCount");
 
@@ -183,6 +185,10 @@ GLuint Shader::getColorLocation()
 {
 	return uniformColor;
 }
+GLuint Shader::GetSinLuzLocation()
+{
+	return uniformSinLuz;
+}
 void Shader::SetDirectionalLight(DirectionalLight * dLight)
 {
 	dLight->UseLight(uniformDirectionalLight.uniformAmbientIntensity, uniformDirectionalLight.uniformcolor,
@@ -237,6 +243,7 @@ void Shader::ClearShader()
 	uniformProjection = 0;
 	uniformColor = 0;
 	uniformView = 0;
+	uniformSinLuz = 0;
 
 }
 
