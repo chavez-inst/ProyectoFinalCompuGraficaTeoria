@@ -14,6 +14,9 @@ Window::Window()
 	esNoche = false;
 	camaraActiva = 0;
 	soltarCamara = false;
+	desfilePausado = false;
+	reiniciarDesfile = false;
+	sinSonido = false;
 	mouseFirstMoved = true;
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -34,6 +37,9 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	esNoche = false;
 	camaraActiva = 0;
 	soltarCamara = false;
+	desfilePausado = false;
+	reiniciarDesfile = false;
+	sinSonido = false;
 	mouseFirstMoved = true;
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -130,6 +136,14 @@ bool Window::getsoltarCamara()
 	return soltar;
 }
 
+//regresa si se presiono R y lo reinicia
+bool Window::getreiniciarDesfile()
+{
+	bool reiniciar = reiniciarDesfile;
+	reiniciarDesfile = false;
+	return reiniciar;
+}
+
 //se llama en cada evento de teclado, al presionar, mantener o soltar
 void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode)
 {
@@ -175,6 +189,18 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow->soltarCamara = true;
 		theWindow->camaraActiva = 0;
+	}
+	if (key == GLFW_KEY_P && action == GLFW_PRESS)
+	{
+		theWindow->desfilePausado = !theWindow->desfilePausado;
+	}
+	if (key == GLFW_KEY_R && action == GLFW_PRESS)
+	{
+		theWindow->reiniciarDesfile = true;
+	}
+	if (key == GLFW_KEY_M && action == GLFW_PRESS)
+	{
+		theWindow->sinSonido = !theWindow->sinSonido;
 	}
 
 	//guarda las teclas presionadas, la camara y el muneco las leen con getsKeys()

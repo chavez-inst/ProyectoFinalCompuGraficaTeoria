@@ -40,6 +40,9 @@ El ejecutable queda en `%LOCALAPPDATA%\Proyecto_Final_CG_Teo\<preset>\`.
 | C           | Pasar a la siguiente camara |
 | F           | Soltar la camara fija: la libre sigue desde ese mismo lugar |
 | N           | Cambiar entre atardecer y noche |
+| P           | Detener el desfile o hacer que siga |
+| R           | Regresar el desfile al atrio |
+| M           | Quitar o regresar el sonido |
 | ESC         | Cerrar                       |
 
 Capturas de cada fase del proyecto: [EVIDENCIAS.md](EVIDENCIAS.md).
@@ -68,7 +71,9 @@ ProyectoFinalCompuGraficaTeoria/
 |   |-- DirectionalLight.h/.cpp<- luz tipo sol
 |   |-- PointLight.h/.cpp      <- luz tipo foco
 |   |-- SpotLight.h/.cpp       <- luz tipo linterna (cono)
-|   `-- Material.h/.cpp        <- brillo especular de los objetos
+|   |-- Material.h/.cpp        <- brillo especular de los objetos
+|   |-- Sonido.h/.cpp          <- un audio: tocar, pausar, en bucle y desde un lugar de la escena
+|   `-- miniaudio.cpp          <- compila el codigo de miniaudio (la libreria de audio)
 |
 |-- shaders/
 |   |-- shader_light.vert/.frag<- shader de todos los objetos (Phong con texturas)
@@ -78,10 +83,11 @@ ProyectoFinalCompuGraficaTeoria/
 |-- Textures/                  <- TODAS las imagenes (tambien las texturas de los modelos)
 |   |-- plain.png              <- textura blanca, se usa si un modelo no tiene textura (no borrar)
 |   `-- Skybox/                <- las 6 caras del skybox
+|-- Audio/                     <- musica de banda, murmullo, campanas y cohetes (.mp3 y .flac)
 |
 |-- Librerias/   (NO esta en GitHub, viene en Librerias.zip)
 |   |-- glm/                   <- matematicas (vectores, matrices)
-|   |-- include/               <- headers de GLEW, GLFW, Assimp y stb_image
+|   |-- include/               <- headers de GLEW, GLFW, Assimp, stb_image y miniaudio
 |   |-- lib/                   <- .lib para el linker
 |   `-- dll/                   <- DLLs, se copian solas a build/ al compilar
 |
@@ -89,7 +95,7 @@ ProyectoFinalCompuGraficaTeoria/
 ```
 
 En el Explorador de soluciones de VS los archivos estan agrupados en carpetas virtuales:
-**Escena** (main.cpp), **Base**, **Graficos**, **Iluminacion** y **Shaders**.
+**Escena** (main.cpp), **Base**, **Graficos**, **Iluminacion**, **Audio** y **Shaders**.
 
 ### Como esta acomodado main.cpp
 
@@ -103,7 +109,7 @@ Esta dividido en 6 bloques marcados con `// ==================`:
    para dibujar bloques de color, como los tinacos.
 4. **Personajes del desfile**: los KeyFrames (`animate`, `interpolation`, como en el laboratorio), el hombre por piezas
    (`DibujarHombre`, con `PoseBrazo` y `PosePersona`), cada personaje (`DibujarDanzanteMarmota`, `DibujarChina`,
-   `DibujarMusico`, `DibujarTorito`, `DibujarEspectador`) y el recorrido del desfile (`PuntoRecorrido`, `PosicionRecorrido`).
+   `DibujarMusico`, `DibujarTorito`, `DibujarEspectador`, `DibujarEspectadora`, `DibujarGlobos`) y el recorrido del desfile (`PuntoRecorrido`, `PosicionRecorrido`).
 5. **Carga de recursos** (dentro de `main`): se cargan texturas, modelos, skybox, materiales y luces.
 6. **Ciclo principal** (el `while`): se dibuja todo cada frame. Primero los objetos opacos y al final los transparentes.
 

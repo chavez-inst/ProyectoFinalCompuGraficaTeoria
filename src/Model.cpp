@@ -66,6 +66,15 @@ void Model::RenderModel()
 	}
 }
 
+void Model::RenderModel(Texture& textura)
+{
+	textura.UseTexture();
+	for (unsigned int i = 0; i < MeshList.size(); i++)
+	{
+		MeshList[i]->RenderMeshModel();
+	}
+}
+
 
 Model::~Model()
 {

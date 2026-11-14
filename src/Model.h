@@ -16,6 +16,7 @@ public:
 
 	void LoadModel(const std::string& fileName);
 	void RenderModel();
+	void RenderModel(Texture& textura); //todas las mallas con otra textura, para la misma pieza con otra ropa
 	void ClearModel(); //despues de esto ya no se puede dibujar
 
 	~Model();

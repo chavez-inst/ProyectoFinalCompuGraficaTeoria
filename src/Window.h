@@ -17,6 +17,9 @@ public:
 	bool getesNoche() { return esNoche; }
 	int getcamaraActiva() { return camaraActiva; }
 	bool getsoltarCamara();
+	bool getdesfilePausado() { return desfilePausado; }
+	bool getreiniciarDesfile();
+	bool getsinSonido() { return sinSonido; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -39,6 +42,11 @@ private:
 	int camaraActiva;
 	//true al soltar una camara fija con F
 	bool soltarCamara;
+	//la P detiene y continua el desfile, la R lo regresa al atrio
+	bool desfilePausado;
+	bool reiniciarDesfile;
+	//la M apaga y prende todo el audio
+	bool sinSonido;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);

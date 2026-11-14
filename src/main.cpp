@@ -24,6 +24,7 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Material.h"
+#include "Sonido.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -121,6 +122,16 @@ Model toritoRueda;
 Model toritoChispa;
 Model trompeta;			//la boquilla en el origen, apunta hacia Z positivo
 Model globo;			//blanco para pintarlo de color, origen en la punta del hilo
+//espectadores: el hombre usa las piezas del desfile con otra ropa y la mujer el torso de la china
+Model transeunteTorso;	//el torso del hombre sin paliacate
+Model mujerFalda;		//blanca para pintarla de color
+
+//ropa de cada variante; la falda de la primera china y la primera blusa son las de su modelo
+const int numRopas = 4;
+Texture faldaChinaTexture[numRopas];
+Texture ropaHombreTexture[numRopas];
+Texture ropaMujerTexture[numRopas];		//mangas, pantorrillas y zapatos, en la textura del hombre
+Texture blusaMujerTexture[numRopas];
 
 //uno para la tarde y otro para la noche, segun la tecla N
 Skybox skyboxTarde;
@@ -929,10 +940,20 @@ const glm::vec3 palmaDer = glm::vec3(-0.2278f, -0.2714f, 0.0777f);
 //los brazos del modelo vienen abiertos 34 grados, con este giro quedan colgando
 const float aperturaModelo = 34.0f;
 
+//ropa del personaje que se esta dibujando; con nullptr cada pieza usa la textura de su modelo
+Texture* ropaActual = nullptr;
+
 void DibujarPieza(Model& pieza, glm::mat4 model, GLuint uniformModel)
 {
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-	pieza.RenderModel();
+	if (ropaActual == nullptr)
+	{
+		pieza.RenderModel();
+	}
+	else
+	{
+		pieza.RenderModel(*ropaActual);
+	}
 }
 
 //la china usa los mismos brazos un poco mas chicos y en otro hombro
@@ -994,7 +1015,15 @@ void DibujarPierna(glm::mat4 torso, bool izquierda, float cadera, float rodilla,
 void DibujarHombre(glm::mat4 base, PosePersona pose, glm::mat4& torso, glm::mat4& cabeza, GLuint uniformModel)
 {
 	torso = glm::translate(base, glm::vec3(0.0f, pose.altoCintura, zCintura));
-	DibujarPieza(hombreTorso, torso, uniformModel);
+	//con otra ropa va el torso sin paliacate, que tiene su propia textura
+	if (ropaActual == nullptr)
+	{
+		DibujarPieza(hombreTorso, torso, uniformModel);
+	}
+	else
+	{
+		DibujarPieza(transeunteTorso, torso, uniformModel);
+	}
 
 	cabeza = glm::translate(torso, posCuello);
 	cabeza = glm::rotate(cabeza, pose.cabezaGiro * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1073,7 +1102,9 @@ void DibujarChina(glm::mat4 base, int cual, float tiempo, GLuint uniformModel)
 	model = glm::rotate(model, 3.0f * sin(2.0f * vaiven) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 	float abre = 1.0f + 0.04f * sin(2.0f * vaiven);
 	model = glm::scale(model, glm::vec3(abre, 1.0f, abre));
+	ropaActual = &faldaChinaTexture[cual];
 	DibujarPieza(chinaFalda, model, uniformModel);
+	ropaActual = nullptr;
 
 	model = glm::translate(torso, glm::vec3(0.0f, 0.521f, 0.0f));
 	DibujarPieza(chinaCanasta, model, uniformModel);
@@ -1157,34 +1188,73 @@ void DibujarTorito(glm::mat4 base, float fase, bool caminando, float tiempo, GLu
 	}
 }
 
-//saluda con el brazo derecho y voltea la cabeza; con globos, tres globos suben y bajan a su lado
+//los espectadores saludan con el brazo derecho; la mano va y viene dos veces por cada vez que voltean
+PoseBrazo PoseSaludo(float vuelta)
+{
+	PoseBrazo saludo = { 10.0f, 130.0f, 20.0f, 30.0f * sin(2.0f * vuelta), 0.0f };
+	return saludo;
+}
+
+//el hombre usa las piezas del desfile con otra ropa y voltea la cabeza
+void DibujarEspectador(glm::mat4 base, float tiempo, int ropa, GLuint uniformModel)
+{
+	float vuelta = tiempo * 3.1416f;
+	PosePersona pose = poseParado;
+	pose.brazoDer = PoseSaludo(vuelta);
+	pose.cabezaGiro = 15.0f * sin(vuelta);
+	glm::mat4 torso, cabeza;
+	ropaActual = &ropaHombreTexture[ropa];
+	DibujarHombre(base, pose, torso, cabeza, uniformModel);
+	ropaActual = nullptr;
+}
+
+//la mujer usa el torso de la china con otra blusa, los brazos y las pantorrillas del hombre y una falda lisa
+//como su cabeza va pegada al torso, voltea todo el cuerpo de la cintura para arriba
+const glm::vec3 coloresFaldaMujer[numRopas] = {
+	glm::vec3(0.2f, 0.25f, 0.45f), glm::vec3(0.2f, 0.2f, 0.22f), glm::vec3(0.45f, 0.3f, 0.2f), glm::vec3(0.2f, 0.4f, 0.3f)
+};
+const PoseBrazo brazoColgando = { 0.0f, 12.0f, 10.0f, 0.0f, 0.0f };
+void DibujarEspectadora(glm::mat4 base, float tiempo, int ropa, GLuint uniformModel, GLuint uniformColor)
+{
+	float vuelta = tiempo * 3.1416f;
+	ropaActual = &ropaMujerTexture[ropa];
+	//las rodillas quedan escondidas bajo la falda, que llega a 40 cm del piso
+	glm::mat4 model = glm::translate(base, glm::vec3(0.09f, 0.432f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.9f, 0.9f, 0.9f));
+	DibujarPieza(hombrePiernaIzq, model, uniformModel);
+	model = glm::translate(base, glm::vec3(-0.09f, 0.432f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.9f, 0.9f, 0.9f));
+	DibujarPieza(hombrePiernaDer, model, uniformModel);
+
+	glm::mat4 cintura = glm::translate(base, glm::vec3(0.0f, 1.1f, 0.0f));
+	glm::mat4 torso = glm::rotate(cintura, 10.0f * sin(vuelta) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	DibujarBrazo(torso, glm::vec3(0.155f, 0.2f, 0.0f), true, brazoColgando, 0.9f, uniformModel);
+	DibujarBrazo(torso, glm::vec3(-0.155f, 0.2f, 0.0f), false, PoseSaludo(vuelta), 0.9f, uniformModel);
+	ropaActual = &blusaMujerTexture[ropa];
+	DibujarPieza(chinaTorso, torso, uniformModel);
+	ropaActual = nullptr;
+
+	glUniform3fv(uniformColor, 1, glm::value_ptr(coloresFaldaMujer[ropa]));
+	DibujarPieza(mujerFalda, cintura, uniformModel);
+	glUniform3fv(uniformColor, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+}
+
+//tres globos que suben y bajan junto al espectador
 const glm::vec3 coloresGlobo[3] = {
 	glm::vec3(0.9f, 0.2f, 0.3f), glm::vec3(0.2f, 0.5f, 0.9f), glm::vec3(0.95f, 0.8f, 0.2f)
 };
-void DibujarEspectador(glm::mat4 base, float tiempo, bool conGlobos, GLuint uniformModel, GLuint uniformColor)
+void DibujarGlobos(glm::mat4 base, float tiempo, GLuint uniformModel, GLuint uniformColor)
 {
-	PosePersona pose = poseParado;
-	//la mano va y viene dos veces por cada vez que voltea la cabeza
-	float vuelta = tiempo * 3.1416f;
-	PoseBrazo saludo = { 10.0f, 130.0f, 20.0f, 30.0f * sin(2.0f * vuelta), 0.0f };
-	pose.brazoDer = saludo;
-	pose.cabezaGiro = 15.0f * sin(vuelta);
-	glm::mat4 torso, cabeza;
-	DibujarHombre(base, pose, torso, cabeza, uniformModel);
-
-	if (conGlobos)
+	for (int i = 0; i < 3; i++)
 	{
-		for (int i = 0; i < 3; i++)
-		{
-			//cada globo sube 2 m y vuelve a bajar en 6 segundos, cada uno en otro momento
-			float s = 0.5f - 0.5f * cos(2.0f * 3.1416f * (tiempo / 6.0f + i / 3.0f));
-			glm::mat4 model = glm::translate(base, glm::vec3(0.7f + 0.25f * i + 0.1f * sin(4.0f * 3.1416f * s), 0.6f + 2.0f * s, 0.4f * i - 0.4f));
-			model = glm::rotate(model, 8.0f * sin(2.0f * 3.1416f * (2.0f * s + i)) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-			glUniform3fv(uniformColor, 1, glm::value_ptr(coloresGlobo[i]));
-			DibujarPieza(globo, model, uniformModel);
-		}
-		glUniform3fv(uniformColor, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+		//cada globo sube 2 m y vuelve a bajar en 6 segundos, cada uno en otro momento
+		float s = 0.5f - 0.5f * cos(2.0f * 3.1416f * (tiempo / 6.0f + i / 3.0f));
+		glm::mat4 model = glm::translate(base, glm::vec3(0.7f + 0.25f * i + 0.1f * sin(4.0f * 3.1416f * s), 0.6f + 2.0f * s, 0.4f * i - 0.4f));
+		model = glm::rotate(model, 8.0f * sin(2.0f * 3.1416f * (2.0f * s + i)) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(coloresGlobo[i]));
+		DibujarPieza(globo, model, uniformModel);
 	}
+	glUniform3fv(uniformColor, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
 }
 
 // ---------- recorrido del desfile ----------
@@ -1457,6 +1527,33 @@ int main()
 	trompeta.LoadModel("Models/trompeta.obj");
 	globo = Model();
 	globo.LoadModel("Models/globo.obj");
+	transeunteTorso = Model();
+	transeunteTorso.LoadModel("Models/transeunte_torso.obj");
+	mujerFalda = Model();
+	mujerFalda.LoadModel("Models/mujer_falda.obj");
+
+	//Texture guarda el nombre sin copiarlo, por eso cada nombre se arma en su variable y se carga enseguida
+	for (int i = 0; i < numRopas; i++)
+	{
+		std::string numero = std::to_string(i + 1);
+		std::string falda = "Textures/china_falda_" + numero + ".jpg";
+		std::string blusa = "Textures/blusa_mujer_" + numero + ".jpg";
+		if (i == 0)
+		{
+			falda = "Textures/china_falda.jpg";
+			blusa = "Textures/china_cuerpo.jpg";
+		}
+		std::string ropaHombre = "Textures/ropa_hombre_" + numero + ".jpg";
+		std::string ropaMujer = "Textures/ropa_mujer_" + numero + ".jpg";
+		faldaChinaTexture[i] = Texture(falda.c_str());
+		faldaChinaTexture[i].LoadTexture();
+		blusaMujerTexture[i] = Texture(blusa.c_str());
+		blusaMujerTexture[i].LoadTexture();
+		ropaHombreTexture[i] = Texture(ropaHombre.c_str());
+		ropaHombreTexture[i].LoadTexture();
+		ropaMujerTexture[i] = Texture(ropaMujer.c_str());
+		ropaMujerTexture[i].LoadTexture();
+	}
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/tarde_rt.jpg");
@@ -1712,6 +1809,19 @@ int main()
 		0.0f, 0.0f,
 		90.0f, 90.0f
 	};
+	//mujeres y hombres revueltos, cada uno con una de las cuatro ropas
+	bool esMujer[numEspectadores] = {
+		false, true, true, false, false, true, false,
+		true, false, true, true, false,
+		true, false,
+		false, true
+	};
+	int ropaEspectadores[numEspectadores] = {
+		0, 1, 3, 2, 1, 0, 3,
+		2, 3, 0, 2, 0,
+		1, 2,
+		3, 3
+	};
 
 	//cuadros clave de la china: brazo abajo, mete la mano a la canasta, lanza el dulce al frente,
 	//vuelve abajo y descansa; los valores son adelante, abre y codo del brazo derecho
@@ -1738,6 +1848,44 @@ int main()
 	const float largoRecorrido = LargoRecorrido();
 	const float inicioDesfile = atrasDesfile[numDesfile - 1];
 	float avanceDesfile = inicioDesfile;	//metros que lleva el primero de la fila
+	//reloj propio del desfile, se detiene con la pausa para que todo se quede quieto
+	float tiempoDesfile = 0.0f;
+	//true en el frame en que el desfile sale del atrio y cuando llega frente al kiosco
+	bool empiezaDesfile = true;
+	bool desfileLlego = false;
+
+	//---------- audio ----------
+	//el motor de miniaudio manda todo a las bocinas; si no hay bocinas el programa sigue sin sonido
+	ma_engine motorAudio;
+	bool hayAudio = ma_engine_init(NULL, &motorAudio) == MA_SUCCESS;
+	//la banda toca sus canciones una tras otra desde donde van los musicos
+	const int numCanciones = 2;
+	Sonido cancionesBanda[numCanciones] = { Sonido("Audio/banda_son_calenda.mp3"), Sonido("Audio/banda_dios_nunca_muere.mp3") };
+	int cancionActual = 0;
+	Sonido murmullo = Sonido("Audio/murmullo.flac");
+	Sonido chispasTorito = Sonido("Audio/chispas_torito.flac");
+	Sonido campanas = Sonido("Audio/campanas.mp3");
+	Sonido cohete = Sonido("Audio/cohete.mp3");
+	Sonido coheteTrueno = Sonido("Audio/cohete_trueno.mp3");
+	if (hayAudio)
+	{
+		for (int i = 0; i < numCanciones; i++)
+		{
+			cancionesBanda[i].CargarSonido(&motorAudio, false, 12.0f);
+		}
+		//el murmullo de la gente se oye igual en toda la escena
+		murmullo.CargarSonido(&motorAudio, true, 0.0f);
+		murmullo.PonerVolumen(0.35f);
+		chispasTorito.CargarSonido(&motorAudio, true, 3.0f);
+		chispasTorito.PonerVolumen(0.5f);
+		campanas.CargarSonido(&motorAudio, false, 60.0f);
+		campanas.PonerVolumen(0.8f);
+		//las campanas suenan desde las torres de Santo Domingo
+		campanas.PonerPosicion(glm::vec3(60.0f, 22.0f, -139.5f));
+		cohete.CargarSonido(&motorAudio, false, 40.0f);
+		coheteTrueno.CargarSonido(&motorAudio, false, 40.0f);
+		murmullo.Tocar();
+	}
 
 	//glm::perspective usa radianes, 45.0f da unos 58 grados
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
@@ -1790,23 +1938,94 @@ int main()
 		}
 
 		//el desfile avanza; frente al kiosco se queda quieto unos segundos y vuelve a empezar
-		avanceDesfile += velocidadDesfile * segundos;
-		if (avanceDesfile > largoRecorrido + velocidadDesfile * esperaDesfile)
+		if (mainWindow.getreiniciarDesfile())
 		{
 			avanceDesfile = inicioDesfile;
+			empiezaDesfile = true;
+			//con la R la banda tambien vuelve a su primera cancion
+			cancionesBanda[cancionActual].Pausar();
+			cancionActual = 0;
+			cancionesBanda[cancionActual].DesdeInicio();
 		}
-		bool desfileCaminando = avanceDesfile < largoRecorrido;
-		for (int i = 0; i < numChinas; i++)
+		if (!mainWindow.getdesfilePausado())
 		{
-			animate(animChina[i], deltaTime);
+			tiempoDesfile += segundos;
+			avanceDesfile += velocidadDesfile * segundos;
+			if (avanceDesfile > largoRecorrido + velocidadDesfile * esperaDesfile)
+			{
+				avanceDesfile = inicioDesfile;
+				empiezaDesfile = true;
+			}
+			for (int i = 0; i < numChinas; i++)
+			{
+				animate(animChina[i], deltaTime);
+			}
+			animate(animMarmota, deltaTime);
+			ActualizarDulces(segundos);
 		}
-		animate(animMarmota, deltaTime);
-		ActualizarDulces(segundos);
+		//en pausa tambien se dejan de mover las piernas
+		bool desfileCaminando = avanceDesfile < largoRecorrido && !mainWindow.getdesfilePausado();
 
 		//la camara del desfile va adelante y a la izquierda del primero, viendo hacia la mitad de la fila
 		float distanciaPrimero = glm::min(avanceDesfile, largoRecorrido);
 		camaraDesfile.mirarHacia(PosicionRecorrido(distanciaPrimero + 4.0f, 3.0f) + glm::vec3(0.0f, 3.2f, 0.0f),
 			PosicionRecorrido(distanciaPrimero - 8.0f, 0.0f) + glm::vec3(0.0f, 1.0f, 0.0f));
+
+		//---------- audio ----------
+		if (hayAudio)
+		{
+			//el oido va en la camara activa, asi con cada camara se oye distinto
+			glm::vec3 oido = camaraActual->getCameraPosition();
+			glm::vec3 mira = camaraActual->getCameraDirection();
+			ma_engine_listener_set_position(&motorAudio, 0, oido.x, oido.y, oido.z);
+			ma_engine_listener_set_direction(&motorAudio, 0, mira.x, mira.y, mira.z);
+			if (mainWindow.getsinSonido())
+			{
+				ma_engine_set_volume(&motorAudio, 0.0f);
+			}
+			else
+			{
+				ma_engine_set_volume(&motorAudio, 1.0f);
+			}
+
+			//al salir del atrio repican las campanas y truena un cohete
+			if (empiezaDesfile)
+			{
+				campanas.DesdeInicio();
+				cohete.PonerPosicion(PosicionRecorrido(0.0f, 0.0f) + glm::vec3(0.0f, 15.0f, 0.0f));
+				cohete.DesdeInicio();
+				empiezaDesfile = false;
+				desfileLlego = false;
+			}
+			//al llegar frente al kiosco truena otro
+			if (avanceDesfile >= largoRecorrido && !desfileLlego)
+			{
+				coheteTrueno.PonerPosicion(PosicionRecorrido(largoRecorrido, 0.0f) + glm::vec3(0.0f, 15.0f, 0.0f));
+				coheteTrueno.DesdeInicio();
+				desfileLlego = true;
+			}
+
+			//la musica sale del musico de en medio y las chispas del torito
+			cancionesBanda[cancionActual].PonerPosicion(PosicionRecorrido(distanciaPrimero - atrasDesfile[6], 0.0f) + glm::vec3(0.0f, 1.5f, 0.0f));
+			chispasTorito.PonerPosicion(PosicionRecorrido(distanciaPrimero - atrasDesfile[8], 0.0f) + glm::vec3(0.0f, 2.0f, 0.0f));
+			//al acabar una cancion empieza la otra
+			if (cancionesBanda[cancionActual].Termino())
+			{
+				cancionActual = (cancionActual + 1) % numCanciones;
+				cancionesBanda[cancionActual].DesdeInicio();
+			}
+			//en pausa la banda deja de tocar y el torito de echar chispas
+			if (mainWindow.getdesfilePausado())
+			{
+				cancionesBanda[cancionActual].Pausar();
+				chispasTorito.Pausar();
+			}
+			else
+			{
+				cancionesBanda[cancionActual].Tocar();
+				chispasTorito.Tocar();
+			}
+		}
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1965,16 +2184,16 @@ int main()
 			}
 			else if (tipoDesfile[i] == CHINA)
 			{
-				DibujarChina(model, numChina, now, uniformModel);
+				DibujarChina(model, numChina, tiempoDesfile, uniformModel);
 				numChina++;
 			}
 			else if (tipoDesfile[i] == MUSICO)
 			{
-				DibujarMusico(model, fase, desfileCaminando, now + i * 0.7f, uniformModel);
+				DibujarMusico(model, fase, desfileCaminando, tiempoDesfile + i * 0.7f, uniformModel);
 			}
 			else
 			{
-				DibujarTorito(model, fase, desfileCaminando, now, uniformModel);
+				DibujarTorito(model, fase, desfileCaminando, tiempoDesfile, uniformModel);
 			}
 		}
 
@@ -1983,7 +2202,18 @@ int main()
 			model = glm::mat4(1.0);
 			model = glm::translate(model, posicionEspectadores[i]);
 			model = glm::rotate(model, giroEspectadores[i] * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-			DibujarEspectador(model, now + i * 0.9f, i % 2 == 0, uniformModel, uniformColor);
+			if (esMujer[i])
+			{
+				DibujarEspectadora(model, now + i * 0.9f, ropaEspectadores[i], uniformModel, uniformColor);
+			}
+			else
+			{
+				DibujarEspectador(model, now + i * 0.9f, ropaEspectadores[i], uniformModel);
+			}
+			if (i % 2 == 0)
+			{
+				DibujarGlobos(model, now + i * 0.9f, uniformModel, uniformColor);
+			}
 		}
 
 		// ---------- objetos con transparencia ----------
@@ -2187,5 +2417,10 @@ int main()
 		mainWindow.swapBuffers();
 	}
 
+	//el audio se detiene antes de que se borren los sonidos al salir de main
+	if (hayAudio)
+	{
+		ma_engine_stop(&motorAudio);
+	}
 	return 0;
 }
