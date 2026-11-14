@@ -25,7 +25,6 @@ El usuario puede caminar libremente por la escena, cambiar entre cinco cámaras,
 
 \begin{itemize}
   \item \textbf{Recorrido.} La propuesta planteaba un circuito cerrado frente a Santo Domingo. Al comparar con fotos y mapas del lugar real se vio que un óvalo no se parecía a Oaxaca, así que el 2 de noviembre la escena se cambió al andador Macedonio Alcalá, que es por donde pasa la calenda. El desfile ahora va en una sola dirección, del atrio al Zócalo.
-  \item \textbf{Equipo.} La propuesta era de dos integrantes y el proyecto se terminó de forma individual (ver la sección \ref{sec:roles}).
   \item \textbf{Cámaras.} Además de las tres de la propuesta (libre, fachada y desfile) se agregaron la del Zócalo y una aérea, y una tecla para soltar una cámara fija y seguir caminando desde ahí.
 \end{itemize}
 
@@ -152,6 +151,7 @@ La base del código es la del laboratorio de la materia, con las mismas clases. 
     stb\_image & Leer las imágenes jpg y png de las texturas \\ \hline
     Visual Studio 2026 & Compilador y depurador. Es el entorno del curso y donde se entrega el proyecto \\ \hline
     VS Code y CMake & Editor y compilación desde la terminal; se usó en la última parte del desarrollo porque es más ligero. El proyecto de Visual Studio se mantiene igual \\ \hline
+    GIMP & Ajustes a las texturas: color, recortes, orillas y transparencias. Fue el editor de imágenes principal, como se planeó en la propuesta \\ \hline
     Blender 5.2 & Revisar, escalar, reducir y convertir a \texttt{.obj} los modelos de internet, y armar los edificios a partir de fotos \\ \hline
     Git y GitHub & Control de versiones; cada fase terminada es un commit \\ \hline
     LaTeX & Reporte de avances y estos manuales \\ \hline
@@ -161,11 +161,11 @@ La base del código es la del laboratorio de la materia, con las mismas clases. 
 
 \subsection{Comparación con lo planeado}
 
-En la propuesta se compararon Blender, Maya y 3ds Max para modelado; OpenGL, Unity y Unreal para el desarrollo; y GIMP, Photoshop y Krita para las texturas. Se mantuvieron Blender y OpenGL con C++. Blender por ser gratuito y por exportar \texttt{.obj} con normales y coordenadas de textura, que es lo que lee Assimp; OpenGL porque es lo que se vio en la materia y obliga a entender cómo funciona cada parte (luces, cámaras, transformaciones) en lugar de dejárselo a un motor.
+En la propuesta se compararon Blender, Maya y 3ds Max para modelado; OpenGL, Unity y Unreal para el desarrollo; y GIMP, Photoshop y Krita para las texturas. Se mantuvieron las tres elegidas: Blender, OpenGL con C++ y GIMP. Blender por ser gratuito y por exportar \texttt{.obj} con normales y coordenadas de textura, que es lo que lee Assimp; OpenGL porque es lo que se vio en la materia y obliga a entender cómo funciona cada parte (luces, cámaras, transformaciones) en lugar de dejárselo a un motor.
 
 Lo que se agregó fue VS Code con CMake: el proyecto en Google Drive hacía que Visual Studio fallara al escribir archivos temporales en la carpeta sincronizada, y CMake deja los archivos de compilación fuera de Drive.
 
-\pendiente{confirmar qué editor de imágenes se usó al final para las texturas (en la propuesta se eligió GIMP) y corregir la tabla.}
+
 
 % =====================================================================
 \section{Técnicas de computación gráfica}
@@ -301,10 +301,10 @@ En la propuesta el trabajo se repartió en siete semanas, del 6 de octubre al 23
   \item \textbf{El escenario se adelantó y los personajes se atrasaron.} La propuesta ponía los personajes en la tercera semana. Se decidió primero tener la escena completa (calles, edificios, luces y cámaras), porque el recorrido y las posiciones de los personajes dependen de ella.
   \item \textbf{Rediseño de la escena.} El 2 de noviembre se cambió el circuito por el andador Macedonio Alcalá. Esto obligó a rehacer los pisos, las casas y las posiciones de todo, pero hizo que la escena se pareciera al lugar real.
   \item \textbf{Modelos y texturas tomaron más tiempo.} Los edificios se armaron a partir de fotos y cada modelo de internet se revisó, se ajustó y se probó con la luz del programa antes de usarlo. Las texturas se retocaron al final para que todas tuvieran el mismo estilo.
-  \item \textbf{Pausa del 22 de octubre al 1 de noviembre.}
+  \item \textbf{Pausa del 22 de octubre al 1 de noviembre.} En esas dos semanas no se avanzó porque hubo que atender entregas de otras materias. Al regresar se aprovechó para revisar la escena contra fotos del lugar, y de ahí salió el rediseño.
 \end{itemize}
 
-\pendiente{explicar la causa de la pausa de finales de octubre y actualizar las barras de personajes, animaciones, videos y manuales con las fechas reales al terminar.}
+\pendiente{actualizar las barras de personajes, animaciones, videos y manuales con las fechas reales al terminar.}
 
 % =====================================================================
 \section{Roles y responsabilidades}
@@ -313,20 +313,21 @@ En la propuesta el trabajo se repartió en siete semanas, del 6 de octubre al 23
 \begin{table}[H]
   \centering
   \small
-  \begin{tabular}{|p{0.36\linewidth}|>{\centering\arraybackslash}p{0.12\linewidth}|>{\centering\arraybackslash}p{0.12\linewidth}|>{\centering\arraybackslash}p{0.12\linewidth}|>{\centering\arraybackslash}p{0.12\linewidth}|}
+  \begin{tabular}{|p{0.5\linewidth}|>{\centering\arraybackslash}p{0.2\linewidth}|}
     \hline
-    & \multicolumn{2}{c|}{\textbf{Planeado}} & \multicolumn{2}{c|}{\textbf{Real}} \\ \hline
-    \textbf{Actividad} & \textbf{Alejandro} & \textbf{Andrea} & \textbf{Alejandro} & \textbf{Andrea} \\ \hline
-    Investigación y documentación & R / A & C & R / A & -- \\ \hline
-    Modelado 3D y texturizado & C & R / A & R / A & -- \\ \hline
-    Programación OpenGL y KeyFrames & R / A & C & R / A & -- \\ \hline
-    Cámaras, luces y audio & R & C & R / A & -- \\ \hline
-    Pruebas, integración y manual & A & R & R / A & -- \\ \hline
+    \textbf{Actividad} & \textbf{Alejandro} \\ \hline
+    Investigación y documentación & R / A \\ \hline
+    Modelado 3D y texturizado & R / A \\ \hline
+    Programación OpenGL y KeyFrames & R / A \\ \hline
+    Cámaras, luces y audio & R / A \\ \hline
+    Pruebas, integración y manuales & R / A \\ \hline
   \end{tabular}
-  \caption{Matriz RACI de la propuesta y la real (R: responsable, A: aprueba, C: consultado).}
+  \caption{Matriz RACI (R: responsable, A: aprueba).}
 \end{table}
 
-\pendiente{confirmar cómo quedó la participación de Andrea: desde cuándo el proyecto es individual y por qué, y si hizo alguna parte. Con eso se corrige la columna real y se explica la diferencia.}
+El proyecto se hizo de forma individual, así que cada actividad tiene un solo responsable, que también la revisa y la aprueba.
+
+Esto explica parte del atraso respecto al cronograma: el modelado de los edificios y de los personajes se tuvo que hacer junto con la programación. Para que alcanzara el tiempo, se usaron modelos de internet con licencia libre donde fue posible y se dejaron los personajes para el final.
 
 % =====================================================================
 \section{Metodología de trabajo}
@@ -343,7 +344,9 @@ Se cambió a iteraciones chicas después del rediseño del 2 de noviembre: los c
 
 La evidencia de su uso está en el historial de commits del repositorio (una fase o iteración por commit, con fecha), en las capturas de \texttt{docs/evidencias/} y en el archivo \texttt{EVIDENCIAS.md}, que tiene una sección por cada iteración.
 
-\pendiente{agregar una captura del tablero con las tareas por hacer, en curso y probadas, y una del historial de commits.}
+\dosfotos{github/02_commits}{Historial de commits: cada fase o iteración es un commit con su descripción.}{github/03_commit}{Detalle de un commit con los archivos que agregó.}{Historial del repositorio en GitHub.}
+
+\pendiente{agregar una captura del tablero con las tareas por hacer, en curso y probadas.}
 
 % =====================================================================
 \section{Herramientas colaborativas}
@@ -354,7 +357,7 @@ La evidencia de su uso está en el historial de commits del repositorio (una fas
   \item \textbf{Diagrama de Gantt}: el de este documento, que compara lo planeado con lo real.
 \end{itemize}
 
-\pendiente{capturas de GitHub (página del repositorio, lista de commits y, si se usa, el tablero de GitHub Projects con las tareas de la última semana).}
+\unafoto{github/01_repositorio}{Página del repositorio privado en GitHub, con las carpetas del proyecto y el último commit.}
 
 % =====================================================================
 \section{Aprendizaje autónomo de herramientas nuevas}
@@ -366,7 +369,15 @@ La evidencia de su uso está en el historial de commits del repositorio (una fas
 % =====================================================================
 \section{Individual reflection (English)}
 
-\pendiente{texto propio en inglés (de media a una página) sobre la experiencia: qué parte del proyecto se hizo, qué fue lo más difícil, qué se aprendió y qué se haría distinto.}
+\pendiente{propuesta para revisar: cambiar lo que no suene a ti y agregar algo personal.}
+
+I chose the Calenda of Oaxaca because it mixes music, dance, crafts and architecture in a single street parade, and I wanted the scene to feel like a real place rather than a generic town. Since I worked on the project by myself, I took care of every part: the research, the scene, the models and textures, the program in OpenGL and the documentation.
+
+The hardest moment came in the middle of the project. After comparing my first scene with photos and maps of Oaxaca, I realized that the closed circuit from my proposal did not look like the real place, so I rebuilt the scene along the Macedonio Alcalá street, from Santo Domingo to the Zócalo. It meant redoing floors, houses and positions, but the result was much closer to what I had in mind. Another difficult part was the characters: each one had to be cut into pieces with the pivot of every joint in the right place, so that the arms and legs would rotate naturally inside the hierarchy.
+
+I learned how much planning matters in a graphics project. Small iterations, each one tested and saved in its own commit, made it much easier to find mistakes than large changes all at once. I also learned to prepare models in Blender before loading them with Assimp, to keep textures in a consistent style, and to compile the project with CMake from Visual Studio Code.
+
+If I started again, I would build the characters and animations earlier, because the scene took more time than expected and they were left for the last week. Even so, I am happy with the result and with how much I learned about computer graphics along the way.
 
 % =====================================================================
 \section{Conclusiones}
@@ -422,7 +433,9 @@ Los edificios principales, las casas, el kiosco, la fuente, las bancas, los carr
 El alebrije de coyote está basado en una pieza de Pablo Franco y Nelly Ramírez.
 Las librerías son de código abierto: GLFW (licencia zlib), GLEW (BSD y MIT), GLM (MIT), Assimp (BSD de 3 cláusulas) y stb\_image (dominio público o MIT).
 
-\pendiente{agregar los modelos de los personajes y el audio, si se usan, con su autor y licencia.}
+Los personajes del desfile parten de dos modelos de personas que proporcionó un compañero, sin licencia: un hombre con traje de manta y sombrero y una bailarina con traje típico. Se usan como modelos encontrados y se modificaron bastante: el hombre se partió en piezas con el origen en cada articulación y la china oaxaqueña se armó con la cabeza y la blusa de la bailarina, los brazos del hombre y una falda, una canasta y un dulce hechos para el proyecto. La marmota, el torito con sus ruedas, la trompeta y los globos se hicieron para este proyecto.
+
+\pendiente{agregar el audio con su autor y licencia.}
 
 % =====================================================================
 \section{Referencias}
