@@ -66,12 +66,13 @@ La escena empieza de tarde, con la cámara libre parada en el andador frente al 
     \tecla{N} & Cambiar entre tarde y noche \\ \hline
     \tecla{P} & Detener el desfile o hacer que siga caminando \\ \hline
     \tecla{R} & Regresar el desfile al atrio de Santo Domingo para verlo desde el principio \\ \hline
+    \tecla{I} & Junto a una carta de lotería: tomarla, voltearla para leer su ficha y guardarla (ver la sección \ref{sec:cartas}) \\ \hline
+    \tecla{L} & Mostrar u ocultar el tablero con las cartas que ya se encontraron \\ \hline
+    \tecla{M} & Quitar o regresar todo el sonido \\ \hline
     \tecla{ESC} & Cerrar el programa \\ \hline
   \end{tabular}
   \caption{Controles del recorrido.}
 \end{table}
-
-\pendiente{agregar las teclas de la información cultural y del audio cuando estén en el programa.}
 
 \section{Cámaras}
 \label{sec:camaras}
@@ -103,6 +104,12 @@ Con \tecla{N} se cambia la hora. De tarde el sol está bajo al poniente y pinta 
 
 \dosfotos{retoque_texturas/04_zocalo}{Zócalo de tarde}{retoque_texturas/07_zocalo_noche}{Zócalo de noche}{El mismo lugar en los dos horarios.}
 
+\section{Sonido}
+
+El programa tiene sonido en 3D: lo que se oye depende de dónde está la cámara activa. La banda toca \textit{Son Calenda} y \textit{Dios nunca muere} desde el músico de en medio, así que se oye fuerte junto al desfile y cada vez más bajo al alejarse. De fondo se oye el murmullo de la gente y el torito chisporrotea; al salir el desfile del atrio repican las campanas de Santo Domingo y truena un cohete, y al llegar frente al kiosco truena otro.
+
+Con \tecla{P} se pausan también la banda y las chispas, con \tecla{R} la banda vuelve a la primera canción y con \tecla{M} se quita o se regresa todo el sonido. Si la computadora no tiene bocinas ni audífonos, el programa funciona igual, sin sonido.
+
 \section{El recorrido}
 
 Estos son los lugares principales, en el orden en que los recorre la calenda:
@@ -117,7 +124,7 @@ Estos son los lugares principales, en el orden en que los recorre la calenda:
 
 \section{El desfile}
 
-En cuanto se abre el programa, la calenda sale de la puerta de Santo Domingo, cruza el atrio, da vuelta en el andador y baja por él hasta el Zócalo. Camina a 1.3 metros por segundo, así que tarda unos tres minutos en llegar. Frente al kiosco se queda quieta unos segundos y vuelve a salir del atrio.
+En cuanto se abre el programa, la calenda sale de la puerta de Santo Domingo, cruza el atrio, da vuelta en el andador y baja por él hasta el Zócalo. Camina a 2 metros por segundo, así que tarda unos dos minutos en llegar. Frente al kiosco se queda quieta unos segundos y vuelve a salir del atrio.
 
 La mejor forma de verla es con la cámara \tecla{3}, que la acompaña todo el camino. Con \tecla{P} se detiene todo el desfile (los personajes se quedan quietos donde van, como en una foto) y con otra \tecla{P} sigue. Con \tecla{R} regresa al atrio para verlo desde el principio.
 
@@ -138,9 +145,32 @@ La fila va en este orden:
 
 A los lados del andador, en el atrio y en el Zócalo hay espectadores, hombres y mujeres con ropa de diario de distintos colores, que saludan con la mano y voltean la cabeza. Algunos tienen tres globos de colores que suben, se mecen y bajan. Los espectadores siguen saludando aunque el desfile esté detenido.
 
-\section{Información cultural}
+\section{Información cultural: la lotería de la calenda}
+\label{sec:cartas}
 
-\pendiente{explicar cómo se consulta la información: a qué lugares o personajes hay que acercarse, qué aviso aparece, qué tecla se presiona y cómo se cierra la tarjeta. Agregar una captura del aviso y otra de una tarjeta abierta.}
+La información del recorrido está en diez cartas de lotería repartidas por la escena. Cada carta habla de un personaje o de un lugar y flota cerca de él, girando y subiendo y bajando para que se note. De lejos se ve su reverso, con un signo de interrogación y una pista de dónde está.
+
+\begin{itemize}
+  \item \textbf{Cartas fijas}: la calenda en el atrio, Santo Domingo frente a su puerta, la Sangre de Cristo en la banqueta del andador, los alebrijes sobre su petate en el jardín Labastida, los tapetes junto a los puestos de textiles y el Zócalo frente al kiosco.
+  \item \textbf{Cartas que van con el desfile}: la marmota, la primera china oaxaqueña, el músico de en medio y el torito. Se mueven con su personaje, así que hay que alcanzarlo (la cámara \tecla{3} ayuda) o detener el desfile con \tecla{P}.
+\end{itemize}
+
+\subsection{Cómo se toma una carta}
+
+\begin{enumerate}
+  \item Acercarse a la carta con cualquier cámara. A menos de 8 metros aparece abajo el aviso \textbf{I: tomar la carta}.
+  \item Presionar \tecla{I}. La carta crece en el centro de la pantalla y se ve su frente, con la figura de la lotería. Desde ese momento ya no está en la escena.
+  \item Presionar \tecla{I} otra vez. La carta da media vuelta y muestra su ficha, con un texto corto sobre el tema. Al mismo tiempo se oye la narración del mismo texto y la banda baja su volumen para que se escuche.
+  \item Presionar \tecla{I} una vez más para guardar la carta y seguir con el recorrido.
+\end{enumerate}
+
+\dosfotos{cartas/01_carta_marmota}{Carta de la marmota junto a su danzante, con el aviso para tomarla}{cartas/02_frente}{Frente de la carta al tomarla}{Al acercarse a una carta y tomarla con la tecla I.}
+
+\dosfotos{cartas/03_ficha}{Ficha de la marmota, con el aviso para guardarla}{cartas/04_tablero}{Tablero con dos cartas encontradas}{La ficha de una carta y el tablero (tecla L).}
+
+\subsection{El tablero}
+
+Con \tecla{L} se abre el tablero, con lugar para las diez cartas. Las que ya se tomaron se ven de frente; las que faltan muestran su pista (por ejemplo, ``Echa chispas al final del desfile'' o ``Entre los puestos de textiles''). Otra \tecla{L} lo cierra. Cuando se juntan las diez cartas aparece el letrero de lotería y truena un cohete.
 
 \section{Problemas comunes}
 

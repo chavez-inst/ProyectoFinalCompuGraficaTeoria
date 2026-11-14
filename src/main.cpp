@@ -1290,7 +1290,7 @@ const int numPuntosRecorrido = 4;
 const glm::vec2 puntosRecorrido[numPuntosRecorrido] = {
 	glm::vec2(50.0f, -139.5f), glm::vec2(6.0f, -139.5f), glm::vec2(0.0f, -133.5f), glm::vec2(0.0f, 63.0f)
 };
-const float velocidadDesfile = 1.3f;	//metros por segundo
+const float velocidadDesfile = 2.0f;	//metros por segundo
 const float zancada = 1.5f;				//lo que avanza un personaje con dos pasos
 const float esperaDesfile = 8.0f;		//segundos frente al kiosco antes de volver a empezar
 
