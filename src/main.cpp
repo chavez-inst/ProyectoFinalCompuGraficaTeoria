@@ -95,10 +95,32 @@ Model petate;			//1.2 por 1.6 m
 Model cazuela;
 Model olla;
 Model taza;
-Model panMuerto;
+Model panYema;
 Model alebrijeCoyote;
 Model alebrijePajaro;
 Model alebrijePerrito;
+//piezas de los personajes del desfile, cada una con su origen en la articulacion donde gira
+Model hombreTorso;
+Model hombreCabeza;
+Model hombreBrazoIzq;
+Model hombreAntebrazoIzq;
+Model hombreBrazoDer;
+Model hombreAntebrazoDer;
+Model hombreMusloIzq;
+Model hombrePiernaIzq;
+Model hombreMusloDer;
+Model hombrePiernaDer;
+Model chinaTorso;		//cabeza y blusa, los brazos son los del hombre
+Model chinaFalda;
+Model chinaCanasta;
+Model dulce;
+Model marmota;			//globo de manta de 1.5 m, origen donde entra el palo
+Model marmotaPalo;		//1.8 m
+Model torito;
+Model toritoRueda;
+Model toritoChispa;
+Model trompeta;			//la boquilla en el origen, apunta hacia Z positivo
+Model globo;			//blanco para pintarlo de color, origen en la punta del hilo
 
 //uno para la tarde y otro para la noche, segun la tecla N
 Skybox skyboxTarde;
@@ -678,36 +700,7 @@ void DibujarCasas(GLuint uniformModel, GLuint uniformColor)
 }
 
 
-// ================== 4. PERSONAJE JERARQUICO ==================
-//cada parte se dibuja desde la matriz de su padre, asi al girar el hombro se mueve el antebrazo
-
-//angulos de las articulaciones, en grados
-//el hombro gira sobre X, con negativo sube el brazo al frente
-//y sobre Z, con positivo mueve la mano hacia X positivo
-//codos, caderas y rodillas giran sobre X, con negativo el codo dobla al frente y con positivo la rodilla hacia atras
-struct PosePersona
-{
-	float hombroIzqAdelante, hombroIzqLado, codoIzq;
-	float hombroDerAdelante, hombroDerLado, codoDer;
-	float caderaIzq, rodillaIzq;
-	float caderaDer, rodillaDer;
-	float cabeza;
-};
-
-//pose del muneco, parado con todos los angulos en 0
-PosePersona poseMuneco = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
-
-//medidas del esqueleto en metros
-const float alturaCadera = 0.92f;							//del piso al origen del cuerpo
-const glm::vec3 posHombro = glm::vec3(0.2f, 0.47f, 0.0f);	//hombro izquierdo, el derecho usa la misma posicion con x negativa
-const glm::vec3 posCuello = glm::vec3(0.0f, 0.55f, 0.0f);
-const glm::vec3 posCadera = glm::vec3(0.095f, -0.02f, 0.0f);
-const float largoBrazo = 0.28f;		//del hombro al codo
-const float largoAntebrazo = 0.29f;	//del codo a la mano
-const float largoMuslo = 0.44f;		//de la cadera a la rodilla
-const float largoPierna = 0.46f;	//de la rodilla a la planta del pie
-
-//dibuja una parte del muneco con el cubo
+//dibuja una pieza con el cubo
 //articulacion es el punto donde gira, centro es el centro del cubo desde ahi
 //la escala solo va en esta copia, para no deformar a las partes hijas
 void DibujarParte(glm::mat4 articulacion, glm::vec3 centro, glm::vec3 tamano, glm::vec3 color, GLuint uniformModel, GLuint uniformColor)
@@ -784,123 +777,500 @@ int LlenarJardinera(Rectangulo r, float paso, glm::vec3 arboles[], int numArbole
 	return cuantas;
 }
 
-//brazo o pierna de dos partes, la segunda se dobla en el codo o la rodilla
-//las partes cuelgan hacia Y negativo
-void DibujarExtremidad(glm::mat4 padre, glm::vec3 articulacion, float adelante, float lado,
-	float largo1, float grosor1, glm::vec3 color1, float doblez, float largo2, float grosor2, glm::vec3 color2,
-	GLuint uniformModel, GLuint uniformColor)
-{
-	glm::mat4 model = glm::translate(padre, articulacion);
-	model = glm::rotate(model, adelante * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::rotate(model, lado * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-	DibujarParte(model, glm::vec3(0.0f, -largo1 / 2.0f, 0.0f), glm::vec3(grosor1, largo1, grosor1), color1, uniformModel, uniformColor);
 
-	//codo o rodilla, al final de la primera parte
-	model = glm::translate(model, glm::vec3(0.0f, -largo1, 0.0f));
-	model = glm::rotate(model, doblez * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-	DibujarParte(model, glm::vec3(0.0f, -largo2 / 2.0f, 0.0f), glm::vec3(grosor2, largo2, grosor2), color2, uniformModel, uniformColor);
+// ================== 4. PERSONAJES DEL DESFILE ==================
+//cada pieza se dibuja desde la matriz de su padre, asi al girar el hombro se mueve el antebrazo
+//todos miran hacia Z positivo y cada pieza tiene su origen en la articulacion donde gira
+
+// ---------- KeyFrames ----------
+//como en el laboratorio, se guardan cuadros clave y en medio se interpola en linea recta
+//cada cuadro guarda tres valores: en la china son los angulos del brazo que lanza el dulce
+//y en la marmota su giro y lo que se inclina el palo
+//al llegar al ultimo cuadro vuelve a empezar, por eso el ultimo es igual al primero
+#define MAX_FRAMES 10
+typedef struct _frame
+{
+	float valor[3];
+	float valorInc[3];	//lo que cambia cada valor por paso hasta llegar al siguiente cuadro
+} FRAME;
+
+struct AnimacionKeyFrames
+{
+	FRAME KeyFrame[MAX_FRAMES];
+	int FrameIndex;		//cuadros guardados
+	int playIndex;		//cuadro del que va saliendo
+	float i_curr_steps;
+	float i_max_steps;	//pasos de un cuadro al siguiente, 60 son como un segundo
+	float actual[3];	//valores con los que se dibuja
+};
+
+const int numChinas = 4;
+AnimacionKeyFrames animChina[numChinas];
+AnimacionKeyFrames animMarmota;
+
+//cada china suelta un dulce por vuelta de su animacion y el dulce vuela un segundo
+bool dulceLanzado[numChinas];
+float tiempoDulce[numChinas];
+const float vueloDulce = 1.0f;
+
+void GuardarCuadro(AnimacionKeyFrames& anim, float valor0, float valor1, float valor2)
+{
+	if (anim.FrameIndex < MAX_FRAMES)
+	{
+		anim.KeyFrame[anim.FrameIndex].valor[0] = valor0;
+		anim.KeyFrame[anim.FrameIndex].valor[1] = valor1;
+		anim.KeyFrame[anim.FrameIndex].valor[2] = valor2;
+		anim.FrameIndex++;
+	}
 }
 
-//base es la posicion y giro del muneco, mira hacia Z positivo
-void DibujarMuneco(glm::mat4 base, PosePersona pose, GLuint uniformModel, GLuint uniformColor)
+void interpolation(AnimacionKeyFrames& anim)
 {
-	glm::vec3 colorCamisa = glm::vec3(0.80f, 0.20f, 0.20f);
-	glm::vec3 colorPiel = glm::vec3(0.85f, 0.65f, 0.50f);
-	glm::vec3 colorNariz = glm::vec3(0.60f, 0.40f, 0.30f);
-	glm::vec3 colorPantalon = glm::vec3(0.20f, 0.25f, 0.55f);
-	glm::vec3 colorEspinilla = glm::vec3(0.12f, 0.15f, 0.35f); //mas oscuro para distinguir la rodilla
-
-	//raiz de la jerarquia, a la altura de la cadera
-	glm::mat4 cuerpo = glm::translate(base, glm::vec3(0.0f, alturaCadera, 0.0f));
-	DibujarParte(cuerpo, glm::vec3(0.0f, 0.25f, 0.0f), glm::vec3(0.30f, 0.60f, 0.20f), colorCamisa, uniformModel, uniformColor);
-
-	//la cabeza gira en el cuello, la nariz muestra hacia donde mira
-	glm::mat4 cabeza = glm::translate(cuerpo, posCuello);
-	cabeza = glm::rotate(cabeza, pose.cabeza * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-	DibujarParte(cabeza, glm::vec3(0.0f, 0.18f, 0.0f), glm::vec3(0.22f, 0.26f, 0.24f), colorPiel, uniformModel, uniformColor);
-	DibujarParte(cabeza, glm::vec3(0.0f, 0.16f, 0.13f), glm::vec3(0.05f, 0.05f, 0.05f), colorNariz, uniformModel, uniformColor);
-
-	//el brazo derecho usa la x del hombro en negativo
-	glm::vec3 hombroDer = glm::vec3(-posHombro.x, posHombro.y, posHombro.z);
-	DibujarExtremidad(cuerpo, posHombro, pose.hombroIzqAdelante, pose.hombroIzqLado,
-		largoBrazo, 0.09f, colorCamisa, pose.codoIzq, largoAntebrazo, 0.08f, colorPiel, uniformModel, uniformColor);
-	DibujarExtremidad(cuerpo, hombroDer, pose.hombroDerAdelante, pose.hombroDerLado,
-		largoBrazo, 0.09f, colorCamisa, pose.codoDer, largoAntebrazo, 0.08f, colorPiel, uniformModel, uniformColor);
-
-	glm::vec3 caderaDer = glm::vec3(-posCadera.x, posCadera.y, posCadera.z);
-	DibujarExtremidad(cuerpo, posCadera, pose.caderaIzq, 0.0f,
-		largoMuslo, 0.13f, colorPantalon, pose.rodillaIzq, largoPierna, 0.11f, colorEspinilla, uniformModel, uniformColor);
-	DibujarExtremidad(cuerpo, caderaDer, pose.caderaDer, 0.0f,
-		largoMuslo, 0.13f, colorPantalon, pose.rodillaDer, largoPierna, 0.11f, colorEspinilla, uniformModel, uniformColor);
+	for (int k = 0; k < 3; k++)
+	{
+		anim.KeyFrame[anim.playIndex].valorInc[k] =
+			(anim.KeyFrame[anim.playIndex + 1].valor[k] - anim.KeyFrame[anim.playIndex].valor[k]) / anim.i_max_steps;
+	}
 }
 
-//teclas de prueba que giran las articulaciones
-//la pose se escribe aqui, el while solo la dibuja
-void ProbarArticulaciones(bool* keys, GLfloat deltaTime)
+//primero es el cuadro con el que empieza, para que dos personajes iguales no se muevan al mismo tiempo
+void IniciarAnimacion(AnimacionKeyFrames& anim, float pasos, int primero)
 {
-	float paso = 1.5f * deltaTime; //grados por frame mientras la tecla esta presionada
+	anim.i_max_steps = pasos;
+	anim.playIndex = primero;
+	anim.i_curr_steps = 0.0f;
+	for (int k = 0; k < 3; k++)
+	{
+		anim.actual[k] = anim.KeyFrame[primero].valor[k];
+	}
+	interpolation(anim);
+}
 
-	//en hombros y caderas cada lado gira al reves, como al caminar
-	if (keys[GLFW_KEY_Y])
+void animate(AnimacionKeyFrames& anim, GLfloat deltaTime)
+{
+	if (anim.i_curr_steps >= anim.i_max_steps)
 	{
-		poseMuneco.hombroIzqAdelante -= paso;
-		poseMuneco.hombroDerAdelante += paso;
+		//al terminar el tramo se pone justo en el cuadro siguiente
+		anim.playIndex++;
+		if (anim.playIndex > anim.FrameIndex - 2)
+		{
+			anim.playIndex = 0;
+		}
+		for (int k = 0; k < 3; k++)
+		{
+			anim.actual[k] = anim.KeyFrame[anim.playIndex].valor[k];
+		}
+		anim.i_curr_steps = 0.0f;
+		interpolation(anim);
 	}
-	if (keys[GLFW_KEY_U])
+	else
 	{
-		poseMuneco.hombroIzqAdelante += paso;
-		poseMuneco.hombroDerAdelante -= paso;
+		for (int k = 0; k < 3; k++)
+		{
+			anim.actual[k] += anim.KeyFrame[anim.playIndex].valorInc[k] * deltaTime;
+		}
+		anim.i_curr_steps += deltaTime;
 	}
-	if (keys[GLFW_KEY_K])
+}
+
+//la china suelta el dulce al salir del cuadro 1, cuando el brazo deja la canasta
+void ActualizarDulces(GLfloat segundos)
+{
+	for (int i = 0; i < numChinas; i++)
 	{
-		poseMuneco.caderaIzq -= paso;
-		poseMuneco.caderaDer += paso;
+		if (animChina[i].playIndex == 1 && !dulceLanzado[i])
+		{
+			dulceLanzado[i] = true;
+			tiempoDulce[i] = 0.0f;
+		}
+		if (animChina[i].playIndex == 0)
+		{
+			dulceLanzado[i] = false;
+		}
+		tiempoDulce[i] += segundos;
 	}
-	if (keys[GLFW_KEY_L])
+}
+
+// ---------- hombre por piezas ----------
+//angulos de un brazo en grados; con el brazo colgando todos valen 0
+//adelante sube el brazo al frente, abre lo separa del cuerpo hacia el lado y con negativo lo cruza,
+//codo dobla el antebrazo, giroMano lo gira sobre el codo y tuerce voltea la palma
+struct PoseBrazo
+{
+	float adelante, abre, codo, giroMano, tuerce;
+};
+
+//la cadera con positivo lleva la pierna al frente y la rodilla con positivo dobla hacia atras
+struct PosePersona
+{
+	PoseBrazo brazoIzq, brazoDer;
+	float caderaIzq, rodillaIzq, caderaDer, rodillaDer;
+	float cabezaGiro, cabezaSube;
+	float altoCintura;	//sube y baja un poco al caminar
+};
+
+const PosePersona poseParado = { { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+	0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.9f };
+
+//posicion de cada articulacion respecto a la de su padre, en metros
+const float zCintura = 0.061f;
+const glm::vec3 posCuello = glm::vec3(0.0f, 0.56f, -0.078f);
+const glm::vec3 posHombroIzq = glm::vec3(0.17f, 0.46f, -0.077f);
+const glm::vec3 posHombroDer = glm::vec3(-0.17f, 0.46f, -0.092f);
+const glm::vec3 posCodoIzq = glm::vec3(0.162f, -0.24f, -0.034f);
+const glm::vec3 posCodoDer = glm::vec3(-0.162f, -0.24f, -0.022f);
+const glm::vec3 posCaderaIzq = glm::vec3(0.1f, 0.0f, 0.014f);
+const glm::vec3 posCaderaDer = glm::vec3(-0.1f, 0.0f, -0.005f);
+const glm::vec3 posRodillaIzq = glm::vec3(0.01f, -0.42f, -0.045f);
+const glm::vec3 posRodillaDer = glm::vec3(-0.01f, -0.42f, -0.032f);
+//del codo a la palma de cada antebrazo, sobre esta linea se tuerce la mano
+const glm::vec3 palmaIzq = glm::vec3(0.2247f, -0.2715f, 0.0761f);
+const glm::vec3 palmaDer = glm::vec3(-0.2278f, -0.2714f, 0.0777f);
+//los brazos del modelo vienen abiertos 34 grados, con este giro quedan colgando
+const float aperturaModelo = 34.0f;
+
+void DibujarPieza(Model& pieza, glm::mat4 model, GLuint uniformModel)
+{
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	pieza.RenderModel();
+}
+
+//la china usa los mismos brazos un poco mas chicos y en otro hombro
+void DibujarBrazo(glm::mat4 torso, glm::vec3 hombro, bool izquierdo, PoseBrazo pose, float escala, GLuint uniformModel)
+{
+	//el izquierdo se abre hacia X positivo y el derecho hacia X negativo
+	float lado = 1.0f;
+	Model* brazo = &hombreBrazoIzq;
+	Model* antebrazo = &hombreAntebrazoIzq;
+	glm::vec3 codo = posCodoIzq;
+	glm::vec3 palma = palmaIzq;
+	if (!izquierdo)
 	{
-		poseMuneco.caderaIzq += paso;
-		poseMuneco.caderaDer -= paso;
-	}
-	//en codos y rodillas los dos lados doblan igual
-	if (keys[GLFW_KEY_H])
-	{
-		poseMuneco.codoIzq -= paso;
-		poseMuneco.codoDer -= paso;
-	}
-	if (keys[GLFW_KEY_J])
-	{
-		poseMuneco.codoIzq += paso;
-		poseMuneco.codoDer += paso;
-	}
-	if (keys[GLFW_KEY_O])
-	{
-		poseMuneco.rodillaIzq += paso;
-		poseMuneco.rodillaDer += paso;
-	}
-	if (keys[GLFW_KEY_P])
-	{
-		poseMuneco.rodillaIzq -= paso;
-		poseMuneco.rodillaDer -= paso;
-	}
-	if (keys[GLFW_KEY_Z])
-	{
-		poseMuneco.cabeza += paso;
-	}
-	if (keys[GLFW_KEY_X])
-	{
-		poseMuneco.cabeza -= paso;
+		lado = -1.0f;
+		brazo = &hombreBrazoDer;
+		antebrazo = &hombreAntebrazoDer;
+		codo = posCodoDer;
+		palma = palmaDer;
 	}
 
-	//limites para que ninguna articulacion se doble de mas
-	poseMuneco.hombroIzqAdelante = glm::clamp(poseMuneco.hombroIzqAdelante, -90.0f, 90.0f);
-	poseMuneco.hombroDerAdelante = glm::clamp(poseMuneco.hombroDerAdelante, -90.0f, 90.0f);
-	poseMuneco.codoIzq = glm::clamp(poseMuneco.codoIzq, -140.0f, 0.0f);
-	poseMuneco.codoDer = glm::clamp(poseMuneco.codoDer, -140.0f, 0.0f);
-	poseMuneco.caderaIzq = glm::clamp(poseMuneco.caderaIzq, -60.0f, 60.0f);
-	poseMuneco.caderaDer = glm::clamp(poseMuneco.caderaDer, -60.0f, 60.0f);
-	poseMuneco.rodillaIzq = glm::clamp(poseMuneco.rodillaIzq, 0.0f, 130.0f);
-	poseMuneco.rodillaDer = glm::clamp(poseMuneco.rodillaDer, 0.0f, 130.0f);
-	poseMuneco.cabeza = glm::clamp(poseMuneco.cabeza, -80.0f, 80.0f);
+	glm::mat4 model = glm::translate(torso, hombro);
+	model = glm::rotate(model, -pose.adelante * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::rotate(model, lado * (pose.abre - aperturaModelo) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(escala, escala, escala));
+	DibujarPieza(*brazo, model, uniformModel);
+
+	model = glm::translate(model, codo);
+	model = glm::rotate(model, pose.giroMano * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::rotate(model, -pose.codo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::rotate(model, pose.tuerce * toRadians, glm::normalize(palma));
+	DibujarPieza(*antebrazo, model, uniformModel);
+}
+
+void DibujarPierna(glm::mat4 torso, bool izquierda, float cadera, float rodilla, GLuint uniformModel)
+{
+	Model* muslo = &hombreMusloIzq;
+	Model* pierna = &hombrePiernaIzq;
+	glm::vec3 posCadera = posCaderaIzq;
+	glm::vec3 posRodilla = posRodillaIzq;
+	if (!izquierda)
+	{
+		muslo = &hombreMusloDer;
+		pierna = &hombrePiernaDer;
+		posCadera = posCaderaDer;
+		posRodilla = posRodillaDer;
+	}
+
+	glm::mat4 model = glm::translate(torso, posCadera);
+	model = glm::rotate(model, -cadera * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+	DibujarPieza(*muslo, model, uniformModel);
+
+	model = glm::translate(model, posRodilla);
+	model = glm::rotate(model, rodilla * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+	DibujarPieza(*pierna, model, uniformModel);
+}
+
+//base es la posicion y el giro del personaje en el piso
+//regresa en torso y cabeza sus matrices, para colgarles la marmota, el torito o la trompeta
+void DibujarHombre(glm::mat4 base, PosePersona pose, glm::mat4& torso, glm::mat4& cabeza, GLuint uniformModel)
+{
+	torso = glm::translate(base, glm::vec3(0.0f, pose.altoCintura, zCintura));
+	DibujarPieza(hombreTorso, torso, uniformModel);
+
+	cabeza = glm::translate(torso, posCuello);
+	cabeza = glm::rotate(cabeza, pose.cabezaGiro * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	cabeza = glm::rotate(cabeza, -pose.cabezaSube * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+	DibujarPieza(hombreCabeza, cabeza, uniformModel);
+
+	DibujarBrazo(torso, posHombroIzq, true, pose.brazoIzq, 1.0f, uniformModel);
+	DibujarBrazo(torso, posHombroDer, false, pose.brazoDer, 1.0f, uniformModel);
+	DibujarPierna(torso, true, pose.caderaIzq, pose.rodillaIzq, uniformModel);
+	DibujarPierna(torso, false, pose.caderaDer, pose.rodillaDer, uniformModel);
+}
+
+//animacion de caminar; fase da una vuelta completa, 2 pi, cada dos pasos
+//paso es cuanto se mueven los muslos, en grados; los brazos no se mueven porque todos cargan algo
+void PoseCaminar(PosePersona& pose, float fase, float paso)
+{
+	float s = sin(fase);
+	pose.caderaIzq = paso * s;
+	pose.caderaDer = -paso * s;
+	//la rodilla se dobla cuando la pierna va de regreso
+	pose.rodillaIzq = 30.0f * glm::max(0.0f, sin(fase + 1.2f));
+	pose.rodillaDer = 30.0f * glm::max(0.0f, sin(fase + 1.2f + 3.1416f));
+	pose.altoCintura = 0.9f + 0.015f * cos(2.0f * fase);
+}
+
+//para pasar de una pose del brazo a otra; f va de 0 a 1
+PoseBrazo MezclarBrazos(PoseBrazo a, PoseBrazo b, float f)
+{
+	PoseBrazo mezcla;
+	mezcla.adelante = a.adelante + (b.adelante - a.adelante) * f;
+	mezcla.abre = a.abre + (b.abre - a.abre) * f;
+	mezcla.codo = a.codo + (b.codo - a.codo) * f;
+	mezcla.giroMano = a.giroMano + (b.giroMano - a.giroMano) * f;
+	mezcla.tuerce = a.tuerce + (b.tuerce - a.tuerce) * f;
+	return mezcla;
+}
+
+// ---------- personajes ----------
+//las poses de los brazos que agarran algo se buscaron para que las manos queden encima de lo que agarran
+
+//el danzante agarra el palo con las dos manos, la derecha mas arriba, y la marmota gira con KeyFrames
+const PoseBrazo brazoIzqMarmota = { 18.0f, -42.0f, 58.0f, 0.0f, 90.0f };
+const PoseBrazo brazoDerMarmota = { 44.0f, -62.0f, 128.0f, 0.0f, 90.0f };
+void DibujarDanzanteMarmota(glm::mat4 base, float fase, bool caminando, GLuint uniformModel)
+{
+	PosePersona pose = poseParado;
+	if (caminando)
+	{
+		PoseCaminar(pose, fase, 18.0f);
+	}
+	pose.brazoIzq = brazoIzqMarmota;
+	pose.brazoDer = brazoDerMarmota;
+	glm::mat4 torso, cabeza;
+	DibujarHombre(base, pose, torso, cabeza, uniformModel);
+
+	//el palo sale de la cintura, al frente y un poco a la derecha
+	glm::mat4 model = glm::translate(torso, glm::vec3(-0.08f, 0.05f, 0.28f));
+	model = glm::rotate(model, animMarmota.actual[1] * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+	DibujarPieza(marmotaPalo, model, uniformModel);
+	model = glm::translate(model, glm::vec3(0.0f, 1.8f, 0.0f));
+	model = glm::rotate(model, animMarmota.actual[0] * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	DibujarPieza(marmota, model, uniformModel);
+}
+
+//la china sostiene la canasta con el brazo izquierdo y lanza dulces con el derecho, que se mueve con KeyFrames
+const PoseBrazo brazoIzqChina = { 10.0f, 150.0f, 45.0f, 0.0f, 0.0f };
+const glm::vec3 salidaDulce = glm::vec3(-0.422f, 1.755f, 0.027f);	//la mano derecha al soltarlo
+void DibujarChina(glm::mat4 base, int cual, float tiempo, GLuint uniformModel)
+{
+	glm::mat4 torso = glm::translate(base, glm::vec3(0.0f, 1.1f, 0.0f));
+	DibujarPieza(chinaTorso, torso, uniformModel);
+
+	//la falda se mece de lado a lado y se abre un poco, una vez cada 2.4 segundos
+	float vaiven = (tiempo + cual * 0.6f) * 2.0f * 3.1416f / 2.4f;
+	glm::mat4 model = glm::rotate(torso, 6.0f * sin(vaiven) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::rotate(model, 3.0f * sin(2.0f * vaiven) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+	float abre = 1.0f + 0.04f * sin(2.0f * vaiven);
+	model = glm::scale(model, glm::vec3(abre, 1.0f, abre));
+	DibujarPieza(chinaFalda, model, uniformModel);
+
+	model = glm::translate(torso, glm::vec3(0.0f, 0.521f, 0.0f));
+	DibujarPieza(chinaCanasta, model, uniformModel);
+
+	PoseBrazo brazoDer = { animChina[cual].actual[0], animChina[cual].actual[1], animChina[cual].actual[2], 0.0f, 0.0f };
+	DibujarBrazo(torso, glm::vec3(0.155f, 0.2f, 0.0f), true, brazoIzqChina, 0.9f, uniformModel);
+	DibujarBrazo(torso, glm::vec3(-0.155f, 0.2f, 0.0f), false, brazoDer, 0.9f, uniformModel);
+
+	//el dulce cae en una parabola hacia el frente y a la derecha de la china, dando vueltas
+	if (dulceLanzado[cual] && tiempoDulce[cual] < vueloDulce)
+	{
+		float s = tiempoDulce[cual] / vueloDulce;
+		glm::vec3 vuelo = glm::vec3(-1.2f * s, 1.0f * s - 2.6f * s * s, 0.6f * s);
+		model = glm::translate(base, salidaDulce + vuelo);
+		model = glm::rotate(model, 12.0f * s, glm::vec3(0.0f, 1.0f, 0.0f));
+		DibujarPieza(dulce, model, uniformModel);
+	}
+}
+
+//las manos en la trompeta con la cabeza derecha y con la cabeza levantada; en medio se mezclan
+const PoseBrazo brazoDerTrompeta[2] = { { 80.0f, -52.0f, 84.0f, 0.0f, -45.0f }, { 90.0f, -46.0f, 76.0f, 0.0f, -45.0f } };
+const PoseBrazo brazoIzqTrompeta[2] = { { 68.0f, -64.0f, 110.0f, 0.0f, -45.0f }, { 76.0f, -64.0f, 110.0f, 0.0f, -45.0f } };
+void DibujarMusico(glm::mat4 base, float fase, bool caminando, float tiempo, GLuint uniformModel)
+{
+	PosePersona pose = poseParado;
+	if (caminando)
+	{
+		PoseCaminar(pose, fase, 15.0f);
+	}
+	//levanta la trompeta una vez cada 2 segundos
+	float sube = glm::max(0.0f, sin(tiempo * 3.1416f));
+	pose.cabezaSube = 10.0f * sube;
+	pose.brazoDer = MezclarBrazos(brazoDerTrompeta[0], brazoDerTrompeta[1], sube);
+	pose.brazoIzq = MezclarBrazos(brazoIzqTrompeta[0], brazoIzqTrompeta[1], sube);
+	glm::mat4 torso, cabeza;
+	DibujarHombre(base, pose, torso, cabeza, uniformModel);
+
+	//la boquilla queda en la boca
+	glm::mat4 model = glm::translate(cabeza, glm::vec3(0.0f, 0.055f, 0.135f));
+	model = glm::rotate(model, 12.0f * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+	DibujarPieza(trompeta, model, uniformModel);
+}
+
+//el cargador lleva el torito sobre la cabeza, con cada mano en un palo del armazon
+const PoseBrazo brazoIzqTorito = { 140.0f, -18.0f, 48.0f, 0.0f, 0.0f };
+const PoseBrazo brazoDerTorito = { 138.0f, -18.0f, 46.0f, 0.0f, 0.0f };
+void DibujarTorito(glm::mat4 base, float fase, bool caminando, float tiempo, GLuint uniformModel)
+{
+	PosePersona pose = poseParado;
+	if (caminando)
+	{
+		PoseCaminar(pose, fase, 22.0f);
+	}
+	pose.brazoIzq = brazoIzqTorito;
+	pose.brazoDer = brazoDerTorito;
+	glm::mat4 torso, cabeza;
+	DibujarHombre(base, pose, torso, cabeza, uniformModel);
+
+	//el torito se mece de lado a lado
+	glm::mat4 cuerpo = glm::translate(torso, glm::vec3(0.0f, 0.98f, 0.1f));
+	cuerpo = glm::rotate(cuerpo, 8.0f * sin(tiempo * 3.1416f) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	cuerpo = glm::rotate(cuerpo, 4.0f * sin(tiempo * 2.0f * 3.1416f) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+	DibujarPieza(torito, cuerpo, uniformModel);
+
+	//una rueda de cohetes a cada lado, dan una vuelta por segundo y cada una gira al reves de la otra
+	for (int lado = -1; lado <= 1; lado += 2)
+	{
+		glm::mat4 rueda = glm::translate(cuerpo, glm::vec3(lado * 0.34f, 1.0f, -0.02f));
+		rueda = glm::rotate(rueda, -lado * tiempo * 360.0f * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		DibujarPieza(toritoRueda, rueda, uniformModel);
+
+		//cuatro chispas en el aro, cambian de tamano para que parezca que chisporrotean
+		for (int k = 0; k < 4; k++)
+		{
+			float angulo = k * 90.0f * toRadians;
+			float tamano = 0.7f + 0.5f * fabs(sin(tiempo * 12.0f + k * 3.0f));
+			glm::mat4 model = glm::translate(rueda, glm::vec3(0.0f, 0.22f * sin(angulo), -0.22f * cos(angulo)));
+			model = glm::scale(model, glm::vec3(tamano, tamano, tamano));
+			DibujarPieza(toritoChispa, model, uniformModel);
+		}
+	}
+}
+
+//saluda con el brazo derecho y voltea la cabeza; con globos, tres globos suben y bajan a su lado
+const glm::vec3 coloresGlobo[3] = {
+	glm::vec3(0.9f, 0.2f, 0.3f), glm::vec3(0.2f, 0.5f, 0.9f), glm::vec3(0.95f, 0.8f, 0.2f)
+};
+void DibujarEspectador(glm::mat4 base, float tiempo, bool conGlobos, GLuint uniformModel, GLuint uniformColor)
+{
+	PosePersona pose = poseParado;
+	//la mano va y viene dos veces por cada vez que voltea la cabeza
+	float vuelta = tiempo * 3.1416f;
+	PoseBrazo saludo = { 10.0f, 130.0f, 20.0f, 30.0f * sin(2.0f * vuelta), 0.0f };
+	pose.brazoDer = saludo;
+	pose.cabezaGiro = 15.0f * sin(vuelta);
+	glm::mat4 torso, cabeza;
+	DibujarHombre(base, pose, torso, cabeza, uniformModel);
+
+	if (conGlobos)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			//cada globo sube 2 m y vuelve a bajar en 6 segundos, cada uno en otro momento
+			float s = 0.5f - 0.5f * cos(2.0f * 3.1416f * (tiempo / 6.0f + i / 3.0f));
+			glm::mat4 model = glm::translate(base, glm::vec3(0.7f + 0.25f * i + 0.1f * sin(4.0f * 3.1416f * s), 0.6f + 2.0f * s, 0.4f * i - 0.4f));
+			model = glm::rotate(model, 8.0f * sin(2.0f * 3.1416f * (2.0f * s + i)) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+			glUniform3fv(uniformColor, 1, glm::value_ptr(coloresGlobo[i]));
+			DibujarPieza(globo, model, uniformModel);
+		}
+		glUniform3fv(uniformColor, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+	}
+}
+
+// ---------- recorrido del desfile ----------
+//sale del atrio frente a la puerta de Santo Domingo hacia el poniente, da vuelta al sur en el andador
+//y baja hasta quedar frente al kiosco; los puntos son (x, z)
+const int numPuntosRecorrido = 4;
+const glm::vec2 puntosRecorrido[numPuntosRecorrido] = {
+	glm::vec2(50.0f, -139.5f), glm::vec2(6.0f, -139.5f), glm::vec2(0.0f, -133.5f), glm::vec2(0.0f, 63.0f)
+};
+const float velocidadDesfile = 1.3f;	//metros por segundo
+const float zancada = 1.5f;				//lo que avanza un personaje con dos pasos
+const float esperaDesfile = 8.0f;		//segundos frente al kiosco antes de volver a empezar
+
+//personajes en el orden de la fila; atras es cuantos metros va detras del primero
+//y lado cuanto se hace hacia su izquierda
+const int MARMOTA = 0;
+const int CHINA = 1;
+const int MUSICO = 2;
+const int TORITO = 3;
+const int numDesfile = 9;
+const int tipoDesfile[numDesfile] = { MARMOTA, CHINA, CHINA, CHINA, CHINA, MUSICO, MUSICO, MUSICO, TORITO };
+const float atrasDesfile[numDesfile] = { 0.0f, 3.5f, 3.5f, 7.0f, 7.0f, 11.0f, 11.0f, 11.0f, 15.5f };
+const float ladoDesfile[numDesfile] = { 0.0f, 1.2f, -1.2f, 1.2f, -1.2f, 1.6f, 0.0f, -1.6f, 0.0f };
+
+float LargoRecorrido()
+{
+	float largo = 0.0f;
+	for (int i = 0; i < numPuntosRecorrido - 1; i++)
+	{
+		largo += glm::distance(puntosRecorrido[i], puntosRecorrido[i + 1]);
+	}
+	return largo;
+}
+
+//punto (x, z) a cierta distancia del inicio; antes del inicio o despues del final se queda en la orilla
+glm::vec2 PuntoRecorrido(float distancia)
+{
+	for (int i = 0; i < numPuntosRecorrido - 1; i++)
+	{
+		float tramo = glm::distance(puntosRecorrido[i], puntosRecorrido[i + 1]);
+		if (distancia <= tramo)
+		{
+			float f = glm::max(distancia, 0.0f) / tramo;
+			return puntosRecorrido[i] + (puntosRecorrido[i + 1] - puntosRecorrido[i]) * f;
+		}
+		distancia -= tramo;
+	}
+	return puntosRecorrido[numPuntosRecorrido - 1];
+}
+
+//hacia donde camina, viendo medio metro atras y medio adelante; asi da la vuelta poco a poco en la esquina
+//con giro 0 ve hacia Z positivo
+float GiroRecorrido(float distancia)
+{
+	glm::vec2 direccion = PuntoRecorrido(distancia + 0.5f) - PuntoRecorrido(distancia - 0.5f);
+	return atan2(direccion.x, direccion.y) / toRadians;
+}
+
+//las plazas y las banquetas estan 15 cm arriba de la calle y el andador 1 cm
+float AlturaPiso(float x, float z)
+{
+	for (int i = 0; i < numPlazas; i++)
+	{
+		if (x >= plazas[i].x0 && x <= plazas[i].x1 && z >= plazas[i].z0 && z <= plazas[i].z1)
+		{
+			return altoBanqueta;
+		}
+	}
+	for (int i = 0; i < numManzanas; i++)
+	{
+		if (x >= manzanas[i].x0 && x <= manzanas[i].x1 && z >= manzanas[i].z0 && z <= manzanas[i].z1)
+		{
+			return altoBanqueta;
+		}
+	}
+	return 0.01f;
+}
+
+//lado mueve el punto hacia la izquierda de quien camina, que con giro 0 es X positivo
+glm::vec3 PosicionRecorrido(float distancia, float lado)
+{
+	glm::vec2 punto = PuntoRecorrido(distancia);
+	float giro = GiroRecorrido(distancia) * toRadians;
+	glm::vec2 izquierda = glm::vec2(cos(giro), -sin(giro));
+	punto = punto + izquierda * lado;
+	return glm::vec3(punto.x, AlturaPiso(punto.x, punto.y), punto.y);
 }
 
 
@@ -924,7 +1294,7 @@ int main()
 	//en el atrio, mira hacia el oriente a Santo Domingo, un poco arriba para ver las torres
 	//velocidades en 0, no se mueve
 	camaraFachada = Camera(glm::vec3(12.0f, 9.0f, -144.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 12.0f, 0.0f, 0.0f);
-	//esquina del atrio, mira hacia el sur y un poco a la Sangre de Cristo
+	//sigue al desfile desde un lado, su posicion se calcula en el while
 	camaraDesfile = Camera(glm::vec3(5.0f, 2.6f, -112.0f), glm::vec3(0.0f, 1.0f, 0.0f), 110.0f, -8.0f, 0.0f, 0.0f);
 	//esquina noroeste de la plaza, mira en diagonal hacia el kiosco
 	camaraZocalo = Camera(glm::vec3(-30.0f, 10.0f, 46.0f), glm::vec3(0.0f, 1.0f, 0.0f), 46.0f, -8.0f, 0.0f, 0.0f);
@@ -1037,14 +1407,56 @@ int main()
 	olla.LoadModel("Models/olla.obj");
 	taza = Model();
 	taza.LoadModel("Models/taza_barro_cara.obj");
-	panMuerto = Model();
-	panMuerto.LoadModel("Models/pan_muerto.obj");
+	panYema = Model();
+	panYema.LoadModel("Models/pan_yema.obj");
 	alebrijeCoyote = Model();
 	alebrijeCoyote.LoadModel("Models/alebrije_coyote.obj");
 	alebrijePajaro = Model();
 	alebrijePajaro.LoadModel("Models/alebrije_pajaro.obj");
 	alebrijePerrito = Model();
 	alebrijePerrito.LoadModel("Models/perrito.obj");
+	hombreTorso = Model();
+	hombreTorso.LoadModel("Models/hombre_torso.obj");
+	hombreCabeza = Model();
+	hombreCabeza.LoadModel("Models/hombre_cabeza.obj");
+	hombreBrazoIzq = Model();
+	hombreBrazoIzq.LoadModel("Models/hombre_brazo_izq.obj");
+	hombreAntebrazoIzq = Model();
+	hombreAntebrazoIzq.LoadModel("Models/hombre_antebrazo_izq.obj");
+	hombreBrazoDer = Model();
+	hombreBrazoDer.LoadModel("Models/hombre_brazo_der.obj");
+	hombreAntebrazoDer = Model();
+	hombreAntebrazoDer.LoadModel("Models/hombre_antebrazo_der.obj");
+	hombreMusloIzq = Model();
+	hombreMusloIzq.LoadModel("Models/hombre_muslo_izq.obj");
+	hombrePiernaIzq = Model();
+	hombrePiernaIzq.LoadModel("Models/hombre_pierna_izq.obj");
+	hombreMusloDer = Model();
+	hombreMusloDer.LoadModel("Models/hombre_muslo_der.obj");
+	hombrePiernaDer = Model();
+	hombrePiernaDer.LoadModel("Models/hombre_pierna_der.obj");
+	chinaTorso = Model();
+	chinaTorso.LoadModel("Models/china_torso.obj");
+	chinaFalda = Model();
+	chinaFalda.LoadModel("Models/china_falda.obj");
+	chinaCanasta = Model();
+	chinaCanasta.LoadModel("Models/china_canasta.obj");
+	dulce = Model();
+	dulce.LoadModel("Models/dulce.obj");
+	marmota = Model();
+	marmota.LoadModel("Models/marmota.obj");
+	marmotaPalo = Model();
+	marmotaPalo.LoadModel("Models/marmota_palo.obj");
+	torito = Model();
+	torito.LoadModel("Models/torito.obj");
+	toritoRueda = Model();
+	toritoRueda.LoadModel("Models/torito_rueda.obj");
+	toritoChispa = Model();
+	toritoChispa.LoadModel("Models/torito_chispa.obj");
+	trompeta = Model();
+	trompeta.LoadModel("Models/trompeta.obj");
+	globo = Model();
+	globo.LoadModel("Models/globo.obj");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/tarde_rt.jpg");
@@ -1281,6 +1693,52 @@ int main()
 	const int numPuestosTextiles = 6;
 	float zPuestosTextiles[numPuestosTextiles] = { -73.0f, -69.5f, -66.0f, -62.5f, -59.0f, -55.5f };
 
+	//espectadores en las banquetas y las plazas, viendo hacia donde pasa el desfile
+	//los del poniente ven hacia X positivo, los del oriente hacia X negativo y los del atrio hacia el sur
+	//uno si y otro no carga globos
+	const int numEspectadores = 16;
+	glm::vec3 posicionEspectadores[numEspectadores] = {
+		glm::vec3(-4.7f, altoBanqueta, -120.0f), glm::vec3(-4.7f, altoBanqueta, -88.0f), glm::vec3(-4.7f, altoBanqueta, -50.0f),
+		glm::vec3(-4.7f, altoBanqueta, -28.0f), glm::vec3(-4.7f, altoBanqueta, -2.0f), glm::vec3(-4.7f, altoBanqueta, 16.0f),
+		glm::vec3(-4.7f, altoBanqueta, 28.0f),
+		glm::vec3(4.7f, altoBanqueta, -118.0f), glm::vec3(4.7f, altoBanqueta, -90.0f), glm::vec3(4.7f, altoBanqueta, -30.0f),
+		glm::vec3(4.7f, altoBanqueta, 2.0f), glm::vec3(4.7f, altoBanqueta, 20.0f),
+		glm::vec3(26.0f, altoBanqueta, -144.5f), glm::vec3(36.0f, altoBanqueta, -144.5f),
+		glm::vec3(-6.0f, altoBanqueta, 50.0f), glm::vec3(-6.0f, altoBanqueta, 58.0f)
+	};
+	float giroEspectadores[numEspectadores] = {
+		90.0f, 90.0f, 90.0f, 90.0f, 90.0f, 90.0f, 90.0f,
+		-90.0f, -90.0f, -90.0f, -90.0f, -90.0f,
+		0.0f, 0.0f,
+		90.0f, 90.0f
+	};
+
+	//cuadros clave de la china: brazo abajo, mete la mano a la canasta, lanza el dulce al frente,
+	//vuelve abajo y descansa; los valores son adelante, abre y codo del brazo derecho
+	//cada china empieza en otro cuadro
+	for (int i = 0; i < numChinas; i++)
+	{
+		GuardarCuadro(animChina[i], 10.0f, 15.0f, 15.0f);
+		GuardarCuadro(animChina[i], 20.0f, 145.0f, 50.0f);
+		GuardarCuadro(animChina[i], 45.0f, 60.0f, 10.0f);
+		GuardarCuadro(animChina[i], 10.0f, 15.0f, 15.0f);
+		GuardarCuadro(animChina[i], 10.0f, 15.0f, 15.0f);
+		IniciarAnimacion(animChina[i], 36.0f, i);
+	}
+	//cuadros clave de la marmota: da una vuelta en cuatro partes mientras el palo se inclina a un lado y al otro
+	//el tercer valor no se usa
+	GuardarCuadro(animMarmota, 0.0f, 0.0f, 0.0f);
+	GuardarCuadro(animMarmota, 90.0f, 4.0f, 0.0f);
+	GuardarCuadro(animMarmota, 180.0f, 0.0f, 0.0f);
+	GuardarCuadro(animMarmota, 270.0f, -4.0f, 0.0f);
+	GuardarCuadro(animMarmota, 360.0f, 0.0f, 0.0f);
+	IniciarAnimacion(animMarmota, 60.0f, 0);
+
+	//el desfile empieza con el ultimo de la fila en el inicio del recorrido
+	const float largoRecorrido = LargoRecorrido();
+	const float inicioDesfile = atrasDesfile[numDesfile - 1];
+	float avanceDesfile = inicioDesfile;	//metros que lleva el primero de la fila
+
 	//glm::perspective usa radianes, 45.0f da unos 58 grados
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
@@ -1291,6 +1749,8 @@ int main()
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		deltaTime += (now - lastTime) / limitFPS;
+		//el primer frame trae todo lo que tardo en cargar, se limita para que el desfile no brinque
+		GLfloat segundos = glm::min(now - lastTime, 0.1f);
 		lastTime = now;
 
 		//eventos de teclado y mouse
@@ -1329,8 +1789,24 @@ int main()
 			camera.limitarPosicion(glm::vec3(-54.0f, 1.0f, -200.0f), glm::vec3(68.0f, 30.0f, 126.0f));
 		}
 
-		//las teclas de prueba escriben la pose, el dibujo de abajo solo la lee
-		ProbarArticulaciones(mainWindow.getsKeys(), deltaTime);
+		//el desfile avanza; frente al kiosco se queda quieto unos segundos y vuelve a empezar
+		avanceDesfile += velocidadDesfile * segundos;
+		if (avanceDesfile > largoRecorrido + velocidadDesfile * esperaDesfile)
+		{
+			avanceDesfile = inicioDesfile;
+		}
+		bool desfileCaminando = avanceDesfile < largoRecorrido;
+		for (int i = 0; i < numChinas; i++)
+		{
+			animate(animChina[i], deltaTime);
+		}
+		animate(animMarmota, deltaTime);
+		ActualizarDulces(segundos);
+
+		//la camara del desfile va adelante y a la izquierda del primero, viendo hacia la mitad de la fila
+		float distanciaPrimero = glm::min(avanceDesfile, largoRecorrido);
+		camaraDesfile.mirarHacia(PosicionRecorrido(distanciaPrimero + 4.0f, 3.0f) + glm::vec3(0.0f, 3.2f, 0.0f),
+			PosicionRecorrido(distanciaPrimero - 8.0f, 0.0f) + glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1472,12 +1948,43 @@ int main()
 			}
 		}
 
-		//muneco de cubos sobre el andador, mirando hacia el sur
-		//1 cm arriba del andador, para que los pies queden encima
-		plainTexture.UseTexture();
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.01f, -100.0f));
-		DibujarMuneco(model, poseMuneco, uniformModel, uniformColor);
+		//desfile, cada personaje va detras del primero segun su lugar en la fila
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		int numChina = 0;
+		for (int i = 0; i < numDesfile; i++)
+		{
+			float distancia = glm::min(avanceDesfile, largoRecorrido) - atrasDesfile[i];
+			model = glm::mat4(1.0);
+			model = glm::translate(model, PosicionRecorrido(distancia, ladoDesfile[i]));
+			model = glm::rotate(model, GiroRecorrido(distancia) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			//el paso va con lo que avanza, asi los pies no se resbalan; cada uno empieza en otro momento
+			float fase = distancia / zancada * 2.0f * 3.1416f + i * 1.3f;
+			if (tipoDesfile[i] == MARMOTA)
+			{
+				DibujarDanzanteMarmota(model, fase, desfileCaminando, uniformModel);
+			}
+			else if (tipoDesfile[i] == CHINA)
+			{
+				DibujarChina(model, numChina, now, uniformModel);
+				numChina++;
+			}
+			else if (tipoDesfile[i] == MUSICO)
+			{
+				DibujarMusico(model, fase, desfileCaminando, now + i * 0.7f, uniformModel);
+			}
+			else
+			{
+				DibujarTorito(model, fase, desfileCaminando, now, uniformModel);
+			}
+		}
+
+		for (int i = 0; i < numEspectadores; i++)
+		{
+			model = glm::mat4(1.0);
+			model = glm::translate(model, posicionEspectadores[i]);
+			model = glm::rotate(model, giroEspectadores[i] * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			DibujarEspectador(model, now + i * 0.9f, i % 2 == 0, uniformModel, uniformColor);
+		}
 
 		// ---------- objetos con transparencia ----------
 		//van al final, para que se vea lo que esta detras
@@ -1649,12 +2156,12 @@ int main()
 		//para que los de arriba se asomen; el asa queda de norte a sur y no les estorba
 		glm::vec3 canastaPan = glm::vec3(10.3f, yPetate, -73.4f);
 		DibujarModelo(canasta, canastaPan, 90.0f, 1.0f, uniformModel);
-		DibujarModelo(panMuerto, canastaPan + glm::vec3(-0.075f, 0.06f, 0.0f), 90.0f, 1.0f, uniformModel);
-		DibujarModelo(panMuerto, canastaPan + glm::vec3(0.075f, 0.06f, 0.0f), 60.0f, 1.0f, uniformModel);
-		DibujarModelo(panMuerto, canastaPan + glm::vec3(0.0f, 0.13f, -0.08f), 130.0f, 1.0f, uniformModel);
-		DibujarModelo(panMuerto, canastaPan + glm::vec3(0.0f, 0.13f, 0.08f), 170.0f, 1.0f, uniformModel);
-		DibujarModelo(panMuerto, canastaPan + glm::vec3(-0.09f, 0.21f, 0.0f), 100.0f, 1.0f, uniformModel);
-		DibujarModelo(panMuerto, canastaPan + glm::vec3(0.09f, 0.21f, 0.0f), 150.0f, 1.0f, uniformModel);
+		DibujarModelo(panYema, canastaPan + glm::vec3(-0.075f, 0.06f, 0.0f), 90.0f, 1.0f, uniformModel);
+		DibujarModelo(panYema, canastaPan + glm::vec3(0.075f, 0.06f, 0.0f), 60.0f, 1.0f, uniformModel);
+		DibujarModelo(panYema, canastaPan + glm::vec3(0.0f, 0.13f, -0.08f), 130.0f, 1.0f, uniformModel);
+		DibujarModelo(panYema, canastaPan + glm::vec3(0.0f, 0.13f, 0.08f), 170.0f, 1.0f, uniformModel);
+		DibujarModelo(panYema, canastaPan + glm::vec3(-0.09f, 0.21f, 0.0f), 100.0f, 1.0f, uniformModel);
+		DibujarModelo(panYema, canastaPan + glm::vec3(0.09f, 0.21f, 0.0f), 150.0f, 1.0f, uniformModel);
 		DibujarModelo(canasta, glm::vec3(9.1f, altoBanqueta, -74.7f), 90.0f, 1.0f, uniformModel);
 		//puesto de alebrijes
 		DibujarModelo(petate, glm::vec3(16.0f, altoBanqueta, -73.5f), 180.0f, 1.0f, uniformModel);

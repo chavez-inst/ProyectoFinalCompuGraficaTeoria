@@ -18,6 +18,7 @@ public:
 	void mouseControl(GLfloat xChange, GLfloat yChange);
 	void limitarPosicion(glm::vec3 minimo, glm::vec3 maximo);
 	void tomarVistaDe(Camera otra);
+	void mirarHacia(glm::vec3 nuevaPosicion, glm::vec3 objetivo);
 
 	glm::vec3 getCameraPosition();
 	glm::vec3 getCameraDirection();

@@ -40,11 +40,6 @@ El ejecutable queda en `%LOCALAPPDATA%\Proyecto_Final_CG_Teo\<preset>\`.
 | C           | Pasar a la siguiente camara |
 | F           | Soltar la camara fija: la libre sigue desde ese mismo lugar |
 | N           | Cambiar entre atardecer y noche |
-| Y / U       | Muneco: girar los hombros (prueba) |
-| H / J       | Muneco: doblar los codos (prueba) |
-| K / L       | Muneco: girar las caderas (prueba) |
-| O / P       | Muneco: doblar las rodillas (prueba) |
-| Z / X       | Muneco: voltear la cabeza (prueba) |
 | ESC         | Cerrar                       |
 
 Capturas de cada fase del proyecto: [EVIDENCIAS.md](EVIDENCIAS.md).
@@ -106,7 +101,9 @@ Esta dividido en 6 bloques marcados con `// ==================`:
 3. **Trazado de la escena**: medidas de las manzanas, las plazas y los tramos del andador, `CrearEscenario` (arma los pisos),
    las jardineras del atrio y del Zocalo (`CrearJardineras`) y las filas de casas y portales (`DibujarFilaCasas`). `DibujarBloque` usa el cubo
    para dibujar bloques de color, como los tinacos.
-4. **Personaje jerarquico**: el muneco de cubos, su pose y las teclas de prueba.
+4. **Personajes del desfile**: los KeyFrames (`animate`, `interpolation`, como en el laboratorio), el hombre por piezas
+   (`DibujarHombre`, con `PoseBrazo` y `PosePersona`), cada personaje (`DibujarDanzanteMarmota`, `DibujarChina`,
+   `DibujarMusico`, `DibujarTorito`, `DibujarEspectador`) y el recorrido del desfile (`PuntoRecorrido`, `PosicionRecorrido`).
 5. **Carga de recursos** (dentro de `main`): se cargan texturas, modelos, skybox, materiales y luces.
 6. **Ciclo principal** (el `while`): se dibuja todo cada frame. Primero los objetos opacos y al final los transparentes.
 
@@ -257,7 +254,7 @@ Se hace igual que la variable `esNoche` (tecla N):
 4. En `main.cpp` usarla: `mainWindow.getrotaPuerta()`.
 
 Para algo que se mueve poco a poco mientras la tecla esta presionada, se lee `mainWindow.getsKeys()`
-en `main.cpp`, como en `ProbarArticulaciones`.
+en `main.cpp`, como hace la camara libre con `keyControl`.
 
 No usar las teclas que ya estan en la tabla de controles.
 

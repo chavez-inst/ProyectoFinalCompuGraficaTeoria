@@ -182,3 +182,21 @@ La ventana ahora abre maximizada, del tamano del monitor, con su barra de titulo
 | ![Aerea](docs/evidencias/retoque_texturas/05_aerea.png) | ![Aerea de noche](docs/evidencias/retoque_texturas/06_aerea_noche.png) |
 | **Zocalo de noche** | **Santo Domingo de noche** |
 | ![Zocalo de noche](docs/evidencias/retoque_texturas/07_zocalo_noche.png) | ![Santo Domingo de noche](docs/evidencias/retoque_texturas/08_santo_domingo_noche.png) |
+
+## Desfile de la calenda - Personajes y animaciones
+
+Se agrego el desfile. Sale del atrio de Santo Domingo, da vuelta en el andador y baja hasta quedar frente al kiosco del Zocalo; ahi se queda unos segundos y vuelve a empezar desde el atrio. Va adelante el danzante con la marmota, luego cuatro chinas oaxaquenas en dos filas, tres musicos con trompeta y al final el torito.
+
+Los personajes estan armados por piezas con modelado jerarquico: cada brazo, antebrazo, muslo, pierna y la cabeza es un modelo aparte que gira en su articulacion, asi al mover el hombro se mueve todo el brazo. Al caminar se mueven las piernas y el cuerpo sube y baja un poco, y el paso va con lo que avanzan para que no se resbalen.
+
+Cada personaje tiene su animacion. La china lanza dulces con KeyFrames: mete la mano a la canasta, lanza el dulce, que cae en una parabola dando vueltas, y vuelve a bajar el brazo, mientras su falda se mece. La marmota tambien usa KeyFrames: gira sobre su palo y el palo se inclina de un lado a otro. Los musicos suben la trompeta, el torito se mece sobre el cargador con sus ruedas de cohetes girando y sus chispas parpadeando. En las banquetas hay espectadores que saludan y voltean, y algunos tienen globos que suben, se mecen y bajan.
+
+La camara 3 ahora sigue al desfile desde un lado, un poco adelante del danzante de la marmota, para ver toda la fila.
+
+| Salida del atrio (tecla 3) | Chinas y musicos |
+|---|---|
+| ![Salida del atrio](docs/evidencias/desfile/01_salida_atrio.png) | ![Chinas y musicos](docs/evidencias/desfile/02_chinas_musicos.png) |
+| **Danzante con la marmota en el andador** | **Frente a la Sangre de Cristo, con el torito al fondo** |
+| ![Marmota](docs/evidencias/desfile/03_marmota.png) | ![Sangre de Cristo](docs/evidencias/desfile/04_sangre_de_cristo.png) |
+| **Desfile de noche, con espectadores y globos** | |
+| ![Noche](docs/evidencias/desfile/05_noche.png) | |

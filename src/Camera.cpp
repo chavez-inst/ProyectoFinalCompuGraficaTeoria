@@ -84,6 +84,16 @@ void Camera::tomarVistaDe(Camera otra)
 	update();
 }
 
+//pone la camara en nuevaPosicion viendo hacia objetivo, la usa la camara que sigue al desfile
+void Camera::mirarHacia(glm::vec3 nuevaPosicion, glm::vec3 objetivo)
+{
+	position = nuevaPosicion;
+	glm::vec3 direccion = glm::normalize(objetivo - nuevaPosicion);
+	yaw = glm::degrees(atan2(direccion.z, direccion.x));
+	pitch = glm::degrees(asin(direccion.y));
+	update();
+}
+
 glm::mat4 Camera::calculateViewMatrix()
 {
 	return glm::lookAt(position, position + front, up);
