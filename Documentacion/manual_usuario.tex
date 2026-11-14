@@ -64,12 +64,14 @@ La escena empieza de tarde, con la cámara libre parada en el andador frente al 
     \tecla{C} & Pasar a la siguiente cámara \\ \hline
     \tecla{F} & Soltar una cámara fija: la cámara libre aparece en ese mismo lugar y desde ahí se puede caminar \\ \hline
     \tecla{N} & Cambiar entre tarde y noche \\ \hline
+    \tecla{P} & Detener el desfile o hacer que siga caminando \\ \hline
+    \tecla{R} & Regresar el desfile al atrio de Santo Domingo para verlo desde el principio \\ \hline
     \tecla{ESC} & Cerrar el programa \\ \hline
   \end{tabular}
   \caption{Controles del recorrido.}
 \end{table}
 
-\pendiente{agregar las teclas del desfile, de la información cultural y del audio cuando estén en el programa, y quitar de aquí cualquier tecla de prueba que ya no exista.}
+\pendiente{agregar las teclas de la información cultural y del audio cuando estén en el programa.}
 
 \section{Cámaras}
 \label{sec:camaras}
@@ -81,21 +83,19 @@ La escena empieza de tarde, con la cámara libre parada en el andador frente al 
     \textbf{Tecla} & \textbf{Cámara} & \textbf{Qué muestra} \\ \hline
     \tecla{1} & Libre & Se mueve con WASD y el mouse. No deja salir de la ciudad ni subir más de 30 m \\ \hline
     \tecla{2} & Fachada & La fachada de Santo Domingo desde el atrio, donde empieza la calenda \\ \hline
-    \tecla{3} & Desfile & Vista de lado del andador para ver pasar el desfile \\ \hline
+    \tecla{3} & Desfile & Va junto al desfile, un poco adelante y a un lado, viendo a la mitad de la fila; lo acompaña desde el atrio hasta el Zócalo \\ \hline
     \tecla{4} & Zócalo & La plaza en diagonal desde la esquina noroeste, con el kiosco al centro \\ \hline
     \tecla{5} & Aérea & Todo el recorrido desde 300 m de altura, con el norte hacia arriba \\ \hline
   \end{tabular}
   \caption{Las cinco cámaras.}
 \end{table}
 
-\dosfotos{retoque_texturas/03_andador}{Cámara del desfile (3)}{retoque_texturas/04_zocalo}{Cámara del Zócalo (4)}{Dos de las cámaras fijas.}
+\dosfotos{desfile/02_chinas_musicos}{Cámara del desfile (3)}{retoque_texturas/04_zocalo}{Cámara del Zócalo (4)}{Dos de las cámaras fijas.}
 
 La vista aérea sirve como mapa: el atrio de Santo Domingo queda arriba a la derecha, el andador baja por el centro y el Zócalo está abajo.
 Desde cualquier cámara fija se puede presionar \tecla{F} para seguir caminando desde ahí. Si se suelta la aérea, la cámara baja a 30 m, que es lo más alto que llega la libre.
 
 \unafoto{retoque_texturas/05_aerea}{Cámara aérea (5): el recorrido completo, del atrio al Zócalo.}
-
-\pendiente{cuando la cámara 3 siga al desfile, cambiar su descripción y su captura.}
 
 \section{Tarde y noche}
 
@@ -115,7 +115,28 @@ Estos son los lugares principales, en el orden en que los recorre la calenda:
   \item \textbf{Zócalo.} La plaza principal, con el kiosco al centro, la fuente, jardineras, bancas de hierro, carritos de elotes y los portales alrededor.
 \end{enumerate}
 
-\pendiente{agregar una sección ``El desfile'' con lo que hace cada personaje (china oaxaqueña, danzante con marmota, torito, músicos, globos y espectadores), con una captura de cada uno y las teclas para controlarlo.}
+\section{El desfile}
+
+En cuanto se abre el programa, la calenda sale de la puerta de Santo Domingo, cruza el atrio, da vuelta en el andador y baja por él hasta el Zócalo. Camina a 1.3 metros por segundo, así que tarda unos tres minutos en llegar. Frente al kiosco se queda quieta unos segundos y vuelve a salir del atrio.
+
+La mejor forma de verla es con la cámara \tecla{3}, que la acompaña todo el camino. Con \tecla{P} se detiene todo el desfile (los personajes se quedan quietos donde van, como en una foto) y con otra \tecla{P} sigue. Con \tecla{R} regresa al atrio para verlo desde el principio.
+
+\unafoto{desfile/01_salida_atrio}{La calenda saliendo del atrio de Santo Domingo.}
+
+La fila va en este orden:
+
+\begin{enumerate}
+  \item \textbf{Danzante con la marmota.} Abre el desfile. Lleva con las dos manos un palo de casi dos metros con la marmota, un globo grande de manta con banderitas de colores. La marmota da vueltas sobre el palo y el palo se inclina un poco a un lado y al otro.
+  \item \textbf{Cuatro chinas oaxaqueñas}, en dos filas, cada una con la falda de otro color. Cada una lleva su canasta adornada con un corazón de flores sobre la cabeza y la sostiene con la mano izquierda. Con la derecha saca un dulce de la canasta y lo lanza hacia la gente; mientras tanto la falda se mece. Cada una lanza en un momento distinto.
+  \item \textbf{Tres músicos} con trompeta, que la levantan y la bajan mientras tocan.
+  \item \textbf{El torito}, al final. Un danzante carga sobre la cabeza el armazón del toro, que se mece de lado a lado; a los costados tiene dos ruedas de cohetes que giran y echan chispas.
+\end{enumerate}
+
+\dosfotos{desfile/03_marmota}{Danzante con la marmota}{desfile/02_chinas_musicos}{Chinas oaxaqueñas y músicos}{Los personajes del desfile.}
+
+\dosfotos{img/musicos_torito}{Músicos y, detrás, el torito}{img/espectadores_globos}{Espectador con globos}{El final de la fila y la gente que lo ve pasar.}
+
+A los lados del andador, en el atrio y en el Zócalo hay espectadores, hombres y mujeres con ropa de diario de distintos colores, que saludan con la mano y voltean la cabeza. Algunos tienen tres globos de colores que suben, se mecen y bajan. Los espectadores siguen saludando aunque el desfile esté detenido.
 
 \section{Información cultural}
 

@@ -26,6 +26,7 @@ El usuario puede caminar libremente por la escena, cambiar entre cinco cámaras,
 \begin{itemize}
   \item \textbf{Recorrido.} La propuesta planteaba un circuito cerrado frente a Santo Domingo. Al comparar con fotos y mapas del lugar real se vio que un óvalo no se parecía a Oaxaca, así que el 2 de noviembre la escena se cambió al andador Macedonio Alcalá, que es por donde pasa la calenda. El desfile ahora va en una sola dirección, del atrio al Zócalo.
   \item \textbf{Cámaras.} Además de las tres de la propuesta (libre, fachada y desfile) se agregaron la del Zócalo y una aérea, y una tecla para soltar una cámara fija y seguir caminando desde ahí.
+  \item \textbf{Animaciones.} En la propuesta el torito giraba sobre el danzante; quedó meciéndose de lado a lado y se le agregaron ruedas de cohetes que giran. Los personajes no mueven los brazos al caminar porque todos cargan algo. Además de la china, la marmota también se anima con KeyFrames, y se agregaron teclas para detener y reiniciar el desfile.
 \end{itemize}
 
 \pendiente{agregar aquí cualquier otro cambio que se haga antes de la entrega (por ejemplo, si el audio no se integra).}
@@ -104,10 +105,10 @@ La base del código es la del laboratorio de la materia, con las mismas clases. 
     \hline
     \textbf{Clase o archivo} & \textbf{Para qué sirve} \\ \hline
     main.cpp & Crea las mallas, carga shaders, texturas y modelos, coloca las luces y tiene el ciclo que dibuja cada cuadro \\ \hline
-    Window & Crea la ventana con GLFW, lee el teclado y el mouse, y guarda la hora (tarde o noche) y la cámara activa \\ \hline
+    Window & Crea la ventana con GLFW, lee el teclado y el mouse, y guarda la hora (tarde o noche), la cámara activa y si el desfile está en pausa o se tiene que reiniciar \\ \hline
     Camera & Cámara en primera persona con WASD y mouse; \texttt{tomarVistaDe} copia la vista de una cámara fija y \texttt{limitarPosicion} evita que salga de la ciudad \\ \hline
     MeshModel (Mesh\_tn) & Mallas hechas a mano con posición, coordenadas de textura y normal (8 valores por vértice) \\ \hline
-    Model & Carga modelos \texttt{.obj} con Assimp y sus texturas \\ \hline
+    Model & Carga modelos \texttt{.obj} con Assimp y sus texturas; también dibuja el modelo con otra textura, para la ropa de los personajes \\ \hline
     Texture & Carga imágenes con stb\_image (\texttt{LoadTexture} para jpg y \texttt{LoadTextureA} para png con transparencia) \\ \hline
     Shader & Compila los shaders y guarda las ubicaciones de los uniforms \\ \hline
     Light, DirectionalLight, PointLight, SpotLight & Las luces del modelo de Phong; \texttt{SpotLight} hereda de \texttt{PointLight} \\ \hline
@@ -126,13 +127,14 @@ La base del código es la del laboratorio de la materia, con las mismas clases. 
   \begin{enumerate}
     \item Se calcula el tiempo desde el cuadro anterior para que el movimiento no dependa de la velocidad de la computadora.
     \item Se leen el teclado y el mouse y se mueve la cámara activa.
+    \item Si el desfile no está en pausa, avanza por el recorrido y se actualizan sus KeyFrames (las chinas y la marmota) y los dulces que van en el aire. Después se coloca la cámara del desfile junto al primero de la fila.
     \item Según la hora se elige el cielo, el color de la luz del sol o de la luna y cuántas farolas se encienden.
-    \item Se dibuja el cielo, luego los objetos opacos y al final los que tienen transparencia (árboles, papel picado, telones, puestos).
+    \item Se dibuja el cielo, luego los objetos opacos (entre ellos los personajes, pieza por pieza) y al final los que tienen transparencia (árboles, papel picado, telones, puestos).
     \item Se muestra la imagen en la ventana.
   \end{enumerate}
 \end{enumerate}
 
-\pendiente{agregar al ciclo los pasos de las animaciones (avance del desfile y KeyFrames) y de la información cultural cuando estén en el programa.}
+\pendiente{agregar al ciclo el paso de la información cultural cuando esté en el programa.}
 
 % =====================================================================
 \section{Tecnologías utilizadas}
@@ -188,7 +190,65 @@ Los modelos que se repiten (bancas, macetas, árboles, farolas) se cargan una so
 
 Cada parte del cuerpo se dibuja a partir de la matriz de la parte anterior: el cuerpo es la raíz, de él salen la cabeza, los brazos y las piernas, y de cada brazo sale el antebrazo. Así, al girar el hombro, el antebrazo lo sigue sin despegarse. Los ángulos de cada articulación están en una estructura (\texttt{PosePersona}) para que las animaciones y los KeyFrames solo tengan que cambiar esos valores.
 
-\pendiente{describir los personajes del desfile (qué partes tiene cada uno, de dónde salen sus modelos) con una captura o diagrama de su jerarquía.}
+Los personajes salen de dos modelos de personas encontrados en internet, a los que se les hicieron muchos cambios en Blender: se redujeron, se partieron en piezas y cada pieza se dejó con su origen en la articulación donde gira, así en el programa basta con trasladar al punto de la articulación y rotar.
+
+\begin{itemize}
+  \item \textbf{Hombre de manta y sombrero}, en 10 piezas: torso (raíz), cabeza, brazo y antebrazo de cada lado, y muslo y pierna de cada lado. Es la base del danzante de la marmota, del que carga el torito, de los músicos y de los espectadores; lo que cambia entre ellos es la pose de los brazos y lo que llevan colgado.
+  \item \textbf{China oaxaqueña}, armada por piezas al estilo del hombre: torso (cabeza y blusa), falda, canasta y los mismos brazos del hombre a 0.9 de su tamaño.
+  \item \textbf{Espectadores}: son gente común, sin traje de fiesta. El hombre usa las mismas piezas del de manta, pero con un torso sin paliacate y con camisa, pantalón y zapatos. La mujer usa el torso de la china con otra blusa, los brazos y las pantorrillas del hombre a 0.9 y una falda lisa.
+\end{itemize}
+
+Para que no todos se vean iguales, la misma pieza se dibuja con distintas texturas: la clase \texttt{Model} tiene un segundo \texttt{RenderModel} que recibe una textura y la usa en todas las mallas en lugar de la que trae el modelo. Hay cuatro ropas para el hombre (camisa azul, vino, verde o blanca con pantalón de mezclilla o caqui), cuatro para la mujer (blusa blanca, rosa, amarilla o turquesa) y cada china lleva su falda de otro color (magenta, roja, verde y azul). La falda de la mujer es blanca y se pinta con el color del objeto, como los globos. Las texturas de ropa son la misma imagen del modelo con la tela repintada, así que las coordenadas de textura siguen sirviendo.
+
+\begin{itemize}
+  \item \textbf{Objetos que cargan}: la marmota y su palo, el torito con sus dos ruedas de cohetes y sus chispas, la trompeta, el dulce y los globos. Cada uno se cuelga de la matriz de la parte del cuerpo que lo sostiene.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \small
+  \begin{tabular}{|p{0.44\linewidth}|p{0.44\linewidth}|}
+    \hline
+    \textbf{Hombre (\texttt{DibujarHombre})} & \textbf{Lo que se le cuelga} \\ \hline
+    \parbox[t]{\linewidth}{\ttfamily
+      base (posición en el recorrido)\\
+      \hspace*{1em}torso\\
+      \hspace*{2em}cabeza\\
+      \hspace*{2em}brazo izq. \(\rightarrow\) antebrazo izq.\\
+      \hspace*{2em}brazo der. \(\rightarrow\) antebrazo der.\\
+      \hspace*{2em}muslo izq. \(\rightarrow\) pierna izq.\\
+      \hspace*{2em}muslo der. \(\rightarrow\) pierna der.\vspace{2pt}} &
+    \parbox[t]{\linewidth}{\ttfamily
+      torso \(\rightarrow\) palo \(\rightarrow\) marmota\\
+      torso \(\rightarrow\) torito \(\rightarrow\) 2 ruedas \(\rightarrow\) 4 chispas c/u\\
+      cabeza \(\rightarrow\) trompeta\\
+      base \(\rightarrow\) 3 globos\vspace{2pt}} \\ \hline
+    \textbf{China (\texttt{DibujarChina})} & \\ \hline
+    \parbox[t]{\linewidth}{\ttfamily
+      base\\
+      \hspace*{1em}torso\\
+      \hspace*{2em}falda\\
+      \hspace*{2em}canasta\\
+      \hspace*{2em}brazo izq. \(\rightarrow\) antebrazo izq.\\
+      \hspace*{2em}brazo der. \(\rightarrow\) antebrazo der.\vspace{2pt}} &
+    \parbox[t]{\linewidth}{\ttfamily
+      base \(\rightarrow\) dulce (mientras vuela)\vspace{2pt}} \\ \hline
+    \textbf{Espectadora (\texttt{DibujarEspectadora})} & \\ \hline
+    \parbox[t]{\linewidth}{\ttfamily
+      base\\
+      \hspace*{1em}pantorrilla izq. y der.\\
+      \hspace*{1em}cintura\\
+      \hspace*{2em}falda\\
+      \hspace*{2em}torso (voltea)\\
+      \hspace*{3em}brazo izq. \(\rightarrow\) antebrazo izq.\\
+      \hspace*{3em}brazo der. \(\rightarrow\) antebrazo der.\vspace{2pt}} &
+    \parbox[t]{\linewidth}{\ttfamily
+      base \(\rightarrow\) 3 globos\vspace{2pt}} \\ \hline
+  \end{tabular}
+  \caption{Jerarquía de los personajes: cada pieza se dibuja con la matriz de la de arriba.}
+\end{figure}
+
+\dosfotos{desfile/03_marmota}{Danzante con la marmota}{img/musicos_torito}{Músicos y, detrás, el torito}{El mismo hombre por piezas con distintas poses y objetos.}
 
 \subsection{Texturizado}
 
@@ -225,7 +285,7 @@ Las cámaras fijas son objetos \texttt{Camera} con su posición y su dirección.
 \section{Animaciones}
 \label{sec:animaciones}
 
-En la propuesta se plantearon cinco animaciones para teoría, todas relacionadas con lo que pasa en una calenda. Además, la china oaxaqueña se anima con KeyFrames.
+En la propuesta se plantearon cinco animaciones para teoría, todas relacionadas con lo que pasa en una calenda. Además, la china oaxaqueña y la marmota se animan con KeyFrames.
 
 \begin{table}[H]
   \centering
@@ -233,17 +293,61 @@ En la propuesta se plantearon cinco animaciones para teoría, todas relacionadas
   \begin{tabular}{|p{0.04\linewidth}|p{0.27\linewidth}|p{0.42\linewidth}|p{0.15\linewidth}|}
     \hline
     \textbf{\#} & \textbf{Animación} & \textbf{Qué hace y para qué sirve} & \textbf{Técnica} \\ \hline
-    1 & Caminata del desfile & Los personajes avanzan del atrio al Zócalo moviendo piernas y brazos, se detienen frente al kiosco y el ciclo vuelve a empezar & Jerárquica y por estados \\ \hline
-    2 & Giro del torito & El armazón del torito gira sobre los hombros del danzante mientras avanza & Transformaciones \\ \hline
-    3 & Globos & Los globos suben, se mecen y bajan sobre el desfile & Transformaciones \\ \hline
+    1 & Caminata del desfile & Los personajes avanzan del atrio al Zócalo moviendo las piernas, se detienen frente al kiosco y el ciclo vuelve a empezar & Jerárquica y por estados \\ \hline
+    2 & Torito & El armazón se mece sobre la cabeza del danzante y sus ruedas de cohetes giran echando chispas & Jerárquica \\ \hline
+    3 & Globos & Los globos suben, se mecen y bajan sobre el desfile & Transforma\-ciones \\ \hline
     4 & Músico & Los brazos del músico suben y bajan el instrumento al tocar & Jerárquica \\ \hline
     5 & Espectadores & Los espectadores a los lados saludan al paso de la calenda & Jerárquica \\ \hline
-    -- & China oaxaqueña & Baila y lanza dulces de su canasta & KeyFrames \\ \hline
+    -- & China oaxaqueña & Saca dulces de su canasta y los lanza a la gente mientras la falda se mece & KeyFrames \\ \hline
+    -- & Marmota & Gira sobre su palo mientras el palo se inclina a los lados & KeyFrames \\ \hline
   \end{tabular}
   \caption{Animaciones del proyecto.}
 \end{table}
 
-\pendiente{para cada animación: cómo se hizo (variables, estados, tiempos), qué teclas la controlan y una captura o secuencia de capturas. Para la de KeyFrames: cuántos cuadros tiene, qué variables guarda cada cuadro, cómo se interpola entre ellos y de qué archivo se leen.}
+Todas las animaciones dependen del tiempo real que pasa entre un cuadro y otro, no del número de cuadros, así que se ven a la misma velocidad en cualquier computadora. El desfile tiene su propio reloj (\texttt{tiempoDesfile}) que solo avanza cuando no está en pausa; con eso la tecla \tecla{P} congela a todos los personajes del desfile, y \tecla{R} pone el avance otra vez en el inicio. Los espectadores usan el reloj normal y siguen saludando.
+
+\subsection{Caminata y recorrido}
+
+El recorrido son cuatro puntos en el piso: la puerta de Santo Domingo, la esquina del atrio con el andador, la entrada al andador y el frente del kiosco. La variable \texttt{avanceDesfile} guarda cuántos metros lleva el primero de la fila y crece 1.3 metros por segundo. La función \texttt{PuntoRecorrido} convierte una distancia en un punto sobre esas rectas, y \texttt{GiroRecorrido} calcula hacia dónde voltear viendo medio metro atrás y medio adelante, así los personajes dan la vuelta poco a poco en las esquinas.
+
+Cada personaje tiene en arreglos qué tipo es, cuántos metros va detrás del primero y cuánto se hace a un lado, y se dibuja en la distancia que le toca. El desfile tiene dos estados: \textbf{caminando}, mientras el primero no llega al kiosco, y \textbf{detenido}, durante 8 segundos frente al kiosco. Al terminar la espera, el avance regresa al inicio.
+
+Al caminar, los muslos se mueven con un seno (uno adelante y el otro atrás), las rodillas se doblan solo cuando la pierna regresa y la cintura sube y baja un poco. El ángulo de la pierna depende de lo que ya se avanzó y no del tiempo, así los pies no se resbalan sobre el piso. Los brazos no se mueven al caminar porque todos cargan algo.
+
+\subsection{Torito, músicos, globos y espectadores}
+
+Estas animaciones son funciones del tiempo con senos y cosenos, aplicadas a las piezas del modelo jerárquico:
+
+\begin{itemize}
+  \item \textbf{Torito}: el armazón gira 8 grados a cada lado y se inclina 4 grados adelante y atrás. Cada rueda de cohetes da una vuelta por segundo, una al revés de la otra, y sus cuatro chispas cambian de tamaño para que parezca que chisporrotean.
+  \item \textbf{Músicos}: cada 2 segundos levantan la cabeza y la trompeta. Hay dos poses de los brazos (trompeta derecha y trompeta arriba) y la función \texttt{MezclarBrazos} pasa de una a otra poco a poco. Cada músico empieza en otro momento.
+  \item \textbf{Globos}: cada globo sube 2 metros y vuelve a bajar en 6 segundos, se mueve un poco de lado y se inclina; los tres de cada espectador van desfasados.
+  \item \textbf{Espectadores}: mueven la mano de un lado a otro con el brazo arriba y voltean la cabeza de un lado al otro, una vez por cada dos saludos. Como la cabeza de la mujer viene pegada al torso, ella voltea todo el cuerpo de la cintura para arriba.
+\end{itemize}
+
+\dosfotos{img/musicos_torito}{Músicos tocando y el torito}{img/espectadores_globos}{Espectador con globos}{Animaciones de los músicos, el torito y los espectadores.}
+
+\unafoto{img/espectadores_ropa}{Chinas con faldas de distintos colores y espectadores con ropa de diario: a la derecha una mujer de blusa amarilla y a la izquierda un hombre de camisa azul con globos.}
+
+\subsection{KeyFrames}
+
+Se usa la misma forma del laboratorio: cada cuadro clave guarda sus valores, la función \texttt{interpolation} calcula cuánto debe cambiar cada valor por paso para llegar al siguiente cuadro y \texttt{animate} lo va sumando en cada cuadro. Al llegar al último cuadro vuelve al primero, por eso el último es igual al primero. Para poder tener varias animaciones al mismo tiempo, las variables del laboratorio (\texttt{KeyFrame}, \texttt{FrameIndex}, \texttt{playIndex}, \texttt{i\_curr\_steps}, \texttt{i\_max\_steps}) se juntaron en un \texttt{struct AnimacionKeyFrames}. Los cuadros se guardan en el código con \texttt{GuardarCuadro} antes del ciclo principal; no se leen de un archivo. Un paso equivale a 1/60 de segundo.
+
+\begin{table}[H]
+  \centering
+  \small
+  \begin{tabular}{|p{0.15\linewidth}|p{0.27\linewidth}|p{0.47\linewidth}|}
+    \hline
+    \textbf{Animación} & \textbf{Qué guarda cada cuadro} & \textbf{Cuadros} \\ \hline
+    China (4) & Ángulos del brazo derecho: hacia adelante, hacia el lado y del codo & 5 cuadros con 36 pasos entre cada uno (2.4 segundos por vuelta): brazo abajo, mano en la canasta, lanza al frente, abajo y descansa. Cada china empieza en otro cuadro \\ \hline
+    Marmota & Giro sobre el palo e inclinación del palo & 5 cuadros con 60 pasos entre cada uno (4 segundos por vuelta): un cuarto de vuelta en cada tramo mientras el palo se inclina 4 grados a un lado y al otro \\ \hline
+  \end{tabular}
+  \caption{Animaciones con KeyFrames.}
+\end{table}
+
+Cuando la china sale del cuadro de la canasta se suelta el dulce. Su vuelo dura un segundo y sigue una parábola hacia el frente y a un lado, dando vueltas.
+
+\dosfotos{desfile/02_chinas_musicos}{Chinas lanzando dulces}{desfile/03_marmota}{Marmota girando}{Las dos animaciones con KeyFrames.}
 
 % =====================================================================
 \section{Cronograma: planeado contra real}
@@ -288,7 +392,7 @@ En la propuesta el trabajo se repartió en siete semanas, del 6 de octubre al 23
     \ganttbar{Edificios y Zócalo}{2026-11-03}{2026-11-05} \\
     \ganttbar{Vegetación y adornos}{2026-11-05}{2026-11-11} \\
     \ganttbar{Retoque de texturas y cielo}{2026-11-11}{2026-11-13} \\
-    \ganttbar[progress=0]{Personajes y animaciones}{2026-11-13}{2026-11-14} \\
+    \ganttbar{Personajes y animaciones}{2026-11-13}{2026-11-13} \\
     \ganttbar[progress=0]{Videos y manuales}{2026-11-13}{2026-11-17} \\
     \ganttmilestone{Entrega}{2026-11-18}
   \end{ganttchart}
@@ -304,7 +408,7 @@ En la propuesta el trabajo se repartió en siete semanas, del 6 de octubre al 23
   \item \textbf{Pausa del 22 de octubre al 1 de noviembre.} En esas dos semanas no se avanzó porque hubo que atender entregas de otras materias. Al regresar se aprovechó para revisar la escena contra fotos del lugar, y de ahí salió el rediseño.
 \end{itemize}
 
-\pendiente{actualizar las barras de personajes, animaciones, videos y manuales con las fechas reales al terminar.}
+\pendiente{actualizar las barras de información cultural, audio, videos y manuales con las fechas reales al terminar.}
 
 % =====================================================================
 \section{Roles y responsabilidades}
@@ -433,7 +537,7 @@ Los edificios principales, las casas, el kiosco, la fuente, las bancas, los carr
 El alebrije de coyote está basado en una pieza de Pablo Franco y Nelly Ramírez.
 Las librerías son de código abierto: GLFW (licencia zlib), GLEW (BSD y MIT), GLM (MIT), Assimp (BSD de 3 cláusulas) y stb\_image (dominio público o MIT).
 
-Los personajes del desfile parten de dos modelos de personas que proporcionó un compañero, sin licencia: un hombre con traje de manta y sombrero y una bailarina con traje típico. Se usan como modelos encontrados y se modificaron bastante: el hombre se partió en piezas con el origen en cada articulación y la china oaxaqueña se armó con la cabeza y la blusa de la bailarina, los brazos del hombre y una falda, una canasta y un dulce hechos para el proyecto. La marmota, el torito con sus ruedas, la trompeta y los globos se hicieron para este proyecto.
+Los personajes del desfile parten de dos modelos de personas que proporcionó un compañero, sin licencia: un hombre con traje de manta y sombrero y una bailarina con traje típico. Se usan como modelos encontrados y se modificaron bastante: el hombre se partió en piezas con el origen en cada articulación y la china oaxaqueña se armó con la cabeza y la blusa de la bailarina, los brazos del hombre y una falda, una canasta y un dulce hechos para el proyecto. Las ropas de los espectadores y las faldas de colores son sus mismas texturas con la tela repintada. La marmota, el torito con sus ruedas, la trompeta y los globos se hicieron para este proyecto.
 
 \pendiente{agregar el audio con su autor y licencia.}
 
