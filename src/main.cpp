@@ -60,7 +60,7 @@ Texture telonTexture;
 Texture papelPicadoTexture;
 Texture maderaTexture;		//tablones, para las estanterias de macetas
 //modo Dia de Muertos
-Texture muertosTexture;		//una sola imagen para velas, flores, altar, ofrendas y esqueletos
+Texture muertosTexture;		//una sola imagen para velas, flores, altar y ofrendas
 Texture papelPicadoMuertosTexture;
 
 //archivos en Models/, texturas en Textures/
@@ -139,7 +139,7 @@ Model llamasKiosco;
 Model altar;					//frente hacia Z positivo, origen al centro del frente
 Model altarGreca;
 Model llamasAltar;
-Model tapete;					//3 por 12 m frente al altar, con el origen del altar
+Model tapete;					//tres tramos de 3 por 4 m frente al altar, con el origen del altar
 Model velasCarpa;				//sobre el altar y el tapete, con el origen del altar
 Model llamasCarpa;
 Model ofrenda;					//2.6 m de ancho, frente hacia Z positivo
@@ -147,12 +147,6 @@ Model llamasOfrenda;
 Model catrina;					//2 m
 Model xolo;						//75 cm de largo
 Model panMuerto;
-//esqueleto de carton, cada pieza con su origen en la articulacion
-Model esqueletoCuerpo;			//craneo, costillas y pelvis, origen en el cuello
-Model esqueletoBrazo;
-Model esqueletoAntebrazo;
-Model esqueletoMuslo;
-Model esqueletoPierna;
 
 //ropa de cada variante; la falda de la primera china y la primera blusa son las de su modelo
 const int numRopas = 4;
@@ -1468,36 +1462,6 @@ glm::vec3 PosicionCarta(int carta, float distanciaPrimero)
 	return glm::vec3(x, AlturaPiso(x, z) + alturaCarta[carta], z);
 }
 
-//esqueleto de carton colgado del cuello, se mece y mueve brazos y piernas como marioneta
-//con la fase cada uno se mueve distinto
-void DibujarEsqueleto(glm::mat4 base, float tiempo, float fase, GLuint uniformModel)
-{
-	float t = tiempo + fase;
-	glm::mat4 cuerpo = glm::rotate(base, 25.0f * sin(t * 0.6f) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-	cuerpo = glm::rotate(cuerpo, 6.0f * sin(t * 1.3f) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-	ropaActual = &muertosTexture;
-	DibujarPieza(esqueletoCuerpo, cuerpo, uniformModel);
-	//lado 1 es la derecha del dibujo, hacia X positivo
-	for (int lado = -1; lado <= 1; lado += 2)
-	{
-		//los brazos y las piernas se abren hacia afuera y los codos y rodillas se doblan
-		glm::mat4 brazo = glm::translate(cuerpo, glm::vec3(lado * 0.16f, -0.04f, 0.01f));
-		brazo = glm::rotate(brazo, lado * (30.0f + 25.0f * sin(t * 2.1f + lado)) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		DibujarPieza(esqueletoBrazo, brazo, uniformModel);
-		glm::mat4 antebrazo = glm::translate(brazo, glm::vec3(0.0f, -0.3f, 0.0f));
-		antebrazo = glm::rotate(antebrazo, lado * (20.0f + 30.0f * sin(t * 2.7f + lado)) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		DibujarPieza(esqueletoAntebrazo, antebrazo, uniformModel);
-
-		glm::mat4 muslo = glm::translate(cuerpo, glm::vec3(lado * 0.08f, -0.62f, 0.01f));
-		muslo = glm::rotate(muslo, lado * (8.0f + 14.0f * sin(t * 1.9f - lado)) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		DibujarPieza(esqueletoMuslo, muslo, uniformModel);
-		glm::mat4 pierna = glm::translate(muslo, glm::vec3(0.0f, -0.4f, 0.0f));
-		pierna = glm::rotate(pierna, -lado * (10.0f + 20.0f * sin(t * 2.3f - lado)) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		DibujarPieza(esqueletoPierna, pierna, uniformModel);
-	}
-	ropaActual = nullptr;
-}
-
 //un racimo del modo Dia de Muertos con muertos.png; con soloLlamas en true se dibujan solo sus velas encendidas y llamas
 void DibujarRacimo(Model& racimo, Model& llamas, glm::mat4 model, bool soloLlamas, GLuint uniformModel)
 {
@@ -1746,16 +1710,6 @@ int main()
 	catrina.LoadModel("Models/catrina.obj");
 	xolo = Model();
 	xolo.LoadModel("Models/xolo.obj");
-	esqueletoCuerpo = Model();
-	esqueletoCuerpo.LoadModel("Models/esq_cuerpo.obj");
-	esqueletoBrazo = Model();
-	esqueletoBrazo.LoadModel("Models/esq_brazo.obj");
-	esqueletoAntebrazo = Model();
-	esqueletoAntebrazo.LoadModel("Models/esq_antebrazo.obj");
-	esqueletoMuslo = Model();
-	esqueletoMuslo.LoadModel("Models/esq_muslo.obj");
-	esqueletoPierna = Model();
-	esqueletoPierna.LoadModel("Models/esq_pierna.obj");
 
 	//Texture guarda el nombre sin copiarlo, por eso cada nombre se arma en su variable y se carga enseguida
 	for (int i = 0; i < numRopas; i++)
@@ -2054,12 +2008,6 @@ int main()
 	//altar en el oriente del Zocalo, con el tapete hacia el kiosco
 	glm::mat4 modeloAltar = glm::translate(glm::mat4(1.0), glm::vec3(24.0f, altoBanqueta, 77.0f));
 	modeloAltar = glm::rotate(modeloAltar, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-	//cuello de cada esqueleto en las coordenadas del altar: dos cuelgan del arco y tres de la carpa
-	const int numEsqueletos = 5;
-	glm::vec3 posicionEsqueletos[numEsqueletos] = {
-		glm::vec3(-2.3f, 3.95f, -2.5f), glm::vec3(2.3f, 3.95f, -2.5f),
-		glm::vec3(-3.0f, 5.0f, 4.0f), glm::vec3(3.0f, 5.2f, 8.0f), glm::vec3(0.0f, 5.4f, 11.5f)
-	};
 	//ofrendas al poniente del kiosco, en el atrio viendo al andador y al sur del kiosco
 	const int numOfrendas = 3;
 	glm::vec3 posicionOfrendas[numOfrendas] = {
@@ -2920,16 +2868,13 @@ int main()
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modeloAltar));
 			altarGreca.RenderModel();
 			tapete.RenderModel();
-			for (int i = 0; i < numEsqueletos; i++)
-			{
-				DibujarEsqueleto(glm::translate(modeloAltar, posicionEsqueletos[i]), now, i * 1.9f, uniformModel);
-			}
 
-			//la catrina junto al altar y otra en el atrio, dos xolos a la entrada del tapete y uno en la ofrenda del poniente
+			//la catrina junto al altar y otra en el atrio, dos xolos a los lados del tapete y uno en la ofrenda del poniente
+			//los xolos del altar miran a su centro, en x 26.4, desde distintas distancias
 			DibujarModelo(catrina, glm::vec3(23.5f, altoBanqueta, 70.8f), -90.0f, 1.0f, uniformModel);
 			DibujarModelo(catrina, glm::vec3(18.0f, altoBanqueta, -113.5f), -90.0f, 1.0f, uniformModel);
-			DibujarModelo(xolo, glm::vec3(11.6f, altoBanqueta, 79.3f), -90.0f, 1.0f, uniformModel);
-			DibujarModelo(xolo, glm::vec3(11.6f, altoBanqueta, 74.7f), -90.0f, 1.0f, uniformModel);
+			DibujarModelo(xolo, glm::vec3(21.4f, altoBanqueta, 80.3f), 33.0f, 1.0f, uniformModel);
+			DibujarModelo(xolo, glm::vec3(19.2f, altoBanqueta, 73.6f), -25.0f, 1.0f, uniformModel);
 			DibujarModelo(xolo, glm::vec3(-18.0f, altoBanqueta, 78.6f), 130.0f, 1.0f, uniformModel);
 
 			//primero los racimos y despues las velas encendidas con sus llamas, que van sin luz para que brillen

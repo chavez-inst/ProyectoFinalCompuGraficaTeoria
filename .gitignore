@@ -51,5 +51,8 @@ Texturas_retoque/
 # requerimientos del profesor
 Requerimientos*.pdf
 
+# papelera local con lo que ya no se usa
+_Papelera/
+
 # temporales de LaTeX de los manuales
 Documentacion/build/

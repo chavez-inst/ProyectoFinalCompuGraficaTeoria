@@ -234,3 +234,13 @@ Para que no pese tanto, cada grupo que se repite (una cortina, un cable de velas
 | ![Carpa](docs/evidencias/muertos/07_velas_carpa.png) | ![Desfile](docs/evidencias/muertos/08_desfile_catrinas.png) |
 | **Ofrenda al poniente del kiosco, con un xolo** | |
 | ![Ofrenda](docs/evidencias/muertos/09_ofrenda.png) | |
+
+## Retoques del modo Dia de Muertos
+
+Se quitaron los esqueletos colgados del altar. Las macetas de cempasuchil ahora son de barro con borde, una mata de hojas y cabezas de flor encima, y las de mano de leon llevan su cresta morada; las calaveritas de azucar del altar y de las ofrendas tienen forma de craneo con la cara pintada al frente. El tapete del altar se cambio por uno como los tapetes de arena que se hacen en las calles de Oaxaca: tres tramos de 3 x 4 m con un sol con rayos, un cempasuchil grande entre alcatraces y hojas y una greca. Los dos xoloitzcuintles se movieron a los lados del tapete, a distinta distancia, mirando hacia el altar.
+
+En los personajes se veian huecos en el hombro y en el codo al levantar o doblar el brazo, porque cada pieza quedo abierta donde se corto el modelo. Ahora el brazo lleva una bola con la tela de la manga y el antebrazo una con la piel, centradas en el punto donde gira cada pieza, y las orillas abiertas del torso y de los brazos se cerraron.
+
+| Tapete de arena con las macetas y los xolos | Altar con las macetas y calaveritas nuevas |
+|---|---|
+| ![Tapete](docs/evidencias/muertos/10_tapete.png) | ![Altar](docs/evidencias/muertos/11_altar.png) |

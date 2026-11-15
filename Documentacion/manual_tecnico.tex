@@ -30,6 +30,7 @@ El usuario puede caminar libremente por la escena, cambiar entre cinco cámaras,
   \item \textbf{Información cultural.} En lugar de tarjetas fijas que se abren con una tecla, la información se presenta como cartas de lotería repartidas en la escena: hay que encontrarlas, tomarlas y voltearlas para leer su ficha y escuchar su narración. Las que van con el desfile se mueven con su personaje.
   \item \textbf{Audio.} La propuesta pedía solo la banda de viento en bucle. Se agregó audio en 3D: la banda suena desde el músico de en medio y se oye más bajo al alejarse, hay murmullo de gente, chispas en el torito, campanas y cohetes al salir y al llegar el desfile, y una tecla para quitar el sonido.
   \item \textbf{Velocidad del desfile.} Se subió a 2 metros por segundo para que la calenda llegue al Zócalo en unos dos minutos.
+  \item \textbf{Modo Día de Muertos.} No estaba en la propuesta. Se agregó al final como un extra: con la tecla \tecla{O} la misma escena se adorna como una noche de Día de Muertos en Oaxaca (sección \ref{sec:modomuertos}).
 \end{itemize}
 
 % =====================================================================
@@ -76,10 +77,23 @@ El Centro Histórico de Oaxaca es Patrimonio de la Humanidad desde 1987, junto c
 Las calendas se hacen todo el año, pero la más conocida es la de la Guelaguetza, en julio, así que se revisó que lo que hay en la escena tenga sentido en esa fecha:
 
 \begin{itemize}
-  \item El pan de yema se vende todo el año; el pan de muerto con carita es de noviembre y por eso no se usó.
+  \item El pan de yema se vende todo el año; el pan de muerto con carita es de noviembre, así que solo aparece en el modo Día de Muertos.
   \item Los elotes son de temporada de lluvias (de julio a septiembre), justo cuando es la Guelaguetza.
   \item Los flamboyanes florecen al inicio de la temporada de lluvias, entre mayo y julio, y las bugambilias tienen flor casi todo el año.
   \item Las jacarandas florecen en primavera (de febrero a abril) y en julio ya solo tienen hojas. Se dejaron con flores porque son uno de los árboles más reconocibles del centro de Oaxaca y del jardín Labastida, pero en una calenda de julio estarían verdes.
+\end{itemize}
+
+\subsection{El Día de Muertos en Oaxaca}
+
+El modo extra del programa muestra la misma calle en la noche del 1 y 2 de noviembre. Las fiestas indígenas dedicadas a los muertos están en la Lista Representativa del Patrimonio Cultural Inmaterial de la UNESCO desde 2008: se cree que en esos días las almas de los difuntos regresan a visitar a su familia, y para recibirlas se ponen ofrendas con flores, velas, comida y fotos, y el camino se marca con pétalos de cempasúchil (UNESCO, 2008). En Oaxaca estas fechas también se celebran en la calle, con comparsas y calendas de disfraces. Por eso se eligieron estos elementos:
+
+\begin{itemize}
+  \item \textbf{Cempasúchil} en cortinas sobre el andador y en esferas y guirnaldas en el kiosco, y un camino de pétalos hacia el altar.
+  \item \textbf{Velas}: veladoras en las ofrendas y velas flotantes colgadas entre el papel picado, que cambia a uno con calaveras, velas y cruces.
+  \item \textbf{Un altar escalonado} junto al kiosco, con grecas como las de Mitla, arco de flores, macetas de cempasúchil, calaveritas de azúcar y un tapete de arena como los que se hacen en las calles de Oaxaca.
+  \item \textbf{Ofrendas familiares} con mantel, fotos, veladoras, pan de muerto y calaveritas.
+  \item \textbf{La catrina} y \textbf{el xoloitzcuintle}, el perro que según la tradición acompaña a las almas.
+  \item \textbf{Caras de calavera} en los espectadores y en los personajes del desfile, como en las comparsas.
 \end{itemize}
 
 \subsection{La lotería y la información cultural}
@@ -124,8 +138,8 @@ Los textos de las fichas son cortos (tres o cuatro frases) para que se puedan le
     \textbf{Carpeta} & \textbf{Qué contiene} \\ \hline
     src/ & Todo el código en C++: la escena (\texttt{main.cpp}) y las clases de la ventana, la cámara, las luces, las texturas y los modelos \\ \hline
     shaders/ & Shaders en GLSL: \texttt{shader\_light} (escena con iluminación) y \texttt{skybox} \\ \hline
-    Models/ & Modelos \texttt{.obj} con su \texttt{.mtl} (66 modelos, contando las piezas de los personajes) \\ \hline
-    Textures/ & Texturas \texttt{.jpg} y \texttt{.png} (127 imágenes), las 12 caras del cielo en \texttt{Skybox/} y las 35 imágenes de las cartas en \texttt{cartas/} \\ \hline
+    Models/ & Modelos \texttt{.obj} con su \texttt{.mtl} (89 modelos, contando las piezas de los personajes y los del modo Día de Muertos) \\ \hline
+    Textures/ & Texturas \texttt{.jpg} y \texttt{.png} (142 imágenes), las 18 caras de los tres cielos en \texttt{Skybox/} y las 35 imágenes de las cartas en \texttt{cartas/} \\ \hline
     Audio/ & Música de la banda, efectos (cohetes, campanas, chispas, murmullo) y en \texttt{narracion/} la narración de cada carta \\ \hline
     Librerias/ & GLEW, GLFW, GLM, Assimp, stb\_image y miniaudio (se reparte en \texttt{Librerias.zip}) \\ \hline
     docs/evidencias/ & Capturas de cada fase del desarrollo \\ \hline
@@ -145,7 +159,7 @@ La base del código es la del laboratorio de la materia, con las mismas clases. 
     \hline
     \textbf{Clase o archivo} & \textbf{Para qué sirve} \\ \hline
     main.cpp & Crea las mallas, carga shaders, texturas y modelos, coloca las luces y tiene el ciclo que dibuja cada cuadro \\ \hline
-    Window & Crea la ventana con GLFW, lee el teclado y el mouse, y guarda la hora (tarde o noche), la cámara activa y si el desfile está en pausa o se tiene que reiniciar \\ \hline
+    Window & Crea la ventana con GLFW, lee el teclado y el mouse, y guarda la hora (tarde o noche), si está el modo Día de Muertos, la cámara activa y si el desfile está en pausa o se tiene que reiniciar \\ \hline
     Camera & Cámara en primera persona con WASD y mouse; \texttt{tomarVistaDe} copia la vista de una cámara fija y \texttt{limitarPosicion} evita que salga de la ciudad \\ \hline
     MeshModel (Mesh\_tn) & Mallas hechas a mano con posición, coordenadas de textura y normal (8 valores por vértice) \\ \hline
     Model & Carga modelos \texttt{.obj} con Assimp y sus texturas; también dibuja el modelo con otra textura, para la ropa de los personajes \\ \hline
@@ -163,7 +177,7 @@ La base del código es la del laboratorio de la materia, con las mismas clases. 
 
 \begin{enumerate}
   \item \textbf{Inicio.} Se crea la ventana, se compilan los shaders y se crean las mallas hechas a mano (pisos, fachadas, jardineras, papel picado).
-  \item \textbf{Carga.} Se cargan las texturas, los 66 modelos, los dos cielos y los audios, y se colocan las luces. Esta parte tarda unos 30 segundos.
+  \item \textbf{Carga.} Se cargan las texturas, los 89 modelos, los tres cielos y los audios, y se colocan las luces. Esta parte tarda unos 30 segundos.
   \item \textbf{Ciclo principal}, una vez por cuadro:
   \begin{enumerate}
     \item Se calcula el tiempo desde el cuadro anterior para que el movimiento no dependa de la velocidad de la computadora.
@@ -171,7 +185,7 @@ La base del código es la del laboratorio de la materia, con las mismas clases. 
     \item Si el desfile no está en pausa, avanza por el recorrido y se actualizan sus KeyFrames (las chinas y la marmota) y los dulces que van en el aire. Después se coloca la cámara del desfile junto al primero de la fila.
     \item Se busca la carta que falte más cercana a la cámara activa (a menos de 8 metros) y se revisan las teclas \tecla{I} y \tecla{L} para tomarla, voltearla, guardarla o ver el tablero.
     \item El oído del audio se pone en la cámara activa, así la banda y los efectos suenan según dónde está y hacia dónde mira.
-    \item Según la hora se elige el cielo, el color de la luz del sol o de la luna y cuántas farolas se encienden.
+    \item Según la hora se elige el cielo, el color de la luz del sol o de la luna y cuántas farolas se encienden. En el modo Día de Muertos se usan su cielo y sus luces, y las velas tiemblan.
     \item Se dibuja el cielo, luego los objetos opacos (entre ellos los personajes, pieza por pieza) y al final los que tienen transparencia (árboles, papel picado, telones, puestos, cartas).
     \item Encima de todo, sin profundidad y con una proyección ortográfica, se dibuja lo que va en la pantalla: el aviso para tomar una carta, la carta abierta o el tablero.
     \item Se muestra la imagen en la ventana.
@@ -234,6 +248,8 @@ Los modelos que se repiten (bancas, macetas, árboles, farolas) se cargan una so
 Cada parte del cuerpo se dibuja a partir de la matriz de la parte anterior: el cuerpo es la raíz, de él salen la cabeza, los brazos y las piernas, y de cada brazo sale el antebrazo. Así, al girar el hombro, el antebrazo lo sigue sin despegarse. Los ángulos de cada articulación están en una estructura (\texttt{PosePersona}) para que las animaciones y los KeyFrames solo tengan que cambiar esos valores.
 
 Los personajes salen de dos modelos de personas encontrados en internet, a los que se les hicieron muchos cambios en Blender: se redujeron, se partieron en piezas y cada pieza se dejó con su origen en la articulación donde gira, así en el programa basta con trasladar al punto de la articulación y rotar.
+
+Al partir el modelo, cada pieza quedó abierta en su orilla, y al levantar o doblar un brazo se veían huecos en el hombro y en el codo. Para taparlos, el brazo lleva una bola con la tela de la manga y el antebrazo una con la piel, cada una centrada en el punto donde gira su pieza; como ese centro no se mueve al girar, la bola siempre cubre la unión. Las orillas abiertas del torso y de los brazos también se cerraron.
 
 \begin{itemize}
   \item \textbf{Hombre de manta y sombrero}, en 10 piezas: torso (raíz), cabeza, brazo y antebrazo de cada lado, y muslo y pierna de cada lado. Es la base del danzante de la marmota, del que carga el torito, de los músicos y de los espectadores; lo que cambia entre ellos es la pose de los brazos y lo que llevan colgado.
@@ -318,7 +334,7 @@ Con la tecla N se cambian el cielo, el color y la fuerza del sol o de la luna y 
 
 \subsection{Cielo, transparencias y cámaras}
 
-El cielo es un \textit{skybox}: un cubo con una imagen en cada cara (en el orden derecha, izquierda, abajo, arriba, atrás y adelante) que se dibuja primero y siempre alrededor de la cámara. Hay uno de tarde y uno de noche, con caras de 2048 pixeles.
+El cielo es un \textit{skybox}: un cubo con una imagen en cada cara (en el orden derecha, izquierda, abajo, arriba, atrás y adelante) que se dibuja primero y siempre alrededor de la cámara. Hay uno de tarde, uno de noche y uno para el modo Día de Muertos, con caras de 2048 pixeles.
 
 Para la transparencia se activa el \textit{blending} (\texttt{GL\_SRC\_ALPHA}, \texttt{GL\_ONE\_MINUS\_SRC\_ALPHA}) y los objetos transparentes se dibujan al final, después de los opacos.
 
@@ -392,6 +408,45 @@ Se usa la misma forma del laboratorio: cada cuadro clave guarda sus valores, la 
 Cuando la china sale del cuadro de la canasta se suelta el dulce. Su vuelo dura un segundo y sigue una parábola hacia el frente y a un lado, dando vueltas.
 
 \dosfotos{desfile/02_chinas_musicos}{Chinas lanzando dulces}{desfile/03_marmota}{Marmota girando}{Las dos animaciones con KeyFrames.}
+
+% =====================================================================
+\section{Modo Día de Muertos}
+\label{sec:modomuertos}
+
+Con la tecla \tecla{O} se cambia la variable \texttt{modoMuertos}, y todo lo de este modo se dibuja dentro de un \texttt{if (modoMuertos)} en el ciclo principal. No es otra escena: el desfile, las cámaras, las cartas y el sonido siguen igual, y solo se agregan adornos y se cambian el cielo, las luces y algunas texturas. Lo que tiene de cultural se explica en la sección \ref{sec:cultura}.
+
+\dosfotos{muertos/02_velas_flotantes}{Velas flotantes y cortinas de cempasúchil}{muertos/11_altar}{Altar junto al kiosco}{El modo Día de Muertos.}
+
+\subsection{Iluminación}
+
+La noche es más oscura que la normal: el cielo es morado con un resplandor naranja y la luz direccional casi se apaga, así que la luz de la escena sale sobre todo de las velas y de focos de color.
+
+\begin{itemize}
+  \item \textbf{Farolas}: las mismas 16, pero más débiles y más naranjas.
+  \item \textbf{19 luces puntuales de velas}: no se pone una luz por vela, sino una por grupo (sobre las velas del andador, en las cortinas, en el kiosco, en el altar y una por ofrenda). Para que tiemblen como una flama, en cada cuadro su intensidad se multiplica por dos senos de distinta velocidad, y cada luz va desfasada de las demás.
+  \item \textbf{6 reflectores de color}: Santo Domingo en morado, el kiosco en naranja, la Sangre de Cristo en turquesa, dos sobre el altar y uno sobre la catrina.
+\end{itemize}
+
+Con eso hay hasta 35 luces puntuales y 6 reflectores al mismo tiempo, por lo que los límites \texttt{MAX\_POINT\_LIGHTS} y \texttt{MAX\_SPOT\_LIGHTS} se subieron a 40 y 8, tanto en \texttt{CommonValues.h} como en el shader.
+
+\subsection{Cómo se dibuja sin que el programa se haga lento}
+
+\begin{itemize}
+  \item \textbf{Racimos en un solo modelo.} Las velas, flores y adornos que van juntos (las velas de un cable, una cortina de flores, una ofrenda) están unidos en un solo \texttt{.obj}. Así cada racimo se dibuja con una sola llamada en lugar de una por vela o por flor.
+  \item \textbf{Una sola textura.} Todos los adornos propios del modo usan la misma imagen (\texttt{muertos.png}), que tiene en distintas zonas los colores de la cera, las flores, la madera y el papel. No hay que cambiar de textura entre un adorno y otro.
+  \item \textbf{Velas sin luz.} Una flama no se ilumina, brilla. Las velas encendidas y sus llamas están en un modelo aparte de cada racimo y se dibujan en una segunda vuelta, al final, con el uniform \texttt{sinLuz} en 1: con eso el shader usa el color de la textura tal cual, sin el cálculo de Phong, y se ven brillantes aunque no les llegue luz.
+  \item \textbf{Mismas piezas, otra textura.} Las caras de calavera de los espectadores y del desfile son sus mismas texturas de ropa con la cara pintada, y se usan con el segundo \texttt{RenderModel} de la clase \texttt{Model}, igual que las ropas de colores.
+\end{itemize}
+
+\subsection{Altar y tapete de arena}
+
+El altar tiene siete escalones con la greca al frente. En cada escalón hay macetas de cempasúchil y de mano de león, velas, calaveritas de azúcar, pan y naranjas. Cada maceta es de barro, con una mata de hojas y cabezas de flor encima, y las calaveritas tienen forma de cráneo con la cara pintada al frente.
+
+Frente al altar va un tapete de arena de 12 metros, armado con tres tramos de 3 por 4 metros con el mismo dibujo, como los tapetes que se hacen en las calles de Oaxaca para estas fechas: un sol con rayos, un cempasúchil grande entre alcatraces y hojas, y una greca entre filas de cuadros. A los lados lo bordean macetas y flores sueltas, y dos xoloitzcuintles miran hacia el altar desde distintos lugares.
+
+\unafoto{muertos/10_tapete}{Tapete de arena frente al altar, con las macetas de cempasúchil y los xoloitzcuintles.}
+
+\dosfotos{muertos/05_kiosco}{Kiosco con cempasúchil}{muertos/08_desfile_catrinas}{Desfile con caras de calavera}{Adornos del kiosco y el desfile en el modo Día de Muertos.}
 
 % =====================================================================
 \section{Cronograma: planeado contra real}
@@ -650,6 +705,8 @@ Los edificios principales, las casas, el kiosco, la fuente, las bancas, los carr
   Oaxacan Birb (alebrije) & DrLemurpants, Sketchfab & CC BY 4.0 & Menos triángulos \\ \hline
   Perrito (alebrije) & aromeromyt, Sketchfab & CC BY 4.0 & Menos triángulos, limpieza \\ \hline
   Petate & ocelotlmx, Sketchfab & CC BY 4.0 & Formato \\ \hline
+  La Calavera Catrina - Day of the Dead & Brian Trepanier, Sketchfab & CC BY 4.0 & Menos triángulos, textura en una sola imagen \\ \hline
+  Xolo Jorge (xoloitzcuintle) & Jorgeguillermon, Sketchfab & CC BY 4.0 & Tamaño y textura de piel \\ \hline
 \end{longtable}
 
 El alebrije de coyote está basado en una pieza de Pablo Franco y Nelly Ramírez.
@@ -697,6 +754,7 @@ Las imágenes de las diez cartas (El Barril, La Luna, La Dama, El Diablito, El T
   \item Sánchez Ulloa, C. A. (2022). Un acercamiento al trabajo de los puesteros de lotería de cartones en Campeche, 1904-1916. \textit{Letras Históricas}, (26), 1--31. \url{https://doi.org/10.31836/lh.26.7347}
   \item Secretaría de Turismo de Oaxaca. (2018a). \textit{San Martín Tilcajete, alebrijes} [Ficha de producto turístico OAX004]. \url{https://www.oaxaca.gob.mx/sectur/wp-content/uploads/sites/65/2020/09/PT-OAX001-2018.pdf}
   \item Secretaría de Turismo de Oaxaca. (2018b). \textit{Teotitlán del Valle, tapetes de lana} [Ficha de producto turístico OAX011]. \url{https://www.oaxaca.gob.mx/sectur/wp-content/uploads/sites/65/2020/09/PT-OAX004-2018.pdf}
+  \item UNESCO. (2008). \textit{Indigenous festivity dedicated to the dead}. Intangible Cultural Heritage. \url{https://ich.unesco.org/en/RL/indigenous-festivity-dedicated-to-the-dead-00054}
   \item UNESCO World Heritage Centre. (s.~f.). \textit{Historic Centre of Oaxaca and Archaeological Site of Monte Albán}. \url{https://whc.unesco.org/en/list/415}
   \item Wright, R. S., Lipchak, B., \& Haemel, N. (2010). \textit{OpenGL SuperBible: Comprehensive tutorial and reference} (5.ª ed.). Addison-Wesley.
 \end{itemize}
