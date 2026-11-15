@@ -59,6 +59,9 @@ Texture tierraTexture;			//la imagen cubre 2 m
 Texture telonTexture;
 Texture papelPicadoTexture;
 Texture maderaTexture;		//tablones, para las estanterias de macetas
+//modo Dia de Muertos
+Texture muertosTexture;		//una sola imagen para velas, flores, altar, ofrendas y esqueletos
+Texture papelPicadoMuertosTexture;
 
 //archivos en Models/, texturas en Textures/
 Model farolaBrazo;
@@ -126,12 +129,41 @@ Model globo;			//blanco para pintarlo de color, origen en la punta del hilo
 Model transeunteTorso;	//el torso del hombre sin paliacate
 Model mujerFalda;		//blanca para pintarla de color
 
+//modo Dia de Muertos; los que usan muertos.png se dibujan con esa textura, que se carga una sola vez
+//cada racimo es un solo modelo y sus velas encendidas con las llamas van en otro, que se dibuja sin luz
+Model velasFlotantes[2];		//cable de fachada a fachada a 5.3 m
+Model llamasVelasFlotantes[2];
+Model cortinaFlores[2];			//cable de fachada a fachada a 5.3 m
+Model kioscoMuertos;			//adornos del kiosco, con su mismo origen
+Model llamasKiosco;
+Model altar;					//frente hacia Z positivo, origen al centro del frente
+Model altarGreca;
+Model llamasAltar;
+Model tapete;					//3 por 12 m frente al altar, con el origen del altar
+Model velasCarpa;				//sobre el altar y el tapete, con el origen del altar
+Model llamasCarpa;
+Model ofrenda;					//2.6 m de ancho, frente hacia Z positivo
+Model llamasOfrenda;
+Model catrina;					//2 m
+Model xolo;						//75 cm de largo
+Model panMuerto;
+//esqueleto de carton, cada pieza con su origen en la articulacion
+Model esqueletoCuerpo;			//craneo, costillas y pelvis, origen en el cuello
+Model esqueletoBrazo;
+Model esqueletoAntebrazo;
+Model esqueletoMuslo;
+Model esqueletoPierna;
+
 //ropa de cada variante; la falda de la primera china y la primera blusa son las de su modelo
 const int numRopas = 4;
 Texture faldaChinaTexture[numRopas];
 Texture ropaHombreTexture[numRopas];
 Texture ropaMujerTexture[numRopas];		//mangas, pantorrillas y zapatos, en la textura del hombre
 Texture blusaMujerTexture[numRopas];
+//las mismas con la cara pintada de calavera, para el modo Dia de Muertos
+Texture ropaHombreMuertosTexture[numRopas];
+Texture blusaMujerMuertosTexture[numRopas];
+Texture cabezaMuertosTexture;		//la textura del hombre del desfile
 
 //cartas de loteria: el frente, la ficha del reverso y la pista que se ve en el tablero
 const int numCartas = 10;
@@ -144,9 +176,12 @@ Texture avisoGuardarTexture;
 Texture fondoTableroTexture;
 Texture loteriaTexture;
 
-//uno para la tarde y otro para la noche, segun la tecla N
+//uno para la tarde y otro para la noche, segun la tecla N, y uno mas oscuro para el modo Dia de Muertos
 Skybox skyboxTarde;
 Skybox skyboxNoche;
+Skybox skyboxMuertos;
+//la O, lo leen tambien las funciones que dibujan a los personajes
+bool modoMuertos = false;
 
 //materiales
 Material Material_brillante;
@@ -159,6 +194,7 @@ static double limitFPS = 1.0 / 60.0;
 //sol de tarde y sol de noche, se manda uno segun la tecla N
 DirectionalLight luzTarde;
 DirectionalLight luzNoche;
+DirectionalLight luzMuertos;
 //maximo en CommonValues.h
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
@@ -1054,7 +1090,17 @@ void DibujarHombre(glm::mat4 base, PosePersona pose, glm::mat4& torso, glm::mat4
 	cabeza = glm::translate(torso, posCuello);
 	cabeza = glm::rotate(cabeza, pose.cabezaGiro * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 	cabeza = glm::rotate(cabeza, -pose.cabezaSube * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-	DibujarPieza(hombreCabeza, cabeza, uniformModel);
+	//en el modo Dia de Muertos los del desfile llevan la cara pintada de calavera
+	if (modoMuertos && ropaActual == nullptr)
+	{
+		ropaActual = &cabezaMuertosTexture;
+		DibujarPieza(hombreCabeza, cabeza, uniformModel);
+		ropaActual = nullptr;
+	}
+	else
+	{
+		DibujarPieza(hombreCabeza, cabeza, uniformModel);
+	}
 
 	DibujarBrazo(torso, posHombroIzq, true, pose.brazoIzq, 1.0f, uniformModel);
 	DibujarBrazo(torso, posHombroDer, false, pose.brazoDer, 1.0f, uniformModel);
@@ -1120,7 +1166,12 @@ const glm::vec3 salidaDulce = glm::vec3(-0.422f, 1.755f, 0.027f);	//la mano dere
 void DibujarChina(glm::mat4 base, int cual, float tiempo, GLuint uniformModel)
 {
 	glm::mat4 torso = glm::translate(base, glm::vec3(0.0f, 1.1f, 0.0f));
+	if (modoMuertos)
+	{
+		ropaActual = &blusaMujerMuertosTexture[0];
+	}
 	DibujarPieza(chinaTorso, torso, uniformModel);
+	ropaActual = nullptr;
 
 	//la falda se mece de lado a lado y se abre un poco, una vez cada 2.4 segundos
 	float vaiven = (tiempo + cual * 0.6f) * 2.0f * 3.1416f / 2.4f;
@@ -1230,6 +1281,10 @@ void DibujarEspectador(glm::mat4 base, float tiempo, int ropa, GLuint uniformMod
 	pose.cabezaGiro = 15.0f * sin(vuelta);
 	glm::mat4 torso, cabeza;
 	ropaActual = &ropaHombreTexture[ropa];
+	if (modoMuertos)
+	{
+		ropaActual = &ropaHombreMuertosTexture[ropa];
+	}
 	DibujarHombre(base, pose, torso, cabeza, uniformModel);
 	ropaActual = nullptr;
 }
@@ -1257,6 +1312,10 @@ void DibujarEspectadora(glm::mat4 base, float tiempo, int ropa, GLuint uniformMo
 	DibujarBrazo(torso, glm::vec3(0.155f, 0.2f, 0.0f), true, brazoColgando, 0.9f, uniformModel);
 	DibujarBrazo(torso, glm::vec3(-0.155f, 0.2f, 0.0f), false, PoseSaludo(vuelta), 0.9f, uniformModel);
 	ropaActual = &blusaMujerTexture[ropa];
+	if (modoMuertos)
+	{
+		ropaActual = &blusaMujerMuertosTexture[ropa];
+	}
 	DibujarPieza(chinaTorso, torso, uniformModel);
 	ropaActual = nullptr;
 
@@ -1409,6 +1468,50 @@ glm::vec3 PosicionCarta(int carta, float distanciaPrimero)
 	return glm::vec3(x, AlturaPiso(x, z) + alturaCarta[carta], z);
 }
 
+//esqueleto de carton colgado del cuello, se mece y mueve brazos y piernas como marioneta
+//con la fase cada uno se mueve distinto
+void DibujarEsqueleto(glm::mat4 base, float tiempo, float fase, GLuint uniformModel)
+{
+	float t = tiempo + fase;
+	glm::mat4 cuerpo = glm::rotate(base, 25.0f * sin(t * 0.6f) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	cuerpo = glm::rotate(cuerpo, 6.0f * sin(t * 1.3f) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+	ropaActual = &muertosTexture;
+	DibujarPieza(esqueletoCuerpo, cuerpo, uniformModel);
+	//lado 1 es la derecha del dibujo, hacia X positivo
+	for (int lado = -1; lado <= 1; lado += 2)
+	{
+		//los brazos y las piernas se abren hacia afuera y los codos y rodillas se doblan
+		glm::mat4 brazo = glm::translate(cuerpo, glm::vec3(lado * 0.16f, -0.04f, 0.01f));
+		brazo = glm::rotate(brazo, lado * (30.0f + 25.0f * sin(t * 2.1f + lado)) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		DibujarPieza(esqueletoBrazo, brazo, uniformModel);
+		glm::mat4 antebrazo = glm::translate(brazo, glm::vec3(0.0f, -0.3f, 0.0f));
+		antebrazo = glm::rotate(antebrazo, lado * (20.0f + 30.0f * sin(t * 2.7f + lado)) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		DibujarPieza(esqueletoAntebrazo, antebrazo, uniformModel);
+
+		glm::mat4 muslo = glm::translate(cuerpo, glm::vec3(lado * 0.08f, -0.62f, 0.01f));
+		muslo = glm::rotate(muslo, lado * (8.0f + 14.0f * sin(t * 1.9f - lado)) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		DibujarPieza(esqueletoMuslo, muslo, uniformModel);
+		glm::mat4 pierna = glm::translate(muslo, glm::vec3(0.0f, -0.4f, 0.0f));
+		pierna = glm::rotate(pierna, -lado * (10.0f + 20.0f * sin(t * 2.3f - lado)) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		DibujarPieza(esqueletoPierna, pierna, uniformModel);
+	}
+	ropaActual = nullptr;
+}
+
+//un racimo del modo Dia de Muertos con muertos.png; con soloLlamas en true se dibujan solo sus velas encendidas y llamas
+void DibujarRacimo(Model& racimo, Model& llamas, glm::mat4 model, bool soloLlamas, GLuint uniformModel)
+{
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	if (soloLlamas)
+	{
+		llamas.RenderModel(muertosTexture);
+	}
+	else
+	{
+		racimo.RenderModel(muertosTexture);
+	}
+}
+
 
 int main()
 {
@@ -1545,6 +1648,8 @@ int main()
 	taza.LoadModel("Models/taza_barro_cara.obj");
 	panYema = Model();
 	panYema.LoadModel("Models/pan_yema.obj");
+	panMuerto = Model();
+	panMuerto.LoadModel("Models/pan_muerto.obj");
 	alebrijeCoyote = Model();
 	alebrijeCoyote.LoadModel("Models/alebrije_coyote.obj");
 	alebrijePajaro = Model();
@@ -1598,6 +1703,60 @@ int main()
 	mujerFalda = Model();
 	mujerFalda.LoadModel("Models/mujer_falda.obj");
 
+	//modo Dia de Muertos
+	muertosTexture = Texture("Textures/muertos.png");
+	muertosTexture.LoadTextureA();
+	papelPicadoMuertosTexture = Texture("Textures/papel_picado_muertos.png");
+	papelPicadoMuertosTexture.LoadTextureA();
+	cabezaMuertosTexture = Texture("Textures/hombre_manta_muertos.jpg");
+	cabezaMuertosTexture.LoadTexture();
+	velasFlotantes[0] = Model();
+	velasFlotantes[0].LoadModel("Models/velas_flotantes_a.obj");
+	velasFlotantes[1] = Model();
+	velasFlotantes[1].LoadModel("Models/velas_flotantes_b.obj");
+	llamasVelasFlotantes[0] = Model();
+	llamasVelasFlotantes[0].LoadModel("Models/velas_flotantes_a_llamas.obj");
+	llamasVelasFlotantes[1] = Model();
+	llamasVelasFlotantes[1].LoadModel("Models/velas_flotantes_b_llamas.obj");
+	cortinaFlores[0] = Model();
+	cortinaFlores[0].LoadModel("Models/cortina_flores_a.obj");
+	cortinaFlores[1] = Model();
+	cortinaFlores[1].LoadModel("Models/cortina_flores_b.obj");
+	kioscoMuertos = Model();
+	kioscoMuertos.LoadModel("Models/kiosco_muertos.obj");
+	llamasKiosco = Model();
+	llamasKiosco.LoadModel("Models/kiosco_muertos_llamas.obj");
+	altar = Model();
+	altar.LoadModel("Models/altar.obj");
+	altarGreca = Model();
+	altarGreca.LoadModel("Models/altar_greca.obj");
+	llamasAltar = Model();
+	llamasAltar.LoadModel("Models/altar_llamas.obj");
+	tapete = Model();
+	tapete.LoadModel("Models/tapete.obj");
+	velasCarpa = Model();
+	velasCarpa.LoadModel("Models/velas_carpa.obj");
+	llamasCarpa = Model();
+	llamasCarpa.LoadModel("Models/velas_carpa_llamas.obj");
+	ofrenda = Model();
+	ofrenda.LoadModel("Models/ofrenda.obj");
+	llamasOfrenda = Model();
+	llamasOfrenda.LoadModel("Models/ofrenda_llamas.obj");
+	catrina = Model();
+	catrina.LoadModel("Models/catrina.obj");
+	xolo = Model();
+	xolo.LoadModel("Models/xolo.obj");
+	esqueletoCuerpo = Model();
+	esqueletoCuerpo.LoadModel("Models/esq_cuerpo.obj");
+	esqueletoBrazo = Model();
+	esqueletoBrazo.LoadModel("Models/esq_brazo.obj");
+	esqueletoAntebrazo = Model();
+	esqueletoAntebrazo.LoadModel("Models/esq_antebrazo.obj");
+	esqueletoMuslo = Model();
+	esqueletoMuslo.LoadModel("Models/esq_muslo.obj");
+	esqueletoPierna = Model();
+	esqueletoPierna.LoadModel("Models/esq_pierna.obj");
+
 	//Texture guarda el nombre sin copiarlo, por eso cada nombre se arma en su variable y se carga enseguida
 	for (int i = 0; i < numRopas; i++)
 	{
@@ -1611,6 +1770,12 @@ int main()
 		}
 		std::string ropaHombre = "Textures/ropa_hombre_" + numero + ".jpg";
 		std::string ropaMujer = "Textures/ropa_mujer_" + numero + ".jpg";
+		std::string ropaHombreMuertos = "Textures/ropa_hombre_" + numero + "_muertos.jpg";
+		std::string blusaMuertos = "Textures/blusa_mujer_" + numero + "_muertos.jpg";
+		if (i == 0)
+		{
+			blusaMuertos = "Textures/china_cuerpo_muertos.jpg";
+		}
 		faldaChinaTexture[i] = Texture(falda.c_str());
 		faldaChinaTexture[i].LoadTexture();
 		blusaMujerTexture[i] = Texture(blusa.c_str());
@@ -1619,6 +1784,10 @@ int main()
 		ropaHombreTexture[i].LoadTexture();
 		ropaMujerTexture[i] = Texture(ropaMujer.c_str());
 		ropaMujerTexture[i].LoadTexture();
+		ropaHombreMuertosTexture[i] = Texture(ropaHombreMuertos.c_str());
+		ropaHombreMuertosTexture[i].LoadTexture();
+		blusaMujerMuertosTexture[i] = Texture(blusaMuertos.c_str());
+		blusaMujerMuertosTexture[i].LoadTexture();
 	}
 
 	//cartas de loteria
@@ -1665,6 +1834,15 @@ int main()
 	skyboxFaces.push_back("Textures/Skybox/noche_ft.jpg");
 	skyboxNoche = Skybox(skyboxFaces);
 
+	skyboxFaces.clear();
+	skyboxFaces.push_back("Textures/Skybox/muertos_rt.jpg");
+	skyboxFaces.push_back("Textures/Skybox/muertos_lf.jpg");
+	skyboxFaces.push_back("Textures/Skybox/muertos_dn.jpg");
+	skyboxFaces.push_back("Textures/Skybox/muertos_up.jpg");
+	skyboxFaces.push_back("Textures/Skybox/muertos_bk.jpg");
+	skyboxFaces.push_back("Textures/Skybox/muertos_ft.jpg");
+	skyboxMuertos = Skybox(skyboxFaces);
+
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
@@ -1683,6 +1861,10 @@ int main()
 	//luz azul tenue casi desde arriba, como la luna
 	luzNoche = DirectionalLight(0.4f, 0.45f, 0.7f,
 		0.12f, 0.15f,
+		0.2f, -1.0f, 0.3f);
+	//casi a oscuras y morada, para que resalten las velas y los focos de color
+	luzMuertos = DirectionalLight(0.45f, 0.4f, 0.75f,
+		0.06f, 0.08f,
 		0.2f, -1.0f, 0.3f);
 
 	//farolas en las banquetas del andador, cada 16 m mas o menos, y cuatro en el Zocalo
@@ -1761,6 +1943,78 @@ int main()
 		40.0f);
 	spotLightCount++;
 
+	// ---------- luces del modo Dia de Muertos ----------
+	//las farolas bajan y se ponen mas naranjas; despues de ellas van las velas, una luz por cada grupo
+	PointLight lucesMuertos[MAX_POINT_LIGHTS];
+	for (int i = 0; i < numFarolas; i++)
+	{
+		lucesMuertos[i] = PointLight(1.0f, 0.6f, 0.3f,
+			0.0f, 0.45f,
+			posicionFaroles[i].x, posicionFaroles[i].y, posicionFaroles[i].z,
+			1.0f, 0.09f, 0.032f);
+	}
+	//velas flotantes del andador, cortinas de flores, kiosco (arriba, en la plataforma y cuatro afuera en las esquinas),
+	//altar con su carpa y las tres ofrendas
+	const int numLucesVelas = 19;	//con las farolas no debe pasar de MAX_POINT_LIGHTS
+	glm::vec3 posicionLucesVelas[numLucesVelas] = {
+		glm::vec3(0.0f, 4.4f, -36.0f), glm::vec3(0.0f, 4.4f, -6.0f), glm::vec3(0.0f, 4.4f, 6.0f), glm::vec3(0.0f, 4.4f, 18.0f),
+		glm::vec3(0.0f, 4.0f, -102.0f), glm::vec3(0.0f, 4.0f, -95.0f), glm::vec3(0.0f, 4.0f, -88.0f),
+		glm::vec3(0.0f, 6.4f, 77.0f), glm::vec3(0.0f, 3.6f, 77.0f),
+		glm::vec3(4.2f, 5.0f, 81.2f), glm::vec3(-4.2f, 5.0f, 81.2f), glm::vec3(4.2f, 5.0f, 72.8f), glm::vec3(-4.2f, 5.0f, 72.8f),
+		glm::vec3(22.5f, 1.75f, 77.0f), glm::vec3(19.0f, 3.75f, 77.0f), glm::vec3(14.0f, 3.75f, 77.0f),
+		glm::vec3(-19.0f, 1.05f, 77.0f), glm::vec3(17.0f, 1.05f, -117.0f), glm::vec3(0.0f, 1.05f, 99.0f)
+	};
+	float intensidadLucesVelas[numLucesVelas] = { 1.6f, 1.6f, 1.6f, 1.6f, 2.2f, 2.2f, 2.2f, 3.0f, 3.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.5f, 1.8f, 1.8f, 1.5f, 1.5f, 1.5f };
+
+	//focos de color: Santo Domingo morado, kiosco naranja, Sangre de Cristo turquesa, el altar y la catrina
+	SpotLight spotsMuertos[MAX_SPOT_LIGHTS];
+	unsigned int numSpotsMuertos = 0;
+	spotsMuertos[0] = SpotLight(0.55f, 0.25f, 1.0f,
+		0.0f, 1.6f,
+		36.0f, 0.5f, -142.0f,
+		1.0f, 0.6f, 0.0f,
+		1.0f, 0.022f, 0.0019f,
+		45.0f);
+	numSpotsMuertos++;
+	spotsMuertos[1] = SpotLight(1.0f, 0.5f, 0.15f,
+		0.0f, 1.8f,
+		0.0f, 7.0f, 77.0f,
+		0.0f, -1.0f, 0.0f,
+		1.0f, 0.022f, 0.0019f,
+		55.0f);
+	numSpotsMuertos++;
+	spotsMuertos[2] = SpotLight(0.1f, 0.85f, 0.75f,
+		0.0f, 1.8f,
+		3.0f, 0.3f, -93.6f,
+		-1.0f, 0.5f, 0.0f,
+		1.0f, 0.045f, 0.0075f,
+		40.0f);
+	numSpotsMuertos++;
+	//desde la punta del tapete y en alto, hacia el altar
+	spotsMuertos[3] = SpotLight(1.0f, 0.45f, 0.35f,
+		0.0f, 2.2f,
+		12.0f, 7.0f, 77.0f,
+		12.0f, -5.5f, 0.0f,
+		1.0f, 0.02f, 0.002f,
+		30.0f);
+	numSpotsMuertos++;
+	//turquesa desde el norte, asi el altar queda con los dos colores
+	spotsMuertos[4] = SpotLight(0.15f, 0.8f, 0.7f,
+		0.0f, 1.5f,
+		18.0f, 9.0f, 64.0f,
+		6.0f, -7.0f, 13.0f,
+		1.0f, 0.02f, 0.002f,
+		35.0f);
+	numSpotsMuertos++;
+	//la catrina a un lado del altar
+	spotsMuertos[5] = SpotLight(1.0f, 0.85f, 0.8f,
+		0.0f, 1.4f,
+		20.0f, 4.5f, 70.8f,
+		3.5f, -3.3f, 0.0f,
+		1.0f, 0.045f, 0.0075f,
+		22.0f);
+	numSpotsMuertos++;
+
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	GLuint uniformColor = 0;
@@ -1785,6 +2039,33 @@ int main()
 		-12.0f, -8.0f, -4.0f, 0.0f, 4.0f, 8.0f, 12.0f, 16.0f, 20.0f, 24.0f, 28.0f
 	};
 	const float altoPapelPicado = 5.2f;		//altura del cordel, abajo de la casa mas baja
+
+	// ---------- modo Dia de Muertos ----------
+	//velas flotantes entre las tiras de papel picado
+	const int numVelasFlotantes = 13;
+	float zVelasFlotantes[numVelasFlotantes] = {
+		-40.0f, -36.0f, -32.0f,
+		-10.0f, -6.0f, -2.0f, 2.0f, 6.0f, 10.0f, 14.0f, 18.0f, 22.0f, 26.0f
+	};
+	//cortinas de cempasuchil entre el atrio y Abasolo
+	//las que quedan frente a la Sangre de Cristo se estiran hasta su fachada, en x -9
+	const int numCortinas = 5;
+	float zCortinas[numCortinas] = { -104.0f, -100.0f, -96.0f, -92.0f, -88.0f };
+	//altar en el oriente del Zocalo, con el tapete hacia el kiosco
+	glm::mat4 modeloAltar = glm::translate(glm::mat4(1.0), glm::vec3(24.0f, altoBanqueta, 77.0f));
+	modeloAltar = glm::rotate(modeloAltar, -90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	//cuello de cada esqueleto en las coordenadas del altar: dos cuelgan del arco y tres de la carpa
+	const int numEsqueletos = 5;
+	glm::vec3 posicionEsqueletos[numEsqueletos] = {
+		glm::vec3(-2.3f, 3.95f, -2.5f), glm::vec3(2.3f, 3.95f, -2.5f),
+		glm::vec3(-3.0f, 5.0f, 4.0f), glm::vec3(3.0f, 5.2f, 8.0f), glm::vec3(0.0f, 5.4f, 11.5f)
+	};
+	//ofrendas al poniente del kiosco, en el atrio viendo al andador y al sur del kiosco
+	const int numOfrendas = 3;
+	glm::vec3 posicionOfrendas[numOfrendas] = {
+		glm::vec3(-20.0f, altoBanqueta, 77.0f), glm::vec3(18.0f, altoBanqueta, -117.0f), glm::vec3(0.0f, altoBanqueta, 100.0f)
+	};
+	float giroOfrendas[numOfrendas] = { 90.0f, -90.0f, 180.0f };
 
 	//arboles del jardin Labastida, en el piso de la plaza
 	const int numArbolesLabastida = 8;
@@ -2019,6 +2300,7 @@ int main()
 
 		//eventos de teclado y mouse
 		glfwPollEvents();
+		modoMuertos = mainWindow.getesMuertos();
 
 		//el mouse se lee siempre para que no se acumule con una camara fija
 		GLfloat cambioX = mainWindow.getXChange();
@@ -2208,7 +2490,11 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//el skybox va primero
-		if (mainWindow.getesNoche())
+		if (modoMuertos)
+		{
+			skyboxMuertos.DrawSkybox(camaraActual->calculateViewMatrix(), projection);
+		}
+		else if (mainWindow.getesNoche())
 		{
 			skyboxNoche.DrawSkybox(camaraActual->calculateViewMatrix(), projection);
 		}
@@ -2233,20 +2519,38 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camaraActual->calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camaraActual->getCameraPosition().x, camaraActual->getCameraPosition().y, camaraActual->getCameraPosition().z);
 
-		//con la tecla N cambia el sol y se encienden las farolas
-		if (mainWindow.getesNoche())
+		//con la tecla N cambia el sol y se encienden las farolas; la O pone las luces del modo Dia de Muertos
+		if (modoMuertos)
 		{
-			shaderList[0].SetDirectionalLight(&luzNoche);
-			pointLightCount = numFarolas;
+			shaderList[0].SetDirectionalLight(&luzMuertos);
+			//las velas tiemblan: cada luz sube y baja un poco con dos senos de distinta velocidad
+			for (int i = 0; i < numLucesVelas; i++)
+			{
+				float tiembla = 0.85f + 0.1f * sin(now * 7.0f + i * 1.7f) + 0.05f * sin(now * 13.0f + i * 3.1f);
+				glm::vec3 p = posicionLucesVelas[i];
+				lucesMuertos[numFarolas + i] = PointLight(1.0f, 0.55f, 0.2f,
+					0.0f, intensidadLucesVelas[i] * tiembla,
+					p.x, p.y, p.z,
+					1.0f, 0.22f, 0.1f);
+			}
+			shaderList[0].SetPointLights(lucesMuertos, numFarolas + numLucesVelas);
+			shaderList[0].SetSpotLights(spotsMuertos, numSpotsMuertos);
 		}
 		else
 		{
-			shaderList[0].SetDirectionalLight(&luzTarde);
-			pointLightCount = 0;
+			if (mainWindow.getesNoche())
+			{
+				shaderList[0].SetDirectionalLight(&luzNoche);
+				pointLightCount = numFarolas;
+			}
+			else
+			{
+				shaderList[0].SetDirectionalLight(&luzTarde);
+				pointLightCount = 0;
+			}
+			shaderList[0].SetPointLights(pointLights, pointLightCount);
+			shaderList[0].SetSpotLights(spotLights, spotLightCount);
 		}
-
-		shaderList[0].SetPointLights(pointLights, pointLightCount);
-		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
 		glm::mat4 model(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f); //blanco, la textura se ve con sus colores normales
@@ -2408,7 +2712,14 @@ int main()
 		}
 
 		//una tira si y otra no va girada, para que los colores no queden en fila
-		papelPicadoTexture.UseTexture();
+		if (modoMuertos)
+		{
+			papelPicadoMuertosTexture.UseTexture();
+		}
+		else
+		{
+			papelPicadoTexture.UseTexture();
+		}
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		for (int i = 0; i < numPapelPicado; i++)
 		{
@@ -2565,12 +2876,18 @@ int main()
 		//para que los de arriba se asomen; el asa queda de norte a sur y no les estorba
 		glm::vec3 canastaPan = glm::vec3(10.3f, yPetate, -73.4f);
 		DibujarModelo(canasta, canastaPan, 90.0f, 1.0f, uniformModel);
-		DibujarModelo(panYema, canastaPan + glm::vec3(-0.075f, 0.06f, 0.0f), 90.0f, 1.0f, uniformModel);
-		DibujarModelo(panYema, canastaPan + glm::vec3(0.075f, 0.06f, 0.0f), 60.0f, 1.0f, uniformModel);
-		DibujarModelo(panYema, canastaPan + glm::vec3(0.0f, 0.13f, -0.08f), 130.0f, 1.0f, uniformModel);
-		DibujarModelo(panYema, canastaPan + glm::vec3(0.0f, 0.13f, 0.08f), 170.0f, 1.0f, uniformModel);
-		DibujarModelo(panYema, canastaPan + glm::vec3(-0.09f, 0.21f, 0.0f), 100.0f, 1.0f, uniformModel);
-		DibujarModelo(panYema, canastaPan + glm::vec3(0.09f, 0.21f, 0.0f), 150.0f, 1.0f, uniformModel);
+		//en Dia de Muertos se vende el pan de yema con carita, el pan de muerto de Oaxaca
+		Model* pan = &panYema;
+		if (modoMuertos)
+		{
+			pan = &panMuerto;
+		}
+		DibujarModelo(*pan, canastaPan + glm::vec3(-0.075f, 0.06f, 0.0f), 90.0f, 1.0f, uniformModel);
+		DibujarModelo(*pan, canastaPan + glm::vec3(0.075f, 0.06f, 0.0f), 60.0f, 1.0f, uniformModel);
+		DibujarModelo(*pan, canastaPan + glm::vec3(0.0f, 0.13f, -0.08f), 130.0f, 1.0f, uniformModel);
+		DibujarModelo(*pan, canastaPan + glm::vec3(0.0f, 0.13f, 0.08f), 170.0f, 1.0f, uniformModel);
+		DibujarModelo(*pan, canastaPan + glm::vec3(-0.09f, 0.21f, 0.0f), 100.0f, 1.0f, uniformModel);
+		DibujarModelo(*pan, canastaPan + glm::vec3(0.09f, 0.21f, 0.0f), 150.0f, 1.0f, uniformModel);
 		DibujarModelo(canasta, glm::vec3(9.1f, altoBanqueta, -74.7f), 90.0f, 1.0f, uniformModel);
 		//puesto de alebrijes
 		DibujarModelo(petate, glm::vec3(16.0f, altoBanqueta, -73.5f), 180.0f, 1.0f, uniformModel);
@@ -2581,6 +2898,70 @@ int main()
 		DibujarModelo(alebrijePajaro, glm::vec3(16.4f, yPetate, -73.8f), 30.0f, 1.0f, uniformModel);
 		DibujarModelo(alebrijePerrito, glm::vec3(16.45f, yPetate, -73.45f), -10.0f, 1.0f, uniformModel);
 		DibujarModelo(canasta, glm::vec3(15.1f, altoBanqueta, -74.7f), 90.0f, 1.0f, uniformModel);
+
+		// ---------- modo Dia de Muertos ----------
+		if (modoMuertos)
+		{
+			glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+			for (int i = 0; i < numCortinas; i++)
+			{
+				model = glm::mat4(1.0);
+				model = glm::translate(model, glm::vec3(0.0f, altoBanqueta, zCortinas[i]));
+				//la cortina mide 12 m; con 1.25 y corrida 1.5 m llega de x -9 a x 6
+				if (zCortinas[i] > -101.0f)
+				{
+					model = glm::translate(model, glm::vec3(-1.5f, 0.0f, 0.0f));
+					model = glm::scale(model, glm::vec3(1.25f, 1.0f, 1.0f));
+				}
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				cortinaFlores[i % 2].RenderModel(muertosTexture);
+			}
+
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modeloAltar));
+			altarGreca.RenderModel();
+			tapete.RenderModel();
+			for (int i = 0; i < numEsqueletos; i++)
+			{
+				DibujarEsqueleto(glm::translate(modeloAltar, posicionEsqueletos[i]), now, i * 1.9f, uniformModel);
+			}
+
+			//la catrina junto al altar y otra en el atrio, dos xolos a la entrada del tapete y uno en la ofrenda del poniente
+			DibujarModelo(catrina, glm::vec3(23.5f, altoBanqueta, 70.8f), -90.0f, 1.0f, uniformModel);
+			DibujarModelo(catrina, glm::vec3(18.0f, altoBanqueta, -113.5f), -90.0f, 1.0f, uniformModel);
+			DibujarModelo(xolo, glm::vec3(11.6f, altoBanqueta, 79.3f), -90.0f, 1.0f, uniformModel);
+			DibujarModelo(xolo, glm::vec3(11.6f, altoBanqueta, 74.7f), -90.0f, 1.0f, uniformModel);
+			DibujarModelo(xolo, glm::vec3(-18.0f, altoBanqueta, 78.6f), 130.0f, 1.0f, uniformModel);
+
+			//primero los racimos y despues las velas encendidas con sus llamas, que van sin luz para que brillen
+			for (int pasada = 0; pasada < 2; pasada++)
+			{
+				bool soloLlamas = pasada == 1;
+				if (soloLlamas)
+				{
+					glUniform1i(uniformSinLuz, 1);
+				}
+				//una si y otra no va girada, como el papel picado
+				for (int i = 0; i < numVelasFlotantes; i++)
+				{
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(0.0f, altoBanqueta, zVelasFlotantes[i]));
+					model = glm::rotate(model, (i % 2) * 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+					DibujarRacimo(velasFlotantes[i % 2], llamasVelasFlotantes[i % 2], model, soloLlamas, uniformModel);
+				}
+				model = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, altoBanqueta, 77.0f));
+				DibujarRacimo(kioscoMuertos, llamasKiosco, model, soloLlamas, uniformModel);
+				DibujarRacimo(altar, llamasAltar, modeloAltar, soloLlamas, uniformModel);
+				DibujarRacimo(velasCarpa, llamasCarpa, modeloAltar, soloLlamas, uniformModel);
+				for (int i = 0; i < numOfrendas; i++)
+				{
+					model = glm::mat4(1.0);
+					model = glm::translate(model, posicionOfrendas[i]);
+					model = glm::rotate(model, giroOfrendas[i] * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+					DibujarRacimo(ofrenda, llamasOfrenda, model, soloLlamas, uniformModel);
+				}
+			}
+			glUniform1i(uniformSinLuz, 0);
+		}
 
 		//cartas que faltan por tomar, giran y suben y bajan; van sin luz para que se encuentren de noche
 		glUniform1i(uniformSinLuz, 1);

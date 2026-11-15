@@ -214,3 +214,23 @@ Las cartas en pantalla se dibujan al final con una proyeccion ortografica, encim
 | ![Carta en el desfile](docs/evidencias/cartas/01_carta_marmota.png) | ![Frente](docs/evidencias/cartas/02_frente.png) |
 | **Ficha al voltearla** | **Tablero con dos cartas tomadas** |
 | ![Ficha](docs/evidencias/cartas/03_ficha.png) | ![Tablero](docs/evidencias/cartas/04_tablero.png) |
+
+## Modo Dia de Muertos (extra)
+
+Con la tecla O la escena pasa a una noche de Dia de Muertos. El cielo es mas oscuro y morado, la luz general casi se apaga y las farolas bajan y se ponen naranjas, para que lo que se vea sean las velas y unos focos de color: Santo Domingo en morado, la Sangre de Cristo en turquesa y el kiosco en naranja. Las velas tiemblan porque su luz sube y baja un poco con el tiempo.
+
+Sobre el andador cuelgan cortinas de flores de cempasuchil y, entre las tiras de papel picado (que cambia a uno con calaveras, velas y cruces), velas flotantes colgadas de hilos. El kiosco esta adornado como el del Zocalo de Oaxaca en esas fechas: esferas de cempasuchil colgadas de listones, guias de flores, guirnaldas entre las columnas, un candil de flores al centro y velas y macetas en la base. A un lado del kiosco hay un altar escalonado con grecas de Mitla, un arco de flores, canastos, calaveritas, fruta y una cascada de cempasuchil al centro, con un tapete de arena enfrente y una carpa de velas flotantes encima. Del arco y de la carpa cuelgan esqueletos de carton armados por piezas (modelado jerarquico) que mueven brazos y piernas como marionetas. Junto al altar esta una catrina y a la entrada del tapete dos xoloitzcuintles. Hay tres ofrendas de casa con mantel rosa, papel picado, fotos, veladoras, pan, calaveritas y camino de petalos. Los espectadores y los del desfile llevan la cara pintada de calavera y en el puesto se vende pan de muerto.
+
+Para que no pese tanto, cada grupo que se repite (una cortina, un cable de velas, los adornos del kiosco, el altar) es un solo modelo que se dibuja de una vez, y todos usan una misma imagen que se carga una sola vez. Las velas encendidas y sus llamas se dibujan sin luz para que brillen, y en lugar de una luz por vela hay una luz por cada grupo de velas.
+
+| Cortinas de cempasuchil frente a la Sangre de Cristo | Velas flotantes y papel picado en el andador |
+|---|---|
+| ![Cortinas](docs/evidencias/muertos/01_cortinas_flores.png) | ![Velas flotantes](docs/evidencias/muertos/02_velas_flotantes.png) |
+| **Santo Domingo con el foco morado** | **El Zocalo desde su camara (tecla 4)** |
+| ![Santo Domingo](docs/evidencias/muertos/03_santo_domingo.png) | ![Zocalo](docs/evidencias/muertos/04_zocalo.png) |
+| **Kiosco adornado** | **Altar con el tapete y la catrina** |
+| ![Kiosco](docs/evidencias/muertos/05_kiosco.png) | ![Altar](docs/evidencias/muertos/06_altar.png) |
+| **Velas de la carpa y esqueletos colgados** | **Desfile con la cara pintada de calavera** |
+| ![Carpa](docs/evidencias/muertos/07_velas_carpa.png) | ![Desfile](docs/evidencias/muertos/08_desfile_catrinas.png) |
+| **Ofrenda al poniente del kiosco, con un xolo** | |
+| ![Ofrenda](docs/evidencias/muertos/09_ofrenda.png) | |

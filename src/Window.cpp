@@ -17,6 +17,7 @@ Window::Window()
 	desfilePausado = false;
 	reiniciarDesfile = false;
 	sinSonido = false;
+	esMuertos = false;
 	usarCarta = false;
 	verTablero = false;
 	mouseFirstMoved = true;
@@ -42,6 +43,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	desfilePausado = false;
 	reiniciarDesfile = false;
 	sinSonido = false;
+	esMuertos = false;
 	usarCarta = false;
 	verTablero = false;
 	mouseFirstMoved = true;
@@ -213,6 +215,10 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_M && action == GLFW_PRESS)
 	{
 		theWindow->sinSonido = !theWindow->sinSonido;
+	}
+	if (key == GLFW_KEY_O && action == GLFW_PRESS)
+	{
+		theWindow->esMuertos = !theWindow->esMuertos;
 	}
 	if (key == GLFW_KEY_I && action == GLFW_PRESS)
 	{

@@ -4,6 +4,6 @@
 
 //maximo de luces de cada tipo
 //tambien van en shaders/shader_light.frag, deben ser iguales
-const int MAX_POINT_LIGHTS = 16;
-const int MAX_SPOT_LIGHTS = 4;
+const int MAX_POINT_LIGHTS = 40;
+const int MAX_SPOT_LIGHTS = 8;
 #endif

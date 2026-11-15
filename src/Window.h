@@ -20,6 +20,7 @@ public:
 	bool getdesfilePausado() { return desfilePausado; }
 	bool getreiniciarDesfile();
 	bool getsinSonido() { return sinSonido; }
+	bool getesMuertos() { return esMuertos; }
 	bool getusarCarta();
 	bool getverTablero() { return verTablero; }
 	bool getShouldClose() {
@@ -49,6 +50,8 @@ private:
 	bool reiniciarDesfile;
 	//la M apaga y prende todo el audio
 	bool sinSonido;
+	//la O pone el modo Dia de Muertos
+	bool esMuertos;
 	//la I toma, voltea y guarda una carta; la L abre y cierra el tablero
 	bool usarCarta;
 	bool verTablero;
