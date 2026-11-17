@@ -13,24 +13,24 @@
 % =====================================================================
 \section{Descripción general}
 
-El proyecto es un recorrido virtual en 3D de una calenda en el Centro Histórico de Oaxaca, hecho con C++ y OpenGL.
-La calenda es el desfile que recorre las calles con banda de música, chinas oaxaqueñas, marmotas y toritos para anunciar una fiesta; la más conocida es la de la Guelaguetza, en julio.
+El proyecto es un recorrido virtual en 3D por el Centro Histórico de Oaxaca durante una calenda, hecho en C++ con OpenGL.
+Una calenda es un desfile con banda de música, chinas oaxaqueñas, marmotas y toritos que va por las calles anunciando una fiesta. Hay calendas todo el año, pero la más conocida es la de la Guelaguetza, en julio.
 
-La escena reproduce el camino que sigue la calenda: sale del atrio del templo de Santo Domingo de Guzmán, baja por el andador Macedonio Alcalá, pasa frente al templo de la Sangre de Cristo y el jardín Labastida, y llega al Zócalo, donde se detiene frente al kiosco.
-El usuario puede caminar libremente por la escena, cambiar entre cinco cámaras, alternar entre la tarde y la noche, ver el desfile y consultar información sobre los edificios, los personajes y los objetos.
+En la escena, el desfile sigue el mismo camino que hacen muchas calendas en la ciudad. Sale del atrio del templo de Santo Domingo de Guzmán, baja por el andador Macedonio Alcalá pasando frente al templo de la Sangre de Cristo y el jardín Labastida, y termina en el Zócalo, donde se detiene frente al kiosco.
+Mientras tanto, el usuario puede caminar por donde quiera, cambiar entre cinco cámaras, pasar de la tarde a la noche, seguir al desfile y buscar las cartas que tienen información de los edificios, los personajes y las artesanías.
 
 \unafoto{retoque_texturas/05_aerea}{La escena completa vista desde arriba: el atrio de Santo Domingo arriba a la derecha, el andador al centro y el Zócalo abajo.}
 
 \subsection{Cambios respecto a la propuesta}
 
 \begin{itemize}
-  \item \textbf{Recorrido.} La propuesta planteaba un circuito cerrado frente a Santo Domingo. Al comparar con fotos y mapas del lugar real se vio que un óvalo no se parecía a Oaxaca, así que el 2 de noviembre la escena se cambió al andador Macedonio Alcalá, que es por donde pasa la calenda. El desfile ahora va en una sola dirección, del atrio al Zócalo.
-  \item \textbf{Cámaras.} Además de las tres de la propuesta (libre, fachada y desfile) se agregaron la del Zócalo y una aérea, y una tecla para soltar una cámara fija y seguir caminando desde ahí.
-  \item \textbf{Animaciones.} En la propuesta el torito giraba sobre el danzante; quedó meciéndose de lado a lado y se le agregaron ruedas de cohetes que giran. Los personajes no mueven los brazos al caminar porque todos cargan algo. Además de la china, la marmota también se anima con KeyFrames, y se agregaron teclas para detener y reiniciar el desfile.
-  \item \textbf{Información cultural.} En lugar de tarjetas fijas que se abren con una tecla, la información se presenta como cartas de lotería repartidas en la escena: hay que encontrarlas, tomarlas y voltearlas para leer su ficha y escuchar su narración. Las que van con el desfile se mueven con su personaje.
-  \item \textbf{Audio.} La propuesta pedía solo la banda de viento en bucle. Se agregó audio en 3D: la banda suena desde el músico de en medio y se oye más bajo al alejarse, hay murmullo de gente, chispas en el torito, campanas y cohetes al salir y al llegar el desfile, y una tecla para quitar el sonido.
-  \item \textbf{Velocidad del desfile.} Se subió a 2 metros por segundo para que la calenda llegue al Zócalo en unos dos minutos.
-  \item \textbf{Modo Día de Muertos.} No estaba en la propuesta. Se agregó al final como un extra: con la tecla \tecla{O} la misma escena se adorna como una noche de Día de Muertos en Oaxaca (sección \ref{sec:modomuertos}).
+  \item \textbf{Recorrido.} Al principio la propuesta era hacer un circuito cerrado frente a Santo Domingo, pero al comparar la escena con fotos y mapas del lugar se decidió cambiarlo por algo más parecido al andador Macedonio Alcalá, que es por donde suelen pasar las calendas que salen de Santo Domingo hacia el Zócalo. El cambio se hizo el 2 de noviembre, y desde entonces el desfile ya no da vueltas, sino que va en una sola dirección, del atrio al Zócalo.
+  \item \textbf{Cámaras.} En la propuesta solo había tres cámaras (la libre, la de la fachada y la del desfile). Al final se agregaron dos más, una en el Zócalo y otra aérea, y también una tecla para soltar cualquier cámara fija y seguir caminando desde donde estaba.
+  \item \textbf{Animaciones.} En la propuesta el torito giraba sobre el danzante, pero se cambió por algo más parecido a uno real, donde el danzante lo sujeta de los carrizos de los lados mientras lo mece de lado a lado, y el torito tiene dos ruedas de cohetes que van dando vueltas y echando chispas. También se decidió que los personajes no movieran los brazos al caminar, porque todos van cargando algo. Además de la china, la marmota también se animó con KeyFrames, y se agregaron teclas para pausar y reiniciar el desfile.
+  \item \textbf{Información cultural.} En la propuesta la información se iba a mostrar en tarjetas que se abrían con una tecla, pero se cambió por cartas de lotería repartidas por la escena que hay que ir encontrando. Al tomar una se puede voltear para leer su ficha mientras se escucha su narración, y las cartas de los personajes del desfile van caminando junto a ellos.
+  \item \textbf{Audio.} Inicialmente solo se tenía contemplada la banda de viento sonando en bucle, pero se agregó audio espacial para que la banda suene más fuerte o más bajo según la cámara se acerca o se aleja del músico de en medio, que es de donde sale la música. También se integró un murmullo de gente que se repite en bucle mientras corre el programa, y se añadieron efectos de sonido, como las chispas del torito, las campanas y un cohete cuando el desfile sale de Santo Domingo, y otro cohete cuando llega al kiosco. Por último, se agregó una tecla (\tecla{M}) para quitar el sonido.
+  \item \textbf{Velocidad del desfile.} Se subió la velocidad del desfile a 2 metros por segundo, para que la calenda tarde unos dos minutos en llegar al Zócalo.
+  \item \textbf{Modo Día de Muertos.} Esto no estaba en la propuesta y se agregó al final como un extra. Con la tecla \tecla{O}, la misma escena se adorna como si fuera una noche de Día de Muertos en Oaxaca (sección \ref{sec:modomuertos}).
 \end{itemize}
 
 % =====================================================================
@@ -39,26 +39,26 @@ El usuario puede caminar libremente por la escena, cambiar entre cinco cámaras,
 
 \subsection{La Guelaguetza y la calenda}
 
-La Guelaguetza es la fiesta más importante de Oaxaca. Su nombre viene del zapoteco y se suele traducir como ofrenda, cooperación o intercambio entre las comunidades (Embajada de México ante la Santa Sede, s.~f.). Se celebra en julio, en los dos lunes más cercanos a la fiesta de la Virgen del Carmen (16 de julio), por eso también se le llama los Lunes del Cerro: las delegaciones de las regiones del estado bailan en el auditorio del Cerro del Fortín y al final regalan productos de su región al público (Gobierno del Estado de Oaxaca, 2026).
+La Guelaguetza es la fiesta más importante de Oaxaca. Su nombre viene del zapoteco y se suele traducir como ofrenda, cooperación o intercambio entre las comunidades (Embajada de México ante la Santa Sede, s.~f.). Se celebra los dos lunes que siguen a la fiesta de la Virgen del Carmen (16 de julio), y por eso también se le llama Lunes del Cerro. Esos días, las delegaciones de las regiones del estado bailan en el auditorio del Cerro del Fortín y al terminar le regalan al público productos de su región (Gobierno del Estado de Oaxaca, 2026).
 
-Antes de cada fiesta se hace una calenda: un desfile por las calles que anuncia la celebración e invita a la gente a unirse. En Oaxaca hay calendas casi todos los días, para fiestas de los barrios, bodas o bautizos, y en la Guelaguetza las delegaciones desfilan por el centro de la ciudad (México Desconocido, s.~f.). Es una costumbre tan arraigada que también las instituciones la usan para celebrar: en 2023 el INAH festejó los 50 años de su centro en Oaxaca con una calenda de más de 450 personas que recorrió las calles principales, terminó en la plaza de Santo Domingo y cerró con fuegos artificiales y un castillo (Instituto Nacional de Antropología e Historia [INAH], 2023). Ese mismo final, con cohetes frente a una plaza, es el que se reproduce en el programa. Los elementos que no faltan son:
+Antes de cada fiesta se hace una calenda, que es un desfile por las calles para anunciar la celebración e invitar a la gente a unirse. En Oaxaca hay calendas casi todos los días, ya sea por la fiesta de un barrio, una boda o un bautizo, y en la Guelaguetza las delegaciones desfilan por el centro de la ciudad (México Desconocido, s.~f.). Es una costumbre tan común que hasta las instituciones la usan para festejar. Por ejemplo, en 2023 el INAH celebró los 50 años de su centro en Oaxaca con una calenda de más de 450 personas que recorrió las calles principales y terminó en la plaza de Santo Domingo con fuegos artificiales y un castillo (Instituto Nacional de Antropología e Historia [INAH], 2023). En el programa también truenan cohetes cuando el desfile sale y cuando llega al kiosco. En casi todas las calendas aparecen estos elementos:
 
 \begin{itemize}
-  \item \textbf{Banda de música de viento}, que toca sones y jarabes y marca el paso del desfile.
-  \item \textbf{Chinas oaxaqueñas}, mujeres con traje tradicional (blusa bordada, enagua de colores con olanes y rebozo) que bailan con una canasta adornada con flores sobre la cabeza y a veces reparten dulces o mezcal.
-  \item \textbf{Marmotas}, esferas grandes de manta sobre un armazón de carrizo, montadas en un palo que un danzante hace girar mientras avanza. Muchas llevan escrito el nombre del barrio o de la fiesta.
-  \item \textbf{Toritos}, armazones de carrizo en forma de toro que un danzante lleva sobre los hombros y que por la noche cargan cohetes.
-  \item \textbf{Monos de calenda}, figuras gigantes de carrizo y tela que se bailan girando.
+  \item \textbf{Banda de música de viento}, que toca sones y jarabes y va marcando el paso del desfile.
+  \item \textbf{Chinas oaxaqueñas}, mujeres con el traje tradicional (blusa bordada, enagua de colores con olanes y rebozo) que bailan con una canasta adornada con flores en la cabeza y a veces reparten dulces o mezcal.
+  \item \textbf{Marmotas}, esferas grandes de manta sobre un armazón de carrizo, montadas en un palo que un danzante va girando mientras avanza. Muchas llevan escrito el nombre del barrio o de la fiesta.
+  \item \textbf{Toritos}, armazones de carrizo con forma de toro que un danzante carga sobre los hombros y que en la noche llevan cohetes.
+  \item \textbf{Monos de calenda}, figuras gigantes de carrizo y tela que bailan girando.
   \item \textbf{Espectadores} a los lados de la calle, que aplauden, saludan y a veces se unen al desfile.
 \end{itemize}
 
 \subsection{Por qué se eligieron estos lugares}
 
 \begin{itemize}
-  \item \textbf{Templo de Santo Domingo de Guzmán.} Fue construido por la orden de los dominicos entre los siglos XVI y XVIII y su ex convento hoy es el Museo de las Culturas de Oaxaca (INAH, s.~f.). Su atrio es el punto de salida de muchas calendas, por eso es donde empieza el recorrido. La fachada de cantera verde, las dos torres y las jardineras de agaves del atrio se tomaron de fotos del lugar.
-  \item \textbf{Andador Macedonio Alcalá.} Es la calle peatonal que une Santo Domingo con el Zócalo y la que recorren los desfiles. Tiene casas de uno y dos pisos de colores con balcones de herrería y piso de cantera. Lleva el nombre del compositor oaxaqueño de ``Dios nunca muere''.
-  \item \textbf{Templo de la Sangre de Cristo y jardín Labastida.} Están a media cuadra del andador y son parte del recorrido real. En el jardín se ponen artesanos y vendedores.
-  \item \textbf{Zócalo.} Es la plaza principal de la ciudad, con su kiosco al centro, árboles grandes, bancas de hierro y portales alrededor. Aquí termina el recorrido.
+  \item \textbf{Templo de Santo Domingo de Guzmán.} Lo construyeron los dominicos entre los siglos XVI y XVIII, y su ex convento hoy es el Museo de las Culturas de Oaxaca (INAH, s.~f.). De su atrio salen muchas calendas, por eso ahí empieza el recorrido. La fachada de cantera verde, las dos torres y las jardineras con agaves del atrio se hicieron a partir de fotos del lugar.
+  \item \textbf{Andador Macedonio Alcalá.} Es la calle peatonal que va de Santo Domingo al Zócalo y por donde pasan los desfiles. Tiene casas de colores de uno y dos pisos con balcones de herrería, y el piso es de cantera. Su nombre es por Macedonio Alcalá, el compositor oaxaqueño de ``Dios nunca muere''.
+  \item \textbf{Templo de la Sangre de Cristo y jardín Labastida.} El templo está sobre el andador y el jardín a media cuadra, así que los dos quedan en el camino del desfile. En el jardín suelen ponerse artesanos y vendedores.
+  \item \textbf{Zócalo.} Es la plaza principal de la ciudad. Tiene el kiosco en medio, árboles grandes, bancas de hierro y portales alrededor, y es donde termina el recorrido.
 \end{itemize}
 
 El Centro Histórico de Oaxaca es Patrimonio de la Humanidad desde 1987, junto con la zona arqueológica de Monte Albán (UNESCO World Heritage Centre, s.~f.).
@@ -66,42 +66,42 @@ El Centro Histórico de Oaxaca es Patrimonio de la Humanidad desde 1987, junto c
 \subsection{Objetos y adornos}
 
 \begin{itemize}
-  \item \textbf{Papel picado}, que se cuelga sobre las calles en las fiestas. Se representa con tiras de banderitas de colores con transparencia en los recortes.
-  \item \textbf{Artesanías}: alebrijes de madera de copal tallada y pintada, como los de San Martín Tilcajete, donde se trabajan en talleres familiares (Secretaría de Turismo de Oaxaca, 2018a); piezas de barro; y tapetes de lana de Teotitlán del Valle, tejidos en telar de pedales, teñidos con tintes naturales como la grana cochinilla y con grecas zapotecas, que desde 2022 tienen una indicación geográfica protegida (Instituto Mexicano de la Propiedad Industrial [IMPI], 2022; Secretaría de Turismo de Oaxaca, 2018b). Se pusieron en puestos sobre petates y en mesas con toldo, como se ven en el andador y en el jardín Labastida.
+  \item \textbf{Papel picado}, que se cuelga sobre las calles en las fiestas. En el programa son tiras de banderitas de colores con los recortes transparentes.
+  \item \textbf{Artesanías}. Se pusieron alebrijes, que son figuras de madera de copal talladas y pintadas, como las que se hacen en talleres familiares de San Martín Tilcajete (Secretaría de Turismo de Oaxaca, 2018a), y piezas de barro. También hay tapetes de lana de Teotitlán del Valle, que se tejen en telar de pedales, se tiñen con tintes naturales como la grana cochinilla y llevan grecas zapotecas. Desde 2022 estos tapetes tienen una indicación geográfica protegida (Instituto Mexicano de la Propiedad Industrial [IMPI], 2022; Secretaría de Turismo de Oaxaca, 2018b). Todo está en puestos sobre petates y en mesas con toldo, como los que se ven en el andador y en el jardín Labastida.
   \item \textbf{Comida}: pan de yema en canastas y carritos de elotes en el Zócalo.
-  \item \textbf{Plantas}: agaves en el atrio de Santo Domingo, flamboyanes de flores rojas, jacarandas, bugambilias y cacaloxóchitl, que son comunes en el centro de Oaxaca.
+  \item \textbf{Plantas}: agaves en el atrio de Santo Domingo, flamboyanes de flores rojas, jacarandas, bugambilias y cacaloxóchitl (flor de mayo), que son comunes en el centro de Oaxaca.
 \end{itemize}
 
 \subsubsection{Época del año}
 
-Las calendas se hacen todo el año, pero la más conocida es la de la Guelaguetza, en julio, así que se revisó que lo que hay en la escena tenga sentido en esa fecha:
+Aunque hay calendas todo el año, la más conocida es la de julio, así que se revisó si lo que aparece en la escena tendría sentido en esa época:
 
 \begin{itemize}
-  \item El pan de yema se vende todo el año; el pan de muerto con carita es de noviembre, así que solo aparece en el modo Día de Muertos.
-  \item Los elotes son de temporada de lluvias (de julio a septiembre), justo cuando es la Guelaguetza.
-  \item Los flamboyanes florecen al inicio de la temporada de lluvias, entre mayo y julio, y las bugambilias tienen flor casi todo el año.
-  \item Las jacarandas florecen en primavera (de febrero a abril) y en julio ya solo tienen hojas. Se dejaron con flores porque son uno de los árboles más reconocibles del centro de Oaxaca y del jardín Labastida, pero en una calenda de julio estarían verdes.
+  \item El pan de yema se vende todo el año, pero el pan de muerto con carita es de noviembre, por eso solo aparece en el modo Día de Muertos.
+  \item Los elotes son de la temporada de lluvias (de julio a septiembre), justo cuando es la Guelaguetza.
+  \item Los flamboyanes florecen al empezar las lluvias, entre mayo y julio, y las bugambilias tienen flor casi todo el año.
+  \item Las jacarandas florecen en primavera, de febrero a abril, y en julio ya solo tienen hojas. Aun así se dejaron con flores porque son de los árboles más reconocibles del centro de Oaxaca y del jardín Labastida, aunque en una calenda de julio estarían verdes.
 \end{itemize}
 
 \subsection{El Día de Muertos en Oaxaca}
 
-El modo extra del programa muestra la misma calle en la noche del 1 y 2 de noviembre. Las fiestas indígenas dedicadas a los muertos están en la Lista Representativa del Patrimonio Cultural Inmaterial de la UNESCO desde 2008: se cree que en esos días las almas de los difuntos regresan a visitar a su familia, y para recibirlas se ponen ofrendas con flores, velas, comida y fotos, y el camino se marca con pétalos de cempasúchil (UNESCO, 2008). En Oaxaca estas fechas también se celebran en la calle, con comparsas y calendas de disfraces. Por eso se eligieron estos elementos:
+El modo extra muestra la misma calle en las noches del 1 y 2 de noviembre. Desde 2008, las fiestas indígenas dedicadas a los muertos están en la Lista Representativa del Patrimonio Cultural Inmaterial de la UNESCO. Según la tradición, en esos días las almas de los difuntos regresan a visitar a su familia, y para recibirlas se ponen ofrendas con flores, velas, comida y fotos, y se marca el camino con pétalos de cempasúchil (UNESCO, 2008). En Oaxaca estas fechas también se viven en la calle, con comparsas y calendas de disfraces. Con eso en mente se pusieron estos elementos:
 
 \begin{itemize}
-  \item \textbf{Cempasúchil} en cortinas sobre el andador y en esferas y guirnaldas en el kiosco, y un camino de pétalos hacia el altar.
-  \item \textbf{Velas}: veladoras en las ofrendas y velas flotantes colgadas entre el papel picado, que cambia a uno con calaveras, velas y cruces.
+  \item \textbf{Cempasúchil} en cortinas sobre el andador, en esferas y guirnaldas en el kiosco y en un camino de pétalos que lleva al altar.
+  \item \textbf{Velas}: veladoras en las ofrendas y velas flotantes colgadas entre el papel picado, que cambia por uno con calaveras, velas y cruces.
   \item \textbf{Un altar escalonado} junto al kiosco, con grecas como las de Mitla, arco de flores, macetas de cempasúchil, calaveritas de azúcar y un tapete de arena como los que se hacen en las calles de Oaxaca.
-  \item \textbf{Ofrendas familiares} con mantel, fotos, veladoras, pan de muerto y calaveritas.
-  \item \textbf{La catrina} y \textbf{el xoloitzcuintle}, el perro que según la tradición acompaña a las almas.
+  \item \textbf{Ofrendas familiares} con mantel, veladoras, pan de muerto y calaveritas.
+  \item \textbf{La catrina} y \textbf{el xoloitzcuintle}, que según la tradición es el perro que acompaña a las almas.
   \item \textbf{Caras de calavera} en los espectadores y en los personajes del desfile, como en las comparsas.
 \end{itemize}
 
 \subsection{La lotería y la información cultural}
 \label{sec:loteria}
 
-La información del recorrido se presenta como cartas de la lotería mexicana. La lotería es un juego de figuras que se popularizó en México a finales del siglo XIX; la baraja de 54 figuras más conocida se le atribuye al francés Clemente Jacques, que la imprimió y la difundió en el centro del país (Sánchez Ulloa, 2022). Desde entonces se juega en las casas y en los puestos que se ponen en las ferias y en las fiestas de los barrios, así que es algo que la gente relaciona con la fiesta y que casi cualquier mexicano reconoce. Además, ``cantar'' la lotería y llenar el tablero hace que el usuario quiera buscar todas las cartas, y así recorre toda la escena.
+Para mostrar la información del recorrido se usaron cartas de la lotería mexicana. La lotería es un juego de figuras que se hizo popular en México a finales del siglo XIX, y la baraja más conocida, de 54 figuras, se le atribuye al francés Clemente Jacques, que la imprimió y la difundió en el centro del país (Sánchez Ulloa, 2022). Desde entonces se juega en las casas y en los puestos de las ferias y de las fiestas de barrio, así que mucha gente la relaciona con la fiesta. También se eligió porque la idea de llenar el tablero hace que el usuario quiera encontrar todas las cartas, y para eso tiene que recorrer toda la escena.
 
-Cada carta se eligió por algo que la une con su tema:
+Cada carta se escogió por algo que la relaciona con el tema que explica:
 
 \begin{table}[H]
   \centering
@@ -112,18 +112,18 @@ Cada carta se eligió por algo que la une con su tema:
     El Barril & La calenda, en el atrio & En la calenda se reparte mezcal \\ \hline
     La Luna & La marmota, con su danzante & Es redonda y lleva una luz por dentro \\ \hline
     La Dama & La china oaxaqueña, con la primera china & Representa a la mujer con su traje de fiesta \\ \hline
-    El Diablito & El torito, con su danzante & Los cohetes y la lumbre \\ \hline
+    El Diablito & El torito, con su danzante & Por los cohetes y la lumbre \\ \hline
     El Tambor & La banda de viento, con el músico de en medio & Es uno de los instrumentos de la banda \\ \hline
     El Sol & Santo Domingo, frente a la puerta & El interior del templo está cubierto de hoja de oro \\ \hline
     El Corazón & La Sangre de Cristo, en la banqueta & Por el nombre del templo \\ \hline
-    El Catrín & El Zócalo y el kiosco, frente al kiosco & El paseo de domingo en la plaza \\ \hline
+    El Catrín & El Zócalo, frente al kiosco & Por el paseo de domingo en la plaza \\ \hline
     La Mano & Los alebrijes, sobre su petate & Se tallan y se pintan a mano \\ \hline
     El Nopal & Los tapetes, junto a los textiles & La grana cochinilla vive en el nopal y da los rojos de los tapetes \\ \hline
   \end{tabular}
-  \caption{Las diez cartas y su tema.}
+  \caption{Las diez cartas, su tema y dónde están.}
 \end{table}
 
-Los textos de las fichas son cortos (tres o cuatro frases) para que se puedan leer mientras suena la narración. La narración se grabó con voz propia para el proyecto. Sus datos salen de las fuentes de esta sección y de las páginas de los propios lugares: la historia de Santo Domingo y del Museo de las Culturas (INAH, s.~f.), el centro histórico y su traza (UNESCO World Heritage Centre, s.~f.), los alebrijes y los tapetes (IMPI, 2022; Secretaría de Turismo de Oaxaca, 2018a, 2018b) y la calenda y sus personajes (INAH, 2023; México Desconocido, s.~f.).
+Los textos de las fichas son cortos, de tres o cuatro frases, para que se alcancen a leer mientras suena la narración, que se grabó con la voz del autor del proyecto. La información de las fichas se sacó de las fuentes de esta sección y de las páginas de los propios lugares: la historia de Santo Domingo y del Museo de las Culturas (INAH, s.~f.), el centro histórico y su traza (UNESCO World Heritage Centre, s.~f.), los alebrijes y los tapetes (IMPI, 2022; Secretaría de Turismo de Oaxaca, 2018a, 2018b) y la calenda y sus personajes (INAH, 2023; México Desconocido, s.~f.).
 
 % =====================================================================
 \section{Arquitectura del proyecto}
@@ -138,7 +138,7 @@ Los textos de las fichas son cortos (tres o cuatro frases) para que se puedan le
     \textbf{Carpeta} & \textbf{Qué contiene} \\ \hline
     src/ & Todo el código en C++: la escena (\texttt{main.cpp}) y las clases de la ventana, la cámara, las luces, las texturas y los modelos \\ \hline
     shaders/ & Shaders en GLSL: \texttt{shader\_light} (escena con iluminación) y \texttt{skybox} \\ \hline
-    Models/ & Modelos \texttt{.obj} con su \texttt{.mtl} (89 modelos, contando las piezas de los personajes y los del modo Día de Muertos) \\ \hline
+    Models/ & Modelos \texttt{.obj} con su \texttt{.mtl} (84 modelos, contando las piezas de los personajes y los del modo Día de Muertos) \\ \hline
     Textures/ & Texturas \texttt{.jpg} y \texttt{.png} (142 imágenes), las 18 caras de los tres cielos en \texttt{Skybox/} y las 35 imágenes de las cartas en \texttt{cartas/} \\ \hline
     Audio/ & Música de la banda, efectos (cohetes, campanas, chispas, murmullo) y en \texttt{narracion/} la narración de cada carta \\ \hline
     Librerias/ & GLEW, GLFW, GLM, Assimp, stb\_image y miniaudio (se reparte en \texttt{Librerias.zip}) \\ \hline
@@ -150,7 +150,7 @@ Los textos de las fichas son cortos (tres o cuatro frases) para que se puedan le
 
 \subsection{Clases}
 
-La base del código es la del laboratorio de la materia, con las mismas clases. Se le agregaron funciones donde hizo falta, pero se mantuvo la misma forma de cargar y dibujar.
+El código parte del que se usó en el laboratorio de la materia y conserva sus mismas clases. A algunas se les agregaron funciones cuando hizo falta, pero los modelos y las texturas se siguen cargando y dibujando igual que en el laboratorio.
 
 \begin{table}[H]
   \centering
@@ -176,18 +176,18 @@ La base del código es la del laboratorio de la materia, con las mismas clases. 
 \subsection{Funcionamiento del programa}
 
 \begin{enumerate}
-  \item \textbf{Inicio.} Se crea la ventana, se compilan los shaders y se crean las mallas hechas a mano (pisos, fachadas, jardineras, papel picado).
-  \item \textbf{Carga.} Se cargan las texturas, los 89 modelos, los tres cielos y los audios, y se colocan las luces. Esta parte tarda unos 30 segundos.
-  \item \textbf{Ciclo principal}, una vez por cuadro:
+  \item \textbf{Inicio.} Se crea la ventana, se compilan los shaders y se arman las mallas hechas a mano (pisos, fachadas, jardineras y papel picado).
+  \item \textbf{Carga.} Se cargan las texturas, los 84 modelos, los tres cielos y los audios, y se colocan las luces. Esta es la parte más tardada, de unos 30 segundos.
+  \item \textbf{Ciclo principal}, que se repite en cada cuadro:
   \begin{enumerate}
-    \item Se calcula el tiempo desde el cuadro anterior para que el movimiento no dependa de la velocidad de la computadora.
+    \item Se calcula cuánto tiempo pasó desde el cuadro anterior, para que todo se mueva igual de rápido sin importar la velocidad de la computadora.
     \item Se leen el teclado y el mouse y se mueve la cámara activa.
-    \item Si el desfile no está en pausa, avanza por el recorrido y se actualizan sus KeyFrames (las chinas y la marmota) y los dulces que van en el aire. Después se coloca la cámara del desfile junto al primero de la fila.
-    \item Se busca la carta que falte más cercana a la cámara activa (a menos de 8 metros) y se revisan las teclas \tecla{I} y \tecla{L} para tomarla, voltearla, guardarla o ver el tablero.
-    \item El oído del audio se pone en la cámara activa, así la banda y los efectos suenan según dónde está y hacia dónde mira.
-    \item Según la hora se elige el cielo, el color de la luz del sol o de la luna y cuántas farolas se encienden. En el modo Día de Muertos se usan su cielo y sus luces, y las velas tiemblan.
-    \item Se dibuja el cielo, luego los objetos opacos (entre ellos los personajes, pieza por pieza) y al final los que tienen transparencia (árboles, papel picado, telones, puestos, cartas).
-    \item Encima de todo, sin profundidad y con una proyección ortográfica, se dibuja lo que va en la pantalla: el aviso para tomar una carta, la carta abierta o el tablero.
+    \item Si el desfile no está en pausa, avanza por el recorrido, se actualizan sus KeyFrames (las chinas y la marmota) y se mueven los dulces que van en el aire. Luego se pone la cámara del desfile junto al primero de la fila.
+    \item Se busca la carta más cercana a la cámara que todavía no se haya tomado (a menos de 8 metros) y se revisan las teclas \tecla{I} y \tecla{L} para tomarla, voltearla, guardarla o ver el tablero.
+    \item El oído del audio se pone en la cámara activa, para que la banda y los efectos se escuchen según dónde está y hacia dónde mira.
+    \item Según la hora se escoge el cielo, el color de la luz del sol o de la luna y cuántas farolas se prenden. En el modo Día de Muertos se usan su propio cielo y sus luces, y las velas parpadean.
+    \item Se dibuja primero el cielo, luego los objetos opacos (entre ellos los personajes, pieza por pieza) y al final los que tienen transparencia (árboles, papel picado, telones, puestos y cartas).
+    \item Al último, encima de todo, se dibuja lo que va en la pantalla, como el aviso para tomar una carta, la carta abierta o el tablero. Para esto se usa una proyección ortográfica y no se toma en cuenta la profundidad.
     \item Se muestra la imagen en la ventana.
   \end{enumerate}
 \end{enumerate}
@@ -201,28 +201,28 @@ La base del código es la del laboratorio de la materia, con las mismas clases. 
   \begin{tabular}{|p{0.24\linewidth}|p{0.68\linewidth}|}
     \hline
     \textbf{Tecnología} & \textbf{Para qué se usó y por qué} \\ \hline
-    C++20 y OpenGL 4.3 (GLSL 330) & Lenguaje y API de gráficos de la materia. Dan control directo sobre cómo se dibuja cada cosa \\ \hline
-    GLFW & Ventana, teclado y mouse \\ \hline
-    GLEW & Acceso a las funciones de OpenGL \\ \hline
+    C++20 y OpenGL 4.3 (GLSL 330) & Son el lenguaje y la librería de gráficos que se usaron en la materia, y permiten controlar cómo se dibuja cada cosa \\ \hline
+    GLFW & Crear la ventana y leer el teclado y el mouse \\ \hline
+    GLEW & Cargar las funciones de OpenGL \\ \hline
     GLM & Vectores y matrices para las transformaciones y la cámara \\ \hline
     Assimp & Cargar los modelos \texttt{.obj} con sus materiales \\ \hline
     stb\_image & Leer las imágenes jpg y png de las texturas \\ \hline
-    miniaudio & Música, efectos y narración, con sonido en 3D según la posición de la cámara. Es un solo archivo y no hay que instalar nada aparte \\ \hline
-    Visual Studio 2026 & Compilador y depurador. Es el entorno del curso y donde se entrega el proyecto \\ \hline
-    VS Code y CMake & Editor y compilación desde la terminal; se usó en la última parte del desarrollo porque es más ligero. El proyecto de Visual Studio se mantiene igual \\ \hline
-    GIMP & Ajustes a las texturas: color, recortes, orillas y transparencias. Fue el editor de imágenes principal, como se planeó en la propuesta \\ \hline
-    Blender 5.2 & Revisar, escalar, reducir y convertir a \texttt{.obj} los modelos de internet, y armar los edificios a partir de fotos \\ \hline
-    Git y GitHub & Control de versiones; cada fase terminada es un commit \\ \hline
-    LaTeX & Reporte de avances y estos manuales \\ \hline
+    miniaudio & Reproduce la música, los efectos y la narración, y hace que suenen según dónde está la cámara. Se eligió porque es un solo archivo y no hay que instalar nada más \\ \hline
+    Visual Studio 2026 & Compilador y depurador. Es el que se usa en el curso y con el que se entrega el proyecto \\ \hline
+    VS Code y CMake & Se usaron en la última parte del desarrollo para editar y compilar, porque son más ligeros. El proyecto de Visual Studio se dejó igual \\ \hline
+    GIMP & Ajustar las texturas (color, recortes, orillas y transparencias). Fue el editor de imágenes principal, como se había planeado en la propuesta \\ \hline
+    Blender 5.2 & Revisar los modelos de internet, pasarlos a metros, quitarles triángulos y convertirlos a \texttt{.obj}, y también armar los edificios a partir de fotos \\ \hline
+    Git y GitHub & Control de versiones. Cada fase terminada se guardó en un commit \\ \hline
+    LaTeX & Escribir el reporte de avances y estos manuales \\ \hline
   \end{tabular}
   \caption{Tecnologías del proyecto.}
 \end{table}
 
 \subsection{Comparación con lo planeado}
 
-En la propuesta se compararon Blender, Maya y 3ds Max para modelado; OpenGL, Unity y Unreal para el desarrollo; y GIMP, Photoshop y Krita para las texturas. Se mantuvieron las tres elegidas: Blender, OpenGL con C++ y GIMP. Blender por ser gratuito y por exportar \texttt{.obj} con normales y coordenadas de textura, que es lo que lee Assimp; OpenGL porque es lo que se vio en la materia y obliga a entender cómo funciona cada parte (luces, cámaras, transformaciones) en lugar de dejárselo a un motor.
+En la propuesta se compararon tres opciones para cada parte: Blender, Maya y 3ds Max para modelar, OpenGL, Unity y Unreal para programar la escena, y GIMP, Photoshop y Krita para las texturas. Al final se usaron las mismas que se habían elegido, que eran Blender, OpenGL con C++ y GIMP. Blender, porque es gratuito y exporta archivos \texttt{.obj} con normales y coordenadas de textura, que es lo que lee Assimp. OpenGL, porque es lo que se vio en la materia y obliga a entender cómo funciona cada parte (luces, cámaras y transformaciones) en vez de dejarle todo a un motor como Unity.
 
-Lo que se agregó fue VS Code con CMake: el proyecto en Google Drive hacía que Visual Studio fallara al escribir archivos temporales en la carpeta sincronizada, y CMake deja los archivos de compilación fuera de Drive.
+Lo único que se agregó fueron VS Code y CMake. Como el proyecto está en Google Drive, Visual Studio a veces fallaba al escribir sus archivos temporales en la carpeta sincronizada, y con CMake todos los archivos de la compilación quedan fuera de Drive.
 
 
 
@@ -231,37 +231,35 @@ Lo que se agregó fue VS Code con CMake: el proyecto en Google Drive hacía que 
 
 \subsection{Modelado geométrico}
 
-Todo lo que es plano o repetitivo se armó a mano con vértices en \texttt{main.cpp}: los pisos del andador, las banquetas y las plazas; las fachadas de las casas como planos; las jardineras de cantera con su tierra; y las tiras de papel picado, que se arman en 12 tramos para que bajen en medio como un cordel.
+Las cosas planas o que se repiten mucho se hicieron a mano con vértices en \texttt{main.cpp}. Así se armaron los pisos del andador, las banquetas y las plazas, las fachadas de las casas, las jardineras de cantera con su tierra y las tiras de papel picado. Cada tira se divide en 12 tramos para que pueda colgar más bajo en medio, como un cordel de verdad.
 
-En los pisos las coordenadas de textura se calculan a partir de la posición del vértice en el mundo (X y Z), así una losa mide lo mismo en todos lados aunque los rectángulos sean de distinto tamaño, y no se notan cortes entre un piso y el siguiente.
+En los pisos, las coordenadas de textura se sacan de la posición de cada vértice en el mundo (X y Z) y no de las esquinas del rectángulo. De esta forma las losas se ven del mismo tamaño en todos los pisos, aunque cada uno mida distinto, y no se nota dónde termina uno y empieza el otro.
 
-Las fachadas de las casas usan pocas imágenes claras que se tiñen con el color de cada casa, así salen muchas casas distintas sin cargar una textura por casa.
+Para las fachadas se usan pocas imágenes en tonos claros que se pintan con el color de cada casa. Con eso salen muchas casas diferentes sin tener que cargar una textura para cada una.
 
 \subsection{Modelos importados}
 
-Los edificios principales (Santo Domingo, la Sangre de Cristo, el kiosco y la fuente) se armaron en Blender a partir de fotos del lugar. Los árboles, plantas, farolas y algunas artesanías vienen de Sketchfab, Poly Haven y ambientCG con licencia CC0 o CC-BY (ver la sección \ref{sec:creditos}); a todos se les ajustó el tamaño a metros, se les redujo el número de triángulos cuando eran muy pesados y se juntaron sus texturas para que carguen más rápido.
+Los edificios principales (Santo Domingo, la Sangre de Cristo, el kiosco y la fuente) se armaron en Blender a partir de fotos del lugar. Los árboles, las plantas, las farolas y algunas artesanías se descargaron de Sketchfab, Poly Haven y ambientCG, todos con licencia CC0 o CC-BY (sección \ref{sec:creditos}). Antes de usarlos se pasaron a metros, a los más pesados se les quitaron triángulos y sus texturas se juntaron en menos imágenes para que cargaran más rápido.
 
-Los modelos que se repiten (bancas, macetas, árboles, farolas) se cargan una sola vez y se dibujan varias veces con la función \texttt{DibujarModelo}, que solo cambia la posición, el giro y la escala.
+Los modelos que se repiten, como las bancas, las macetas, los árboles y las farolas, se cargan una sola vez y se dibujan las veces que hagan falta con la función \texttt{DibujarModelo}, a la que solo se le cambian la posición, el giro y la escala.
 
 \subsection{Modelado jerárquico}
 
-Cada parte del cuerpo se dibuja a partir de la matriz de la parte anterior: el cuerpo es la raíz, de él salen la cabeza, los brazos y las piernas, y de cada brazo sale el antebrazo. Así, al girar el hombro, el antebrazo lo sigue sin despegarse. Los ángulos de cada articulación están en una estructura (\texttt{PosePersona}) para que las animaciones y los KeyFrames solo tengan que cambiar esos valores.
+En los personajes, cada parte del cuerpo se dibuja partiendo de la matriz de la parte de la que cuelga. El torso es la raíz y de él salen la cabeza, los brazos y las piernas, y de cada brazo sale su antebrazo, de modo que al girar el hombro el antebrazo se mueve junto con él. Los ángulos de todas las articulaciones se guardan en una estructura (\texttt{PosePersona}), y así las animaciones y los KeyFrames solo tienen que cambiar esos valores.
 
-Los personajes salen de dos modelos de personas encontrados en internet, a los que se les hicieron muchos cambios en Blender: se redujeron, se partieron en piezas y cada pieza se dejó con su origen en la articulación donde gira, así en el programa basta con trasladar al punto de la articulación y rotar.
+Los personajes parten de dos modelos de personas ya hechos (sección \ref{sec:creditos}), a los que se les hicieron muchos cambios en Blender. Se les quitaron triángulos, se partieron en piezas y a cada pieza se le puso el origen en la articulación donde gira, para que en el programa baste con trasladarla a ese punto y rotarla.
 
-Al partir el modelo, cada pieza quedó abierta en su orilla, y al levantar o doblar un brazo se veían huecos en el hombro y en el codo. Para taparlos, el brazo lleva una bola con la tela de la manga y el antebrazo una con la piel, cada una centrada en el punto donde gira su pieza; como ese centro no se mueve al girar, la bola siempre cubre la unión. Las orillas abiertas del torso y de los brazos también se cerraron.
-
-\begin{itemize}
-  \item \textbf{Hombre de manta y sombrero}, en 10 piezas: torso (raíz), cabeza, brazo y antebrazo de cada lado, y muslo y pierna de cada lado. Es la base del danzante de la marmota, del que carga el torito, de los músicos y de los espectadores; lo que cambia entre ellos es la pose de los brazos y lo que llevan colgado.
-  \item \textbf{China oaxaqueña}, armada por piezas al estilo del hombre: torso (cabeza y blusa), falda, canasta y los mismos brazos del hombre a 0.9 de su tamaño.
-  \item \textbf{Espectadores}: son gente común, sin traje de fiesta. El hombre usa las mismas piezas del de manta, pero con un torso sin paliacate y con camisa, pantalón y zapatos. La mujer usa el torso de la china con otra blusa, los brazos y las pantorrillas del hombre a 0.9 y una falda lisa.
-\end{itemize}
-
-Para que no todos se vean iguales, la misma pieza se dibuja con distintas texturas: la clase \texttt{Model} tiene un segundo \texttt{RenderModel} que recibe una textura y la usa en todas las mallas en lugar de la que trae el modelo. Hay cuatro ropas para el hombre (camisa azul, vino, verde o blanca con pantalón de mezclilla o caqui), cuatro para la mujer (blusa blanca, rosa, amarilla o turquesa) y cada china lleva su falda de otro color (magenta, roja, verde y azul). La falda de la mujer es blanca y se pinta con el color del objeto, como los globos. Las texturas de ropa son la misma imagen del modelo con la tela repintada, así que las coordenadas de textura siguen sirviendo.
+Al partir el modelo, las piezas quedaron abiertas en los cortes, y cuando un brazo se levantaba o se doblaba se veían huecos en el hombro y en el codo. Para taparlos se le puso al brazo una bola con la tela de la manga y al antebrazo una con la piel, cada una centrada en el punto donde gira su pieza. Como ese punto no se mueve cuando la pieza gira, la bola siempre queda tapando la unión. Además, se cerraron las orillas abiertas del torso y de los brazos.
 
 \begin{itemize}
-  \item \textbf{Objetos que cargan}: la marmota y su palo, el torito con sus dos ruedas de cohetes y sus chispas, la trompeta, el dulce y los globos. Cada uno se cuelga de la matriz de la parte del cuerpo que lo sostiene.
+  \item \textbf{Hombre de manta y sombrero}, partido en 10 piezas: el torso (que es la raíz), la cabeza, y de cada lado el brazo, el antebrazo, el muslo y la pierna. Con él se hacen todos los hombres de la escena, que son el danzante de la marmota, el que carga el torito, los músicos y los espectadores. Entre uno y otro solo cambian la pose de los brazos y lo que llevan cargando.
+  \item \textbf{China oaxaqueña}, armada por piezas igual que el hombre. Tiene el torso (con la cabeza y la blusa), la falda, la canasta y los mismos brazos del hombre, pero a 0.9 de su tamaño.
+  \item \textbf{Espectadores}, que son gente común y no llevan traje de fiesta. El hombre usa las mismas piezas que el de manta, pero con un torso sin paliacate, camisa, pantalón y zapatos. La mujer usa el torso de la china con otra blusa, los brazos y las pantorrillas del hombre a 0.9 de su tamaño y una falda lisa.
 \end{itemize}
+
+Para que no todos se vean iguales, una misma pieza se puede dibujar con distintas texturas. Para eso se le agregó a la clase \texttt{Model} un segundo \texttt{RenderModel} que recibe una textura y la usa en todas las mallas, en lugar de la que trae el modelo. Así hay cuatro juegos de ropa para el hombre (camisa azul, vino, verde o blanca con pantalón de mezclilla o caqui), cuatro para la mujer (blusa blanca, rosa, amarilla o turquesa), y cada china lleva la falda de un color distinto (magenta, roja, verde y azul). La falda de la mujer es blanca y se pinta con el color del objeto, igual que los globos. Las texturas de ropa son la misma imagen original del modelo con la tela pintada de otro color, por eso las coordenadas de textura siguen funcionando.
+
+Lo que llevan los personajes (la marmota y su palo, el torito con sus dos ruedas de cohetes y sus chispas, la trompeta, el dulce y los globos) se dibuja con la matriz de la parte del cuerpo que lo sostiene, y así se mueve junto con ella.
 
 \begin{figure}[H]
   \centering
@@ -279,7 +277,8 @@ Para que no todos se vean iguales, la misma pieza se dibuja con distintas textur
       \hspace*{2em}muslo der. \(\rightarrow\) pierna der.\vspace{2pt}} &
     \parbox[t]{\linewidth}{\ttfamily
       torso \(\rightarrow\) palo \(\rightarrow\) marmota\\
-      torso \(\rightarrow\) torito \(\rightarrow\) 2 ruedas \(\rightarrow\) 4 chispas c/u\\
+      torso \(\rightarrow\) torito \(\rightarrow\) 2 ruedas\\
+      \hspace*{1em}\(\rightarrow\) 4 chispas c/u\\
       cabeza \(\rightarrow\) trompeta\\
       base \(\rightarrow\) 3 globos\vspace{2pt}} \\ \hline
     \textbf{China (\texttt{DibujarChina})} & \\ \hline
@@ -307,44 +306,44 @@ Para que no todos se vean iguales, la misma pieza se dibuja con distintas textur
   \caption{Jerarquía de los personajes: cada pieza se dibuja con la matriz de la de arriba.}
 \end{figure}
 
-\dosfotos{desfile/03_marmota}{Danzante con la marmota}{img/musicos_torito}{Músicos y, detrás, el torito}{El mismo hombre por piezas con distintas poses y objetos.}
+\dosfotos{final/04_marmota}{Danzante con la marmota}{img/musicos_torito}{Músicos y, detrás, el torito}{El mismo hombre por piezas con distintas poses y objetos.}
 
 \subsection{Texturizado}
 
 \begin{itemize}
-  \item Las texturas usan \textit{mipmaps} (\texttt{GL\_LINEAR\_MIPMAP\_LINEAR}): versiones más chicas de la imagen que OpenGL usa cuando el objeto está lejos, para que los pisos y las fachadas no parpadeen.
-  \item Se repiten con \texttt{GL\_REPEAT}, lo que permite cubrir pisos grandes con una imagen chica.
-  \item Las imágenes png con transparencia (hojas, papel picado, rejas, telones) se recortan en el shader: si el alfa de un pixel es menor a 0.1 se descarta con \texttt{discard}, y así lo que está detrás se ve aunque se haya dibujado después.
-  \item Los jpg deben tener un ancho múltiplo de 4, porque OpenGL lee cada fila en bloques de 4 bytes. Con otro ancho el programa lee fuera de la imagen y se cierra.
+  \item Las texturas usan \textit{mipmaps} (\texttt{GL\_LINEAR\_MIPMAP\_LINEAR}), que son versiones más chicas de la imagen que OpenGL usa cuando el objeto está lejos. Sin ellos, los pisos y las fachadas parpadean cuando se mueve la cámara.
+  \item Se repiten con \texttt{GL\_REPEAT}, y así una imagen chica alcanza para cubrir un piso grande.
+  \item Las imágenes png con transparencia (hojas, papel picado, rejas y telones) se recortan en el shader. Si el alfa de un pixel es menor a 0.1 se descarta con \texttt{discard}, y así no tapa lo que está detrás, aunque eso se dibuje después.
+  \item Los jpg deben tener un ancho múltiplo de 4, porque OpenGL lee cada fila en bloques de 4 bytes. Si no, el programa lee fuera de la imagen y se cierra.
 \end{itemize}
 
 \subsection{Iluminación}
 
-Se usa el modelo de Phong en el shader \texttt{shader\_light.frag}, con luz ambiental, difusa y especular, y tres tipos de luz:
+La iluminación usa el modelo de Phong (luz ambiental, difusa y especular) en el shader \texttt{shader\_light.frag}, con tres tipos de luz:
 
 \begin{itemize}
-  \item \textbf{Una luz direccional}: el sol de la tarde, naranja y bajo desde el poniente para que pegue de frente a Santo Domingo, o la luna de la noche, azul y más débil.
-  \item \textbf{16 luces puntuales}, una en el farol de cada farola: 12 en el andador y 4 en el Zócalo. Solo se encienden de noche.
-  \item \textbf{Reflectores} (\textit{spotlights}) en la fachada de Santo Domingo, en la Sangre de Cristo y debajo del techo del kiosco.
+  \item \textbf{Una luz direccional}, que en la tarde es el sol, naranja y bajo desde el poniente para que le pegue de frente a Santo Domingo, y en la noche es la luna, azul y más débil.
+  \item \textbf{16 luces puntuales}, una en cada farola (12 en el andador y 4 en el Zócalo), que solo se prenden de noche.
+  \item \textbf{Tres reflectores} (\textit{spotlights}), uno que alumbra la fachada de Santo Domingo, otro para la Sangre de Cristo y otro debajo del techo del kiosco.
 \end{itemize}
 
-Con la tecla N se cambian el cielo, el color y la fuerza del sol o de la luna y las farolas, dentro del ciclo principal.
+Al presionar la tecla N, dentro del ciclo principal se cambian el cielo, el color y la fuerza del sol o de la luna, y cuántas farolas están prendidas.
 
 \dosfotos{retoque_texturas/02_santo_domingo}{Tarde}{retoque_texturas/08_santo_domingo_noche}{Noche}{La iluminación de la tarde y de la noche en Santo Domingo.}
 
 \subsection{Cielo, transparencias y cámaras}
 
-El cielo es un \textit{skybox}: un cubo con una imagen en cada cara (en el orden derecha, izquierda, abajo, arriba, atrás y adelante) que se dibuja primero y siempre alrededor de la cámara. Hay uno de tarde, uno de noche y uno para el modo Día de Muertos, con caras de 2048 pixeles.
+El cielo es un \textit{skybox}, que es un cubo con una imagen en cada cara (en el orden derecha, izquierda, abajo, arriba, atrás y adelante) que se dibuja primero y siempre alrededor de la cámara. Hay tres, uno de tarde, uno de noche y uno para el modo Día de Muertos, y sus caras son de 2048 pixeles.
 
-Para la transparencia se activa el \textit{blending} (\texttt{GL\_SRC\_ALPHA}, \texttt{GL\_ONE\_MINUS\_SRC\_ALPHA}) y los objetos transparentes se dibujan al final, después de los opacos.
+Para las transparencias se activa el \textit{blending} (\texttt{GL\_SRC\_ALPHA}, \texttt{GL\_ONE\_MINUS\_SRC\_ALPHA}) y los objetos transparentes se dibujan al final, después de todos los opacos.
 
-Las cámaras fijas son objetos \texttt{Camera} con su posición y su dirección. Al soltar una con la tecla F, la cámara libre copia su posición y hacia dónde mira y sigue desde ahí.
+Cada cámara fija es un objeto \texttt{Camera} con su propia posición y dirección. Cuando se suelta una con la tecla F, la cámara libre copia su posición y hacia dónde mira, y se puede seguir caminando desde ahí.
 
 % =====================================================================
 \section{Animaciones}
 \label{sec:animaciones}
 
-En la propuesta se plantearon cinco animaciones para teoría, todas relacionadas con lo que pasa en una calenda. Además, la china oaxaqueña y la marmota se animan con KeyFrames.
+En la propuesta se plantearon cinco animaciones para la parte de teoría, todas sobre cosas que pasan en una calenda. Aparte de esas, la china oaxaqueña y la marmota se animan con KeyFrames, y las cartas de lotería también tienen su propia animación.
 
 \begin{table}[H]
   \centering
@@ -364,25 +363,25 @@ En la propuesta se plantearon cinco animaciones para teoría, todas relacionadas
   \caption{Animaciones del proyecto.}
 \end{table}
 
-Todas las animaciones dependen del tiempo real que pasa entre un cuadro y otro, no del número de cuadros, así que se ven a la misma velocidad en cualquier computadora. El desfile tiene su propio reloj (\texttt{tiempoDesfile}) que solo avanza cuando no está en pausa; con eso la tecla \tecla{P} congela a todos los personajes del desfile, y \tecla{R} pone el avance otra vez en el inicio. Los espectadores usan el reloj normal y siguen saludando.
+Todas las animaciones se calculan con el tiempo real que pasa entre un cuadro y otro y no con el número de cuadros, para que se vean a la misma velocidad en cualquier computadora. El desfile tiene su propio reloj (\texttt{tiempoDesfile}), que solo avanza cuando no está en pausa. Con la tecla \tecla{P} se congelan todos los personajes del desfile y con \tecla{R} el desfile regresa al inicio. Los espectadores usan el reloj normal, así que siguen saludando aunque el desfile esté en pausa.
 
 \subsection{Caminata y recorrido}
 
-El recorrido son cuatro puntos en el piso: la puerta de Santo Domingo, la esquina del atrio con el andador, la entrada al andador y el frente del kiosco. La variable \texttt{avanceDesfile} guarda cuántos metros lleva el primero de la fila y crece 2 metros por segundo. La función \texttt{PuntoRecorrido} convierte una distancia en un punto sobre esas rectas, y \texttt{GiroRecorrido} calcula hacia dónde voltear viendo medio metro atrás y medio adelante, así los personajes dan la vuelta poco a poco en las esquinas.
+El recorrido se marcó con cuatro puntos en el piso, unidos con rectas: la puerta de Santo Domingo, la esquina del atrio con el andador, la entrada al andador y el frente del kiosco. La variable \texttt{avanceDesfile} guarda cuántos metros lleva el primero de la fila y aumenta 2 metros por segundo. Con la función \texttt{PuntoRecorrido} esa distancia se convierte en un punto sobre las rectas, y \texttt{GiroRecorrido} calcula hacia dónde debe voltear cada personaje usando un punto medio metro atrás y otro medio metro adelante. Gracias a eso los personajes dan la vuelta poco a poco en las esquinas, en lugar de girar de golpe.
 
-Cada personaje tiene en arreglos qué tipo es, cuántos metros va detrás del primero y cuánto se hace a un lado, y se dibuja en la distancia que le toca. El desfile tiene dos estados: \textbf{caminando}, mientras el primero no llega al kiosco, y \textbf{detenido}, durante 8 segundos frente al kiosco. Al terminar la espera, el avance regresa al inicio.
+De cada personaje se guarda en arreglos qué tipo es, cuántos metros va detrás del primero y qué tanto se hace a un lado, y con eso se dibuja en el lugar que le toca. El desfile tiene dos estados. Está \textbf{caminando} mientras el primero no llegue al kiosco, y después se queda \textbf{detenido} frente al kiosco durante 8 segundos. Cuando termina la espera, el avance regresa a cero y el desfile vuelve a salir del atrio.
 
-Al caminar, los muslos se mueven con un seno (uno adelante y el otro atrás), las rodillas se doblan solo cuando la pierna regresa y la cintura sube y baja un poco. El ángulo de la pierna depende de lo que ya se avanzó y no del tiempo, así los pies no se resbalan sobre el piso. Los brazos no se mueven al caminar porque todos cargan algo.
+Para caminar, los muslos se mueven siguiendo una curva de seno, uno hacia adelante y el otro hacia atrás. Las rodillas solo se doblan cuando la pierna va regresando, y la cintura sube y baja un poco. El ángulo de las piernas se calcula con la distancia que ya se avanzó y no con el tiempo, para que los pies no se vean resbalando sobre el piso. Los brazos se quedan quietos porque todos van cargando algo.
 
 \subsection{Torito, músicos, globos y espectadores}
 
-Estas animaciones son funciones del tiempo con senos y cosenos, aplicadas a las piezas del modelo jerárquico:
+Estas animaciones se hacen con senos y cosenos que dependen del tiempo, y se aplican a las piezas del modelo jerárquico:
 
 \begin{itemize}
-  \item \textbf{Torito}: el armazón gira 8 grados a cada lado y se inclina 4 grados adelante y atrás. Cada rueda de cohetes da una vuelta por segundo, una al revés de la otra, y sus cuatro chispas cambian de tamaño para que parezca que chisporrotean.
-  \item \textbf{Músicos}: cada 2 segundos levantan la cabeza y la trompeta. Hay dos poses de los brazos (trompeta derecha y trompeta arriba) y la función \texttt{MezclarBrazos} pasa de una a otra poco a poco. Cada músico empieza en otro momento.
-  \item \textbf{Globos}: cada globo sube 2 metros y vuelve a bajar en 6 segundos, se mueve un poco de lado y se inclina; los tres de cada espectador van desfasados.
-  \item \textbf{Espectadores}: mueven la mano de un lado a otro con el brazo arriba y voltean la cabeza de un lado al otro, una vez por cada dos saludos. Como la cabeza de la mujer viene pegada al torso, ella voltea todo el cuerpo de la cintura para arriba.
+  \item \textbf{Torito}: el armazón gira 8 grados a cada lado y se inclina 4 grados hacia adelante y hacia atrás. Cada rueda de cohetes da una vuelta por segundo, en sentido contrario a la otra, y sus cuatro chispas cambian de tamaño y de color como si fueran saltando.
+  \item \textbf{Músicos}: cada 2 segundos levantan la cabeza y la trompeta. Hay dos poses de los brazos, una con la trompeta al frente y otra con la trompeta arriba, y la función \texttt{MezclarBrazos} pasa de una a otra poco a poco. Cada músico empieza en un momento distinto para que no se muevan todos igual.
+  \item \textbf{Globos}: cada globo sube 2 metros y vuelve a bajar en 6 segundos, mientras se mueve un poco de lado y se inclina. Los tres globos de cada espectador van desfasados para que no suban al mismo tiempo.
+  \item \textbf{Espectadores}: con el brazo arriba mueven la mano de un lado a otro, y cada dos saludos voltean la cabeza hacia el otro lado. Como la cabeza de la mujer viene pegada al torso, ella voltea todo el cuerpo de la cintura para arriba.
 \end{itemize}
 
 \dosfotos{img/musicos_torito}{Músicos tocando y el torito}{img/espectadores_globos}{Espectador con globos}{Animaciones de los músicos, el torito y los espectadores.}
@@ -391,7 +390,7 @@ Estas animaciones son funciones del tiempo con senos y cosenos, aplicadas a las 
 
 \subsection{KeyFrames}
 
-Se usa la misma forma del laboratorio: cada cuadro clave guarda sus valores, la función \texttt{interpolation} calcula cuánto debe cambiar cada valor por paso para llegar al siguiente cuadro y \texttt{animate} lo va sumando en cada cuadro. Al llegar al último cuadro vuelve al primero, por eso el último es igual al primero. Para poder tener varias animaciones al mismo tiempo, las variables del laboratorio (\texttt{KeyFrame}, \texttt{FrameIndex}, \texttt{playIndex}, \texttt{i\_curr\_steps}, \texttt{i\_max\_steps}) se juntaron en un \texttt{struct AnimacionKeyFrames}. Los cuadros se guardan en el código con \texttt{GuardarCuadro} antes del ciclo principal; no se leen de un archivo. Un paso equivale a 1/60 de segundo.
+Los KeyFrames se hicieron igual que en el laboratorio. Cada cuadro clave guarda sus valores, la función \texttt{interpolation} calcula cuánto tiene que cambiar cada valor en cada paso para llegar al siguiente cuadro clave, y \texttt{animate} va sumando ese cambio paso a paso. Cuando se llega al último cuadro clave se regresa al primero, por eso el último se dejó igual al primero y la animación se repite sin saltos. La diferencia con el laboratorio es que aquí se necesitaban varias animaciones al mismo tiempo, así que sus variables (\texttt{KeyFrame}, \texttt{FrameIndex}, \texttt{playIndex}, \texttt{i\_curr\_steps} e \texttt{i\_max\_steps}) se juntaron en un \texttt{struct AnimacionKeyFrames}. Los cuadros clave no se leen de un archivo, sino que se guardan en el código con \texttt{GuardarCuadro} antes del ciclo principal, y cada paso dura 1/60 de segundo.
 
 \begin{table}[H]
   \centering
@@ -405,53 +404,53 @@ Se usa la misma forma del laboratorio: cada cuadro clave guarda sus valores, la 
   \caption{Animaciones con KeyFrames.}
 \end{table}
 
-Cuando la china sale del cuadro de la canasta se suelta el dulce. Su vuelo dura un segundo y sigue una parábola hacia el frente y a un lado, dando vueltas.
+El dulce sale volando justo cuando la china pasa del cuadro en que lo toma de la canasta al cuadro en que lo lanza. Vuela durante un segundo siguiendo una parábola hacia el frente y un poco a un lado, y va dando vueltas.
 
-\dosfotos{desfile/02_chinas_musicos}{Chinas lanzando dulces}{desfile/03_marmota}{Marmota girando}{Las dos animaciones con KeyFrames.}
+\dosfotos{final/03_chinas_musicos}{Chinas lanzando dulces}{final/12_camara_desfile}{Marmota girando}{Las dos animaciones con KeyFrames.}
 
 % =====================================================================
 \section{Modo Día de Muertos}
 \label{sec:modomuertos}
 
-Con la tecla \tecla{O} se cambia la variable \texttt{modoMuertos}, y todo lo de este modo se dibuja dentro de un \texttt{if (modoMuertos)} en el ciclo principal. No es otra escena: el desfile, las cámaras, las cartas y el sonido siguen igual, y solo se agregan adornos y se cambian el cielo, las luces y algunas texturas. Lo que tiene de cultural se explica en la sección \ref{sec:cultura}.
+La tecla \tecla{O} cambia la variable \texttt{modoMuertos}, y todo lo de este modo se dibuja dentro de un \texttt{if (modoMuertos)} en el ciclo principal. No se hizo una escena aparte. El desfile, las cámaras, las cartas y el sonido siguen funcionando igual, y lo único que cambia es que se agregan adornos y se usan otro cielo, otras luces y algunas texturas distintas. El porqué de cada adorno se explica en la sección \ref{sec:cultura}.
 
 \dosfotos{muertos/02_velas_flotantes}{Velas flotantes y cortinas de cempasúchil}{muertos/11_altar}{Altar junto al kiosco}{El modo Día de Muertos.}
 
 \subsection{Iluminación}
 
-La noche es más oscura que la normal: el cielo es morado con un resplandor naranja y la luz direccional casi se apaga, así que la luz de la escena sale sobre todo de las velas y de focos de color.
+Esta noche es más oscura que la normal. El cielo es morado con un resplandor naranja y la luz direccional está casi apagada, así que casi toda la luz de la escena viene de las velas y de focos de colores.
 
 \begin{itemize}
-  \item \textbf{Farolas}: las mismas 16, pero más débiles y más naranjas.
-  \item \textbf{19 luces puntuales de velas}: no se pone una luz por vela, sino una por grupo (sobre las velas del andador, en las cortinas, en el kiosco, en el altar y una por ofrenda). Para que tiemblen como una flama, en cada cuadro su intensidad se multiplica por dos senos de distinta velocidad, y cada luz va desfasada de las demás.
-  \item \textbf{6 reflectores de color}: Santo Domingo en morado, el kiosco en naranja, la Sangre de Cristo en turquesa, dos sobre el altar y uno sobre la catrina.
+  \item \textbf{Farolas}: son las mismas 16, pero con una luz más débil y más naranja.
+  \item \textbf{19 luces puntuales de velas}, una por cada grupo de velas (sobre las velas del andador, en las cortinas, en el kiosco, en el altar y una en cada ofrenda). Para que parpadeen como una flama, en cada cuadro su intensidad se multiplica por dos senos de distinta velocidad, y cada luz empieza en un momento distinto.
+  \item \textbf{6 reflectores de colores}: Santo Domingo en morado, el kiosco en naranja, la Sangre de Cristo en turquesa, dos sobre el altar y uno sobre la catrina.
 \end{itemize}
 
-Con eso hay hasta 35 luces puntuales y 6 reflectores al mismo tiempo, por lo que los límites \texttt{MAX\_POINT\_LIGHTS} y \texttt{MAX\_SPOT\_LIGHTS} se subieron a 40 y 8, tanto en \texttt{CommonValues.h} como en el shader.
+Con esto llega a haber 35 luces puntuales y 6 reflectores al mismo tiempo, por lo que los límites \texttt{MAX\_POINT\_LIGHTS} y \texttt{MAX\_SPOT\_LIGHTS} se subieron a 40 y 8, en \texttt{CommonValues.h} y también en el shader.
 
-\subsection{Cómo se dibuja sin que el programa se haga lento}
+\subsection{Cómo se dibuja sin que el programa se vuelva lento}
 
 \begin{itemize}
-  \item \textbf{Racimos en un solo modelo.} Las velas, flores y adornos que van juntos (las velas de un cable, una cortina de flores, una ofrenda) están unidos en un solo \texttt{.obj}. Así cada racimo se dibuja con una sola llamada en lugar de una por vela o por flor.
-  \item \textbf{Una sola textura.} Todos los adornos propios del modo usan la misma imagen (\texttt{muertos.png}), que tiene en distintas zonas los colores de la cera, las flores, la madera y el papel. No hay que cambiar de textura entre un adorno y otro.
-  \item \textbf{Velas sin luz.} Una flama no se ilumina, brilla. Las velas encendidas y sus llamas están en un modelo aparte de cada racimo y se dibujan en una segunda vuelta, al final, con el uniform \texttt{sinLuz} en 1: con eso el shader usa el color de la textura tal cual, sin el cálculo de Phong, y se ven brillantes aunque no les llegue luz.
-  \item \textbf{Mismas piezas, otra textura.} Las caras de calavera de los espectadores y del desfile son sus mismas texturas de ropa con la cara pintada, y se usan con el segundo \texttt{RenderModel} de la clase \texttt{Model}, igual que las ropas de colores.
+  \item \textbf{Racimos en un solo modelo.} Las velas, flores y adornos que van juntos (las velas de un cable, una cortina de flores o una ofrenda) están unidos en un solo \texttt{.obj}, y así cada racimo se dibuja con una sola llamada en lugar de una por cada vela o flor.
+  \item \textbf{Una sola textura.} Todos los adornos de este modo usan la misma imagen (\texttt{muertos.png}), que tiene en distintas partes los colores de la cera, las flores, la madera y el papel. Así no hay que cambiar de textura entre un adorno y otro.
+  \item \textbf{Velas que no reciben luz.} Las velas encendidas y sus flamas están en un modelo aparte de cada racimo y se dibujan al final, en una segunda vuelta, con el uniform \texttt{sinLuz} en 1. Con eso el shader usa el color de la textura tal cual, sin hacer el cálculo de Phong, y las flamas se ven brillantes aunque no les llegue ninguna luz, porque una flama de verdad brilla por sí misma.
+  \item \textbf{Mismas piezas, otra textura.} Las caras de calavera de los espectadores y del desfile son las mismas texturas de ropa con la cara pintada, y se usan con el segundo \texttt{RenderModel} de la clase \texttt{Model}, igual que la ropa de colores.
 \end{itemize}
 
 \subsection{Altar y tapete de arena}
 
-El altar tiene siete escalones con la greca al frente. En cada escalón hay macetas de cempasúchil y de mano de león, velas, calaveritas de azúcar, pan y naranjas. Cada maceta es de barro, con una mata de hojas y cabezas de flor encima, y las calaveritas tienen forma de cráneo con la cara pintada al frente.
+El altar tiene siete escalones con una greca al frente, y en cada escalón hay macetas de cempasúchil y de mano de león, velas, calaveritas de azúcar, pan y naranjas. Las macetas son de barro, con una mata de hojas y flores encima, y las calaveritas tienen forma de cráneo con la cara pintada al frente.
 
-Frente al altar va un tapete de arena de 12 metros, armado con tres tramos de 3 por 4 metros con el mismo dibujo, como los tapetes que se hacen en las calles de Oaxaca para estas fechas: un sol con rayos, un cempasúchil grande entre alcatraces y hojas, y una greca entre filas de cuadros. A los lados lo bordean macetas y flores sueltas, y dos xoloitzcuintles miran hacia el altar desde distintos lugares.
+Frente al altar hay un tapete de arena de 12 metros, como los que se hacen en las calles de Oaxaca en estas fechas. Está formado por tres tramos de 3 por 4 metros con el mismo dibujo, que tiene un sol con rayos, una flor de cempasúchil grande entre flores blancas y hojas, y una greca entre filas de cuadros. A los lados tiene macetas y flores sueltas, y dos xoloitzcuintles miran hacia el altar desde distintos lugares.
 
 \unafoto{muertos/10_tapete}{Tapete de arena frente al altar, con las macetas de cempasúchil y los xoloitzcuintles.}
 
-\dosfotos{muertos/05_kiosco}{Kiosco con cempasúchil}{muertos/08_desfile_catrinas}{Desfile con caras de calavera}{Adornos del kiosco y el desfile en el modo Día de Muertos.}
+\dosfotos{final/11_kiosco_muertos}{Kiosco con cempasúchil}{muertos/08_desfile_catrinas}{Desfile con caras de calavera}{Adornos del kiosco y el desfile en el modo Día de Muertos.}
 
 % =====================================================================
 \section{Cronograma: planeado contra real}
 
-En la propuesta el trabajo se repartió en siete semanas, del 6 de octubre al 23 de noviembre. En la práctica el orden cambió: primero se armó todo el escenario y la iluminación, después la escena se rediseñó, y los personajes y las animaciones se dejaron para el final.
+En la propuesta el trabajo se repartió en siete semanas, del 6 de octubre al 23 de noviembre, pero en la práctica el orden fue otro. Primero se armaron el escenario y la iluminación, después se rediseñó la escena, y los personajes y las animaciones quedaron para el final.
 
 \begin{figure}[H]
   \centering
@@ -507,13 +506,13 @@ En la propuesta el trabajo se repartió en siete semanas, del 6 de octubre al 23
   \begin{tabular}{|p{0.24\linewidth}|p{0.14\linewidth}|p{0.24\linewidth}|p{0.27\linewidth}|}
     \hline
     \textbf{Actividad} & \textbf{Planeado} & \textbf{Real} & \textbf{Diferencia} \\ \hline
-    Investigación y estructura & 6 al 12 oct & 6 al 17 oct & Una semana más: la base del programa se armó junto con la investigación \\ \hline
-    Santo Domingo y fachadas & 13 al 19 oct & 2 al 5 nov & Dos semanas tarde por la pausa y el rediseño \\ \hline
-    Personajes & 20 al 26 oct & 20 y 21 oct (personaje de prueba) y 13 nov (finales) & Los personajes finales quedaron para el final \\ \hline
-    Integración, texturas y luces & 27 oct al 2 nov & 10 al 17 oct (luces) y 5 al 13 nov (texturas) & Las luces se adelantaron; las texturas se retocaron al final \\ \hline
-    KeyFrames & 3 al 9 nov & 13 nov & Cuatro días tarde \\ \hline
-    Cámaras, audio y pruebas & 10 al 16 nov & 19 oct y 5 nov (cámaras), 13 y 14 nov (audio), 14 al 17 nov (pruebas) & Las cámaras se adelantaron \\ \hline
-    Documentación & 17 al 23 nov & 13 al 17 nov & Adelantada: la entrega quedó el 18 de noviembre \\ \hline
+    Investigación y estructura & 6 al 12 oct & 6 al 17 oct & Casi una semana más, porque la base del programa se armó al mismo tiempo que la investigación \\ \hline
+    Santo Domingo y fachadas & 13 al 19 oct & 2 al 5 nov & Casi tres semanas después, por la pausa y el rediseño \\ \hline
+    Personajes & 20 al 26 oct & 20 y 21 oct (personaje de prueba) y 13 nov (finales) & El personaje de prueba se hizo a tiempo, pero los definitivos se dejaron para el final \\ \hline
+    Integración, texturas y luces & 27 oct al 2 nov & 10 al 17 oct (luces) y 5 al 13 nov (texturas) & Las luces se adelantaron y las texturas se retocaron al final \\ \hline
+    KeyFrames & 3 al 9 nov & 13 nov & Cuatro días después de lo planeado \\ \hline
+    Cámaras, audio y pruebas & 10 al 16 nov & 19 oct y 5 nov (cámaras), 13 y 14 nov (audio), 14 al 17 nov (pruebas) & Las cámaras se adelantaron, y el audio y las pruebas se hicieron casi en la semana planeada \\ \hline
+    Documentación & 17 al 23 nov & 13 al 17 nov & Se adelantó porque la entrega quedó el 18 de noviembre \\ \hline
   \end{tabular}
   \caption{Fechas planeadas y reales de cada actividad de la propuesta.}
 \end{table}
@@ -521,12 +520,12 @@ En la propuesta el trabajo se repartió en siete semanas, del 6 de octubre al 23
 \subsection{Diferencias y sus causas}
 
 \begin{itemize}
-  \item \textbf{El escenario se adelantó y los personajes se atrasaron.} La propuesta ponía los personajes en la tercera semana. Se decidió primero tener la escena completa (calles, edificios, luces y cámaras), porque el recorrido y las posiciones de los personajes dependen de ella.
-  \item \textbf{Rediseño de la escena.} El 2 de noviembre se cambió el circuito por el andador Macedonio Alcalá. Esto obligó a rehacer los pisos, las casas y las posiciones de todo, pero hizo que la escena se pareciera al lugar real.
-  \item \textbf{Modelos y texturas tomaron más tiempo.} Los edificios se armaron a partir de fotos y cada modelo de internet se revisó, se ajustó y se probó con la luz del programa antes de usarlo. Las texturas se retocaron al final para que todas tuvieran el mismo estilo.
-  \item \textbf{Pausa del 22 de octubre al 1 de noviembre.} En esas dos semanas no se avanzó porque hubo que atender entregas de otras materias. Al regresar se aprovechó para revisar la escena contra fotos del lugar, y de ahí salió el rediseño.
-  \item \textbf{Audio e información cultural al final.} Se hicieron después de los personajes porque dependen de ellos: la banda suena desde uno de los músicos y cuatro de las cartas viajan con los personajes del desfile.
-  \item \textbf{La documentación se adelantó.} La propuesta dejaba los manuales para la última semana, hasta el 23 de noviembre, pero la entrega quedó el 18. Los manuales se empezaron el 13 de noviembre, junto con los personajes, y se fueron completando conforme se terminaba cada parte.
+  \item \textbf{El escenario se adelantó y los personajes se atrasaron.} En la propuesta los personajes iban en la tercera semana, pero se decidió tener primero la escena completa (calles, edificios, luces y cámaras), porque el recorrido del desfile y el lugar de cada personaje dependen de ella.
+  \item \textbf{Rediseño de la escena.} Cuando se cambió el circuito por el andador Macedonio Alcalá, el 2 de noviembre, hubo que rehacer los pisos, las casas y la posición de casi todo, pero a cambio la escena quedó mucho más parecida al lugar real.
+  \item \textbf{Los modelos y las texturas tomaron más tiempo.} Los edificios se armaron a partir de fotos, y cada modelo de internet se tuvo que revisar, ajustar y probar con la luz del programa antes de usarlo. Además, al final se retocaron las texturas para que todas tuvieran el mismo estilo.
+  \item \textbf{Pausa del 22 de octubre al 1 de noviembre.} Durante esas dos semanas no se avanzó porque hubo que atender entregas de otras materias. Al regresar se aprovechó para comparar la escena con fotos del lugar, y de ahí salió la idea del rediseño.
+  \item \textbf{El audio y la información cultural quedaron al final.} Se dejaron para después de los personajes porque dependen de ellos, ya que la banda suena desde uno de los músicos y cuatro de las cartas van caminando con los personajes del desfile.
+  \item \textbf{La documentación se adelantó.} La propuesta dejaba los manuales para la última semana, hasta el 23 de noviembre, pero la entrega quedó el 18. Por eso se empezaron el 13 de noviembre, junto con los personajes, y se fueron completando conforme se terminaba cada parte.
 \end{itemize}
 
 % =====================================================================
@@ -548,28 +547,28 @@ En la propuesta el trabajo se repartió en siete semanas, del 6 de octubre al 23
   \caption{Matriz RACI (R: responsable, A: aprueba).}
 \end{table}
 
-El proyecto se hizo de forma individual, así que cada actividad tiene un solo responsable, que también la revisa y la aprueba.
+Como el proyecto se hizo de forma individual, todas las actividades tienen al mismo responsable, que también se encarga de revisarlas y aprobarlas.
 
-Esto explica parte del atraso respecto al cronograma: el modelado de los edificios y de los personajes se tuvo que hacer junto con la programación. Para que alcanzara el tiempo, se usaron modelos de internet con licencia libre donde fue posible y se dejaron los personajes para el final.
+Esto también explica parte del atraso con respecto al cronograma, porque el modelado de los edificios y de los personajes se tuvo que hacer al mismo tiempo que la programación. Para que alcanzara el tiempo se usaron modelos de internet con licencia libre siempre que se pudo, y los personajes se dejaron para el final.
 
 % =====================================================================
 \section{Metodología de trabajo}
 
-La propuesta planeaba el trabajo por semanas, una actividad tras otra. En la práctica se trabajó de forma \textbf{iterativa e incremental, con un tablero tipo Kanban}:
+En la propuesta el trabajo estaba planeado por semanas, con una actividad después de otra, pero en la práctica se trabajó por \textbf{iteraciones chicas y con un tablero tipo Kanban}:
 
 \begin{itemize}
-  \item El trabajo se dividió en fases (escenario, iluminación, cámaras, personaje jerárquico, escena del andador, personajes, animaciones, KeyFrames, audio y cierre). Después del rediseño, la escena del andador se dividió en cinco iteraciones chicas.
-  \item Cada tarea tenía tres estados: por hacer, en curso y probada. Solo se trabajaba una tarea a la vez.
-  \item Cada iteración seguía el mismo ciclo: revisar qué modelos y texturas hacían falta, integrarlos, compilar y probar en Visual Studio, tomar capturas, escribir su sección de evidencias y hacer su commit. Hasta que una iteración estaba probada y subida no se empezaba la siguiente.
+  \item El trabajo se dividió en fases (escenario, iluminación, cámaras, personaje jerárquico, escena del andador, personajes, animaciones, KeyFrames, audio y cierre), y después del rediseño la escena del andador se partió en cinco iteraciones chicas.
+  \item Cada tarea podía estar por hacer, en curso o probada, y solo se trabajaba en una a la vez.
+  \item En cada iteración se seguían los mismos pasos: ver qué modelos y texturas hacían falta, integrarlos, compilar y probar en Visual Studio, tomar capturas, escribir su parte en las evidencias y hacer su commit. No se empezaba la siguiente hasta que la anterior estaba probada y subida.
 \end{itemize}
 
-Se cambió a iteraciones chicas después del rediseño del 2 de noviembre: los cambios grandes de golpe eran difíciles de probar y, si algo salía mal, era difícil saber qué parte lo había causado.
+Se empezó a trabajar con iteraciones chicas después del rediseño del 2 de noviembre, porque al hacer muchos cambios grandes a la vez era difícil probarlos, y cuando algo fallaba no se sabía bien qué parte lo había causado.
 
-La evidencia de su uso está en el historial de commits del repositorio (una fase o iteración por commit, con fecha), en las capturas de \texttt{docs/evidencias/} y en el archivo \texttt{EVIDENCIAS.md}, que tiene una sección por cada iteración.
+Todo esto se puede ver en el historial de commits del repositorio, donde cada fase o iteración es un commit con su fecha, en las capturas de \texttt{docs/evidencias/} y en el archivo \texttt{EVIDENCIAS.md}, que tiene una sección para cada iteración.
 
 \dosfotos{github/02_commits}{Historial de commits: cada fase o iteración es un commit con su descripción.}{github/03_commit}{Detalle de un commit con los archivos que agregó.}{Historial del repositorio en GitHub.}
 
-Durante el desarrollo las tareas se llevaron en la lista de fases del plan del proyecto, con una casilla por tarea que se marcaba al probarla. Para la entrega esa lista se pasó a un tablero de GitHub Projects ligado al repositorio, con las columnas por hacer (\textit{Todo}), en curso (\textit{In Progress}) y hecho (\textit{Done}) y la fecha en que se terminó cada tarea, que coincide con la de su commit.
+Mientras se desarrollaba el proyecto, las tareas se iban anotando en la lista de fases del plan, con una casilla para cada una que se marcaba al probarla. Para la entrega, esa lista se pasó a un tablero de GitHub Projects ligado al repositorio, con las columnas \textit{Por hacer}, \textit{En progreso} y \textit{Completado}, y cada tarea tiene la fecha en que se terminó, que es la misma de su commit.
 
 \IfFileExists{img/tablero_github.png}{%
 \unafoto{img/tablero_github}{Tablero del proyecto en GitHub Projects, con las tareas por hacer, en curso y terminadas.}}{%
@@ -579,61 +578,62 @@ Durante el desarrollo las tareas se llevaron en la lista de fases del plan del p
 \section{Herramientas colaborativas}
 
 \begin{itemize}
-  \item \textbf{GitHub}: repositorio privado del proyecto. Cada fase o iteración terminada es un commit con una descripción de lo que se agregó.
-  \item \textbf{GitHub Projects}: tablero tipo Kanban ligado al repositorio, con las tareas de cada fase, su estado y la fecha en que se terminaron.
-  \item \textbf{Diagrama de Gantt}: el de este documento, que compara lo planeado con lo real.
+  \item \textbf{GitHub}, donde está el repositorio del proyecto, que fue privado mientras se desarrollaba y se hizo público para la entrega (\url{https://github.com/chavez-inst/ProyectoFinalCompuGraficaTeoria}). Cada fase o iteración terminada se subió como un commit que describe lo que se agregó.
+  \item \textbf{GitHub Projects}, que es el tablero tipo Kanban ligado al repositorio, donde están las tareas de cada fase, su estado y la fecha en que se terminaron.
+  \item \textbf{Diagrama de Gantt}, que es el que está en este documento y sirve para comparar lo planeado con lo que pasó en realidad.
 \end{itemize}
 
-\unafoto{github/01_repositorio}{Página del repositorio privado en GitHub, con las carpetas del proyecto y el último commit.}
+\unafoto{github/01_repositorio}{Página del repositorio en GitHub a mitad del desarrollo, cuando era privado, con las carpetas del proyecto y el último commit.}
 
 % =====================================================================
 \section{Aprendizaje autónomo de herramientas nuevas}
 
 \subsection{Alejandro: Blender, GIMP, Visual Studio y CMake}
 
-Al empezar la materia no había usado ningún programa de modelado ni de edición de imágenes, y de Visual Studio solo sabía lo básico para compilar. Entre el laboratorio y este proyecto aprendí cuatro herramientas por mi cuenta, con la documentación de cada una, videos y mucha prueba y error.
+Al empezar la materia casi no había usado programas de modelado ni de edición de imágenes (solo GIMP, para cosas sencillas), y de Visual Studio solo sabía compilar. Entre el laboratorio y este proyecto aprendí cuatro herramientas por mi cuenta, con la documentación de cada una, videos y mucha prueba y error.
 
-\textbf{Blender.} Al principio solo lo usaba para abrir los modelos que descargaba, pero casi ninguno servía tal cual: unos venían en centímetros, otros tenían cientos de miles de triángulos y otros buscaban sus texturas en rutas que no existían. Aprendí a escalarlos a metros y aplicar la escala, a reducir triángulos con el modificador \textit{Decimate}, a revisar que las normales apuntaran hacia afuera con la vista de orientación de caras y a exportar a \texttt{.obj} con normales y coordenadas de textura para que Assimp los leyera bien. Lo más difícil fueron los personajes: para el modelado jerárquico tuve que partir cada modelo en piezas y poner el origen de cada pieza en su articulación (hombro, codo, cadera, rodilla). Ahí entendí que el origen que se deja en Blender es el punto sobre el que la pieza gira en OpenGL.
+\textbf{Blender.} Al principio solo lo usaba para abrir los modelos que descargaba, pero casi ninguno servía tal cual: unos venían en centímetros, otros tenían cientos de miles de triángulos y otros buscaban sus texturas en rutas que no existían. Aprendí a escalarlos a metros y aplicar la escala, a reducir triángulos con el modificador \textit{Decimate}, a revisar que las normales apuntaran hacia afuera con la vista de orientación de caras y a exportar a \texttt{.obj} con normales y coordenadas de textura para que Assimp los leyera bien. Lo más difícil fueron los personajes: para el modelado jerárquico tuve que partir cada modelo en piezas y poner el origen de cada pieza en su articulación (hombro, codo, cadera, rodilla). Ahí vi que el origen que se deja en Blender es el punto sobre el que la pieza gira en OpenGL.
 
 \textbf{GIMP.} Lo usé para ajustar las texturas: recortarlas, corregir el color para que todas tuvieran el mismo tono, hacer que se repitieran sin que se notara la unión y crear las transparencias de las hojas, el papel picado y los telones. Tuve que aprender a trabajar con el canal alfa, porque si el png se exporta sin él, las hojas salen con su fondo. También me tocó un error difícil de encontrar: un jpg con un ancho que no era múltiplo de 4 hacía que el programa se cerrara sin ningún mensaje; desde entonces reviso el tamaño de cada imagen al exportarla.
 
-\textbf{Visual Studio.} Aquí aprendí a configurar un proyecto completo: rutas relativas para las librerías y para el directorio de trabajo, copiar las DLL junto al ejecutable al compilar y usar el depurador con puntos de interrupción para encontrar por qué se cerraba el programa. Como el proyecto está en Google Drive para trabajar desde dos computadoras, Visual Studio a veces fallaba al escribir sus archivos temporales en la carpeta sincronizada, y aprendí a mandar la base de datos de IntelliSense a una carpeta fuera de Drive.
+\textbf{Visual Studio.} Aquí aprendí a configurar un proyecto completo: rutas para las librerías y para el directorio de trabajo, copiar las DLL junto al ejecutable al compilar y usar el depurador para encontrar por qué se cerraba el programa. Como el proyecto está en Google Drive para trabajar desde dos computadoras, Visual Studio a veces fallaba al escribir sus archivos temporales en la carpeta sincronizada, y aprendí a mandar la base de datos de IntelliSense a una carpeta fuera de Drive.
 
-\textbf{CMake con VS Code.} Casi al final, por los mismos problemas con Drive, pasé a VS Code con CMake. Con la documentación de CMake y de la extensión CMake Tools escribí un \texttt{CMakeLists.txt} y dos presets (Debug y Release) que dejan todo lo que genera la compilación fuera de Drive. Lo que más me costó fue que VS Code usara el compilador y el depurador de Visual Studio en lugar de otro compilador. El proyecto de Visual Studio se mantuvo igual, así que se puede compilar desde cualquiera de los dos.
+\textbf{CMake con VS Code.} Casi al final, por los mismos problemas con Drive, pasé a VS Code con CMake. Con la documentación de CMake y de la extensión CMake Tools escribí un \texttt{CMakeLists.txt} y dos presets (Debug y Release) que dejan todo lo que genera la compilación fuera de Drive. Lo que más me costó fue lograr que VS Code usara el compilador y el depurador de Visual Studio. El proyecto de Visual Studio se mantuvo igual, así que se puede compilar desde cualquiera de los dos.
 
 % =====================================================================
 \section{Individual reflection (English)}
 
-I chose the Calenda of Oaxaca because it brings together music, dance, crafts and architecture in a single street parade, and I wanted the scene to feel like a real place rather than a generic Mexican town. Since I worked on the project by myself, I was in charge of every part: the research, the scene, the models and textures, the OpenGL program and the documentation.
+I chose the Calenda of Oaxaca because I'm originally from there and it's been a part of my personal identity since I was a kid. I started playing the saxophone when I was 9 or so, and I mainly played Calenda and Guelaguetza songs. At first I had a very different idea of the project, but when I went back for the Day of the Dead season I reworked a lot of it so it would feel like the real Oaxaca. Since I worked on the project alone, I was in charge of every part: the research, the scene, the models and textures, the OpenGL program and the documentation. I checked each part against my own experience of Oaxaca so it would feel as real as possible.
 
-The hardest moment came in the middle of the project. After comparing my first scene with photos and maps of Oaxaca, I realized that the closed circuit from my proposal did not look like the real place, so I rebuilt the scene along the Macedonio Alcalá street, from Santo Domingo to the Zócalo. It meant redoing floors, houses and positions, but the result was much closer to what I had in mind. Another difficult part was the characters: each one had to be cut into pieces with the pivot of every joint in the right place, so that the arms and legs would rotate naturally inside the hierarchy.
+One of the most difficult parts of the project was the characters: each one had to be cut into pieces with the pivot of every joint in the right place, so that the arms and legs would rotate naturally inside the hierarchy (like we did in the lab).
 
-In the last week I added sound and the cultural information. The band plays from one of the musicians, so it sounds louder as you get closer, and the information is shown as lotería cards that you have to find along the street. I liked this idea because almost every Mexican knows the lotería, and it makes the user explore the whole scene instead of just reading a menu.
+In the last week I added sound and the cultural information. The band plays from one of the musicians, so it sounds louder as you get closer, and the information is shown as lotería cards that you have to find along the street; so the user has to explore the whole scene instead of just reading a menu.
 
-I learned how much planning matters in a graphics project. Small iterations, each one tested and saved in its own commit, made it much easier to find mistakes than large changes all at once. I also learned to prepare models in Blender before loading them with Assimp, to edit textures in GIMP so that they all share the same style, and to build the project with CMake from Visual Studio Code.
+I learned how much planning matters in a graphics project. Even small changes can break other parts of the program, so using git made the work much easier. I also learned to prepare models in Blender before loading them with Assimp, to edit textures in GIMP so that they all share the same style, and to build the project with CMake from Visual Studio Code.
 
-If I started again, I would build the characters and animations earlier, because the scene took more time than expected and they were left for the last week. Even so, I am happy with the result and with how much I learned about computer graphics along the way.
+If I started again, I would build the characters and animations earlier, because the scene took more time than expected and they were left for the last week. Even so, I am happy with the final result and with how close it looks to the real Oaxaca, especially to people who know the city.
 
 % =====================================================================
+\clearpage
 \section{Conclusiones}
 
 \subsection{Técnicas}
 
-Con lo visto en la materia (transformaciones, modelado jerárquico, texturas, iluminación de Phong, skybox, transparencias y cámaras) se pudo armar una escena grande de unos 300 metros de largo con 66 modelos, 16 luces puntuales, dos horarios, un desfile de 9 personajes con siete animaciones (dos con KeyFrames), audio en 3D y diez cartas con información. Lo que más pesó en el resultado no fue una técnica avanzada, sino cuidar los detalles: el tamaño real de cada cosa, que las normales apunten hacia afuera, el orden en que se dibujan los transparentes, que los modelos no tengan demasiados triángulos y que las texturas tengan un estilo parejo.
+Solo con lo que se vio en la materia (transformaciones, modelado jerárquico, texturas, iluminación de Phong, skybox, transparencias y cámaras) se pudo armar una escena de unos 300 metros de largo con 84 modelos, 16 luces puntuales, tarde y noche, un desfile de 9 personajes con siete animaciones (dos de ellas con KeyFrames), audio en 3D y diez cartas con información. Más que usar técnicas avanzadas, lo que hizo que la escena se viera bien fue cuidar los detalles, como respetar el tamaño real de cada cosa, revisar que las normales apuntaran hacia afuera, dibujar los transparentes en el orden correcto, no usar modelos con demasiados triángulos y que todas las texturas tuvieran el mismo estilo.
 
-El programa carga en unos 30 segundos y en la configuración Release se mueve con fluidez en una computadora con tarjeta de video dedicada. Lo que más tiempo tomó no fue programar, sino preparar los modelos y las texturas; para un proyecto así conviene tener los modelos listos desde el principio.
+El programa tarda unos 30 segundos en cargar y, compilado en Release, corre bien en una computadora con tarjeta de video dedicada. Algo que no se esperaba es que preparar los modelos y las texturas tomó más tiempo que programar, así que en un proyecto como este conviene tenerlos listos desde el principio.
 
 \subsection{Sociales}
 
-Un recorrido virtual permite conocer la calenda y el centro de Oaxaca sin viajar, sin pagar el traslado y sin esperar a julio, que es lo que pide el objetivo del proyecto. Funciona en una computadora común y se maneja con el teclado y el mouse, así que lo puede usar cualquier persona con el manual de usuario. Al ser un trabajo individual, también obligó a organizarse solo: las iteraciones chicas y el tablero de tareas sirvieron para no perder el control del avance.
+Con un recorrido virtual se puede conocer la calenda y el centro de Oaxaca sin tener que viajar hasta allá ni esperar a julio. Solo hace falta una computadora, y como se maneja con el teclado y el mouse, cualquiera lo puede usar siguiendo el manual de usuario. Por otro lado, al ser un trabajo individual hubo que organizarse solo, y en eso las iteraciones chicas y el tablero de tareas ayudaron mucho a llevar el control del avance.
 
 \subsection{Culturales}
 
-Para que no fuera una imagen genérica de ``México'', cada edificio, planta y objeto se eligió y se ubicó a partir de fotos y mapas del lugar real, y los datos de las fichas se tomaron de fuentes como el INAH, la UNESCO, el gobierno de Oaxaca y el Diario Oficial. Las cartas de lotería unen dos tradiciones mexicanas: el usuario tiene que buscarlas, así que recorre toda la calle y conoce cada personaje y cada lugar en su contexto, en vez de leer una lista. También se revisó qué tan fiel es la escena a la fecha de la fiesta (sección \ref{sec:cultura}); el único detalle que no corresponde a julio son las jacarandas en flor.
+La idea era que la escena se viera como Oaxaca y no como una imagen general de México. Por eso cada edificio, planta y objeto se escogió y se colocó viendo fotos y mapas del lugar real, y los datos de las fichas se sacaron de fuentes como el INAH, la UNESCO, el gobierno de Oaxaca y el Diario Oficial. Con las cartas se juntan dos tradiciones mexicanas, la calenda y la lotería, y como hay que buscarlas, el usuario termina recorriendo toda la calle y conoce cada personaje en el lugar donde está, en vez de solo leer una lista. También se revisó que la escena correspondiera a la época de la fiesta (sección \ref{sec:cultura}), y lo único que no es de julio son las jacarandas con flores.
 
 \subsection{Económicas}
 
-En la propuesta el costo se calculó solo con las horas de trabajo: dos integrantes por 40 horas cada uno, a \$100 la hora de un programador junior, \$8,000 en total. Al final el proyecto lo hizo una sola persona. Las horas se estimaron a la baja a partir de las fechas de los commits y de las sesiones de trabajo:
+En la propuesta el costo se calculó solo con las horas de trabajo, contando dos integrantes con 40 horas cada uno, a \$100 la hora de un programador junior, lo que daba \$8,000 en total. Al final el proyecto lo hizo una sola persona. Las horas reales se calcularon a la baja con las fechas de los commits y de las sesiones de trabajo:
 
 \begin{table}[H]
   \centering
@@ -671,17 +671,17 @@ En la propuesta el costo se calculó solo con las horas de trabajo: dos integran
   \caption{Costo estimado en la propuesta contra el real, en pesos mexicanos.}
 \end{table}
 
-El costo total quedó muy cerca de lo estimado (un 7.5~\% más), pero las horas de una persona se duplicaron: lo que se pensó para dos se hizo entre una. Todas las herramientas son gratuitas (Visual Studio Community, VS Code, Blender, GIMP, Git) y los recursos de internet tienen licencias libres o se usan con fines escolares, así que no hubo gastos en software ni en recursos.
+El costo total quedó muy cerca de lo estimado, solo un 7.5~\% más, pero una sola persona hizo el trabajo que se había pensado para dos, así que sus horas fueron más del doble de lo planeado. No hubo gastos en software ni en recursos, porque todas las herramientas son gratuitas (Visual Studio Community, VS Code, Blender, GIMP y Git) y los recursos de internet tienen licencias libres o se usan con fines escolares.
 
 \subsection{Ambientales}
 
-El proyecto no usa materiales físicos. Un recorrido virtual puede sustituir parte de los viajes para conocer un lugar, y reducir el número de triángulos y el tamaño de las texturas hace que el programa pida menos a la tarjeta de video, y por lo tanto menos energía.
+El proyecto no usa materiales físicos, y un recorrido virtual puede reemplazar algunos viajes que se harían solo para conocer un lugar. Además, al reducir los triángulos de los modelos y el tamaño de las texturas, la tarjeta de video trabaja menos y se gasta menos energía.
 
 % =====================================================================
 \section{Créditos y licencias}
 \label{sec:creditos}
 
-Los edificios principales, las casas, el kiosco, la fuente, las bancas, los carritos, los puestos y las texturas de los pisos y fachadas se hicieron o se ajustaron para este proyecto. Los recursos de otras personas que se usan en el programa son:
+Los edificios principales, las casas, el kiosco, la fuente, las bancas, los carritos, los puestos y las texturas de los pisos y las fachadas se hicieron o se ajustaron para este proyecto. Estos son los recursos de otras personas que se usan en el programa:
 
 \begin{longtable}{|p{0.28\linewidth}|p{0.2\linewidth}|p{0.13\linewidth}|p{0.27\linewidth}|}
   \hline
@@ -710,13 +710,13 @@ Los edificios principales, las casas, el kiosco, la fuente, las bancas, los carr
 \end{longtable}
 
 El alebrije de coyote está basado en una pieza de Pablo Franco y Nelly Ramírez.
-Las librerías son de código abierto: GLFW (licencia zlib), GLEW (BSD y MIT), GLM (MIT), Assimp (BSD de 3 cláusulas), stb\_image (dominio público o MIT) y miniaudio (dominio público o MIT-0).
+Las librerías que se usan son de código abierto: GLFW (licencia zlib), GLEW (BSD y MIT), GLM (MIT), Assimp (BSD de 3 cláusulas), stb\_image (dominio público o MIT) y miniaudio (dominio público o MIT-0).
 
-Los personajes del desfile parten de dos modelos de personas que proporcionó un compañero, sin licencia: un hombre con traje de manta y sombrero y una bailarina con traje típico. Se usan como modelos encontrados y se modificaron bastante: el hombre se partió en piezas con el origen en cada articulación y la china oaxaqueña se armó con la cabeza y la blusa de la bailarina, los brazos del hombre y una falda, una canasta y un dulce hechos para el proyecto. Las ropas de los espectadores y las faldas de colores son sus mismas texturas con la tela repintada. La marmota, el torito con sus ruedas, la trompeta y los globos se hicieron para este proyecto.
+Los personajes del desfile parten de dos modelos de personas que proporcionó un compañero, sin licencia: un hombre con traje de manta y sombrero y una bailarina con traje típico. Se usaron como base, pero se modificaron bastante. El hombre se partió en piezas con el origen en cada articulación, y la china oaxaqueña se armó con la cabeza y la blusa de la bailarina, los brazos del hombre y una falda, una canasta y un dulce que se hicieron para el proyecto. La ropa de los espectadores y las faldas de colores son las mismas texturas originales con la tela pintada de otro color. La marmota, el torito con sus ruedas, la trompeta y los globos también se hicieron para este proyecto.
 
 \subsection{Audio}
 
-La música y los efectos se tomaron de videos públicos de YouTube, que no tienen una licencia libre; se usan solo con fines escolares, sin fines de lucro y citando a su autor. A todos se les igualó el volumen.
+La música y los efectos se tomaron de videos públicos de YouTube. No tienen una licencia libre, así que se usan solo con fines escolares, sin fines de lucro y citando a su autor. A todos se les ajustó el volumen para que sonaran parejo.
 
 \begin{longtable}{|p{0.3\linewidth}|p{0.25\linewidth}|p{0.35\linewidth}|}
   \hline
@@ -733,7 +733,7 @@ La música y los efectos se tomaron de videos públicos de YouTube, que no tiene
 
 \subsection{Cartas de lotería}
 
-Las imágenes de las diez cartas (El Barril, La Luna, La Dama, El Diablito, El Tambor, El Sol, El Corazón, El Catrín, La Mano y El Nopal) son las de la lotería tradicional de Don Clemente. Se usan con fines escolares y solo se les redondearon las esquinas. Las fichas, las pistas del tablero, los avisos y el letrero de lotería se hicieron para el proyecto.
+Las imágenes de las diez cartas (El Barril, La Luna, La Dama, El Diablito, El Tambor, El Sol, El Corazón, El Catrín, La Mano y El Nopal) son las de la lotería tradicional de Don Clemente. Se usan con fines escolares y lo único que se les cambió fue redondearles las esquinas. Las fichas, las pistas del tablero, los avisos y el letrero de lotería se hicieron para el proyecto.
 
 % =====================================================================
 \section{Referencias}

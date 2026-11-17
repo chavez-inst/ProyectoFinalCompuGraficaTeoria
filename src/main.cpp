@@ -1222,7 +1222,7 @@ void DibujarMusico(glm::mat4 base, float fase, bool caminando, float tiempo, GLu
 //el cargador lleva el torito sobre la cabeza, con cada mano en un palo del armazon
 const PoseBrazo brazoIzqTorito = { 140.0f, -18.0f, 48.0f, 0.0f, 0.0f };
 const PoseBrazo brazoDerTorito = { 138.0f, -18.0f, 46.0f, 0.0f, 0.0f };
-void DibujarTorito(glm::mat4 base, float fase, bool caminando, float tiempo, GLuint uniformModel)
+void DibujarTorito(glm::mat4 base, float fase, bool caminando, float tiempo, GLuint uniformModel, GLuint uniformColor, GLuint uniformSinLuz)
 {
 	PosePersona pose = poseParado;
 	if (caminando)
@@ -1247,15 +1247,24 @@ void DibujarTorito(glm::mat4 base, float fase, bool caminando, float tiempo, GLu
 		rueda = glm::rotate(rueda, -lado * tiempo * 360.0f * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		DibujarPieza(toritoRueda, rueda, uniformModel);
 
-		//cuatro chispas en el aro, cambian de tamano para que parezca que chisporrotean
+		//cuatro chispas en el aro, cambian de tamano y de amarillo a naranja como si saltaran;
+		//van sin luz y con la textura blanca para que brillen de tarde y de noche
+		glUniform1i(uniformSinLuz, 1);
+		ropaActual = &plainTexture;
 		for (int k = 0; k < 4; k++)
 		{
 			float angulo = k * 90.0f * toRadians;
-			float tamano = 0.7f + 0.5f * fabs(sin(tiempo * 12.0f + k * 3.0f));
+			float chisporroteo = fabs(sin(tiempo * 12.0f + k * 3.0f));
+			float tamano = 0.9f + 0.7f * chisporroteo;
+			glm::vec3 colorChispa = glm::vec3(1.0f, 0.45f + 0.5f * chisporroteo, 0.1f + 0.4f * chisporroteo);
+			glUniform3fv(uniformColor, 1, glm::value_ptr(colorChispa));
 			glm::mat4 model = glm::translate(rueda, glm::vec3(0.0f, 0.22f * sin(angulo), -0.22f * cos(angulo)));
 			model = glm::scale(model, glm::vec3(tamano, tamano, tamano));
 			DibujarPieza(toritoChispa, model, uniformModel);
 		}
+		ropaActual = nullptr;
+		glUniform3fv(uniformColor, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+		glUniform1i(uniformSinLuz, 0);
 	}
 }
 
@@ -2201,8 +2210,8 @@ int main()
 		//el murmullo de la gente se oye igual en toda la escena
 		murmullo.CargarSonido(&motorAudio, true, 0.0f);
 		murmullo.PonerVolumen(0.35f);
-		chispasTorito.CargarSonido(&motorAudio, true, 3.0f);
-		chispasTorito.PonerVolumen(0.5f);
+		chispasTorito.CargarSonido(&motorAudio, true, 6.0f);
+		chispasTorito.PonerVolumen(1.0f);
 		campanas.CargarSonido(&motorAudio, false, 60.0f);
 		campanas.PonerVolumen(0.8f);
 		//las campanas suenan desde las torres de Santo Domingo
@@ -2624,7 +2633,7 @@ int main()
 			}
 			else
 			{
-				DibujarTorito(model, fase, desfileCaminando, tiempoDesfile, uniformModel);
+				DibujarTorito(model, fase, desfileCaminando, tiempoDesfile, uniformModel, uniformColor, uniformSinLuz);
 			}
 		}
 

@@ -9,6 +9,7 @@
 \encabezado{Manual de usuario}
 
 \tableofcontents
+\clearpage
 
 \section{Qué es este programa}
 
@@ -22,34 +23,31 @@ Dentro del programa se puede caminar libremente por las calles, ver la escena de
 \section{Qué se necesita}
 
 \begin{itemize}
-  \item Windows 10 u 11 de 64 bits.
-  \item Una tarjeta de video que soporte OpenGL 4.3 (casi cualquiera de los últimos diez años, incluidas las integradas de Intel y AMD).
-  \item Para compilar: Visual Studio 2022 o 2026 con la carga de trabajo \textbf{Desarrollo para el escritorio con C++}.
-  \item Unos 500 MB libres, contando lo que genera Visual Studio al compilar.
+  \item Windows 10 u 11.
+  \item Una tarjeta de video con OpenGL 4.3 o más reciente.
+  \item Visual Studio 2026 (o 2022) con la carga de trabajo \textbf{Desarrollo para el escritorio con C++}.
 \end{itemize}
 
+\clearpage
 \section{Cómo abrir y ejecutar el proyecto}
 
 \subsection{Con Visual Studio}
 
 \begin{enumerate}
-  \item Descomprimir el proyecto en una carpeta (de preferencia con una ruta corta, por ejemplo \texttt{C:\textbackslash Proyectos}).
+  \item Descargar el proyecto de \url{https://github.com/chavez-inst/ProyectoFinalCompuGraficaTeoria} (botón \textbf{Code} y luego \textbf{Download ZIP}) y descomprimirlo en una carpeta.
   \item Descomprimir \texttt{Librerias.zip} dentro de la carpeta del proyecto, de forma que quede la carpeta \texttt{Librerias} junto a \texttt{src}, \texttt{Models} y \texttt{Textures}.
-  \item Abrir \texttt{Proyecto\_Final.slnx}. Si Visual Studio pregunta si se quiere cambiar la versión de las herramientas de compilación, aceptar.
+  \item Abrir \texttt{Proyecto\_Final.slnx}. Con Visual Studio 2022 se abre directamente \nolinkurl{Proyecto_Final.vcxproj}. Si Visual Studio pregunta si se quiere cambiar la versión de las herramientas de compilación, aceptar.
   \item Arriba, elegir la configuración \textbf{Debug} o \textbf{Release} y la plataforma \textbf{x64}.
   \item Presionar \tecla{F5} (o el botón verde de \textbf{Depurador local de Windows}).
 \end{enumerate}
 
-Al compilar, las DLL de las librerías se copian solas junto al ejecutable, así que no hay que mover nada a mano.
-
 \subsection{Al abrir}
 
-El programa abre una ventana maximizada del tamaño del monitor. La primera vez tarda alrededor de 30 segundos en mostrar la escena porque tiene que cargar todos los modelos y texturas; mientras tanto la ventana se queda en blanco. Es normal, no hay que cerrarla.
+El programa abre en una ventana del tamaño del monitor. La escena empieza de tarde, con la cámara libre en el andador, frente al atrio de Santo Domingo y viendo hacia el sur.
 
-La escena empieza de tarde, con la cámara libre parada en el andador frente al atrio de Santo Domingo y viendo hacia el sur.
+\unafoto{final/01_vista_inicial}{La cámara libre al abrir el programa, sobre el andador y viendo hacia el sur.}
 
-\unafoto{retoque_texturas/01_vista_inicial}{Lo primero que se ve al abrir el programa.}
-
+\clearpage
 \section{Controles}
 
 \begin{table}[H]
@@ -85,14 +83,14 @@ La escena empieza de tarde, con la cámara libre parada en el andador frente al 
     \textbf{Tecla} & \textbf{Cámara} & \textbf{Qué muestra} \\ \hline
     \tecla{1} & Libre & Se mueve con WASD y el mouse. No deja salir de la ciudad ni subir más de 30 m \\ \hline
     \tecla{2} & Fachada & La fachada de Santo Domingo desde el atrio, donde empieza la calenda \\ \hline
-    \tecla{3} & Desfile & Va junto al desfile, un poco adelante y a un lado, viendo a la mitad de la fila; lo acompaña desde el atrio hasta el Zócalo \\ \hline
-    \tecla{4} & Zócalo & La plaza en diagonal desde la esquina noroeste, con el kiosco al centro \\ \hline
+    \tecla{3} & Desfile & Va a un lado del desfile y lo acompaña del atrio al Zócalo \\ \hline
+    \tecla{4} & Zócalo & La plaza en diagonal desde una esquina, con el kiosco al centro \\ \hline
     \tecla{5} & Aérea & Todo el recorrido desde 300 m de altura, con el norte hacia arriba \\ \hline
   \end{tabular}
   \caption{Las cinco cámaras.}
 \end{table}
 
-\dosfotos{desfile/02_chinas_musicos}{Cámara del desfile (3)}{retoque_texturas/04_zocalo}{Cámara del Zócalo (4)}{Dos de las cámaras fijas.}
+\dosfotos{final/12_camara_desfile}{Cámara del desfile (3)}{final/09_zocalo_tarde}{Cámara del Zócalo (4)}{Dos de las cámaras fijas.}
 
 La vista aérea sirve como mapa: el atrio de Santo Domingo queda arriba a la derecha, el andador baja por el centro y el Zócalo está abajo.
 Desde cualquier cámara fija se puede presionar \tecla{F} para seguir caminando desde ahí. Si se suelta la aérea, la cámara baja a 30 m, que es lo más alto que llega la libre.
@@ -101,64 +99,64 @@ Desde cualquier cámara fija se puede presionar \tecla{F} para seguir caminando 
 
 \section{Tarde y noche}
 
-Con \tecla{N} se cambia la hora. De tarde el sol está bajo al poniente y pinta de naranja la cantera; de noche el cielo tiene estrellas, la luz es azul y se encienden las farolas del andador y del Zócalo y los reflectores de los templos y del kiosco.
+Con \tecla{N} se cambia la hora. De tarde el sol está bajo y la cantera se ve naranja; de noche hay estrellas, la luz es azul y se encienden las farolas del andador y del Zócalo y los reflectores de los templos y del kiosco.
 
-\dosfotos{retoque_texturas/04_zocalo}{Zócalo de tarde}{retoque_texturas/07_zocalo_noche}{Zócalo de noche}{El mismo lugar en los dos horarios.}
+\dosfotos{final/09_zocalo_tarde}{Zócalo de tarde}{final/10_zocalo_noche}{Zócalo de noche}{El mismo lugar en los dos horarios.}
 
 \section{Modo Día de Muertos}
 \label{sec:muertos}
 
-Con \tecla{O} la escena se convierte en una noche de Día de Muertos, y con otra \tecla{O} regresa a como estaba. El cielo se pone más oscuro y morado, las farolas bajan y casi toda la luz sale de las velas y de unos focos de color: Santo Domingo en morado, la Sangre de Cristo en turquesa y el kiosco en naranja. Las velas tiemblan como si tuvieran flama.
+Con \tecla{O} la escena se convierte en una noche de Día de Muertos, y con otra \tecla{O} regresa a como estaba. El cielo se pone más oscuro y morado, las farolas bajan y casi toda la luz sale de las velas y de unos focos de color: Santo Domingo en morado, la Sangre de Cristo en turquesa y el kiosco en naranja. La luz de las velas parpadea.
 
-Sobre el andador cuelgan cortinas de cempasúchil y velas flotantes entre el papel picado, que cambia a uno con calaveras, velas y cruces. El kiosco del Zócalo se adorna con esferas y guirnaldas de cempasúchil, y a su lado hay un altar escalonado con grecas de Mitla, un arco de flores, macetas de cempasúchil, calaveritas, velas flotantes y un tapete de arena con un cempasúchil grande entre alcatraces. También hay una catrina, xoloitzcuintles y tres ofrendas con mantel rosa, fotos, veladoras, pan y calaveritas. Los espectadores y los del desfile llevan la cara pintada de calavera. Todo lo demás (el desfile, las cámaras, las cartas y el sonido) funciona igual.
+En el andador cuelgan cortinas de cempasúchil, hay velas flotando entre el papel picado y este cambia por uno con calaveras. El kiosco del Zócalo se adorna con esferas y guirnaldas de cempasúchil, y a su lado hay un altar de varios escalones con un arco de flores, macetas, calaveritas, velas y un tapete de arena. También hay una catrina, perros xoloitzcuintles y tres ofrendas con pan, veladoras y calaveritas. Los espectadores y los del desfile llevan la cara pintada de calavera. Todo lo demás (el desfile, las cámaras, las cartas y el sonido) funciona igual.
 
 \dosfotos{muertos/02_velas_flotantes}{Velas flotantes en el andador}{muertos/11_altar}{Altar junto al kiosco}{El modo Día de Muertos.}
 
 \section{Sonido}
 
-El programa tiene sonido en 3D: lo que se oye depende de dónde está la cámara activa. La banda toca \textit{Son Calenda} y \textit{Dios nunca muere} desde el músico de en medio, así que se oye fuerte junto al desfile y cada vez más bajo al alejarse. De fondo se oye el murmullo de la gente y el torito chisporrotea; al salir el desfile del atrio repican las campanas de Santo Domingo y truena un cohete, y al llegar frente al kiosco truena otro.
+El programa tiene sonido en 3D: lo que se oye depende de dónde está la cámara activa. La música de la banda (\textit{Son Calenda} y \textit{Dios nunca muere}) sale del desfile, así que se oye fuerte cerca de él y más bajo al alejarse. De fondo se oye a la gente y, junto al torito, sus cohetes. Cuando el desfile sale del atrio suenan las campanas de Santo Domingo y truena un cohete; al llegar frente al kiosco truena otro.
 
-Con \tecla{P} se pausan también la banda y las chispas, con \tecla{R} la banda vuelve a la primera canción y con \tecla{M} se quita o se regresa todo el sonido. Si la computadora no tiene bocinas ni audífonos, el programa funciona igual, sin sonido.
+Con \tecla{P} también se pausan la música y los cohetes del torito, con \tecla{R} la banda vuelve a la primera canción y con \tecla{M} se quita o se regresa todo el sonido.
 
 \section{El recorrido}
 
 Estos son los lugares principales, en el orden en que los recorre la calenda:
 
 \begin{enumerate}
-  \item \textbf{Atrio de Santo Domingo.} Explanada frente al templo, con jardineras de agaves, flamboyanes de flores rojas, palmeras y dos puestos de artesanías sobre petates (barro y pan, y alebrijes).
-  \item \textbf{Andador Macedonio Alcalá.} Calle peatonal de losas de cantera con casas de colores, papel picado colgado de lado a lado, macetas y bugambilias en las fachadas.
-  \item \textbf{Templo de la Sangre de Cristo.} Del lado poniente del andador, con su fachada de cantera viendo a la calle.
-  \item \textbf{Jardín Labastida.} Pequeña plaza con jacarandas, bugambilias y un puesto de textiles.
+  \item \textbf{Atrio de Santo Domingo.} La explanada frente al templo, con jardineras de agaves, palmeras, árboles de flores rojas y dos puestos de artesanías: uno de barro y pan, y otro de alebrijes.
+  \item \textbf{Andador Macedonio Alcalá.} La calle peatonal que une Santo Domingo con el Zócalo. Tiene casas de colores con macetas y bugambilias, y papel picado de un lado a otro de la calle.
+  \item \textbf{Templo de la Sangre de Cristo.} Está a un lado del andador, con su fachada de cantera hacia la calle.
+  \item \textbf{Jardín Labastida.} Una plaza pequeña con jacarandas, bugambilias y un puesto de textiles.
   \item \textbf{Zócalo.} La plaza principal, con el kiosco al centro, la fuente, jardineras, bancas de hierro, carritos de elotes y los portales alrededor.
 \end{enumerate}
 
 \section{El desfile}
 
-En cuanto se abre el programa, la calenda sale de la puerta de Santo Domingo, cruza el atrio, da vuelta en el andador y baja por él hasta el Zócalo. Camina a 2 metros por segundo, así que tarda unos dos minutos en llegar. Frente al kiosco se queda quieta unos segundos y vuelve a salir del atrio.
+En cuanto se abre el programa, la calenda sale de la puerta de Santo Domingo, cruza el atrio, da vuelta en el andador y baja por él hasta el Zócalo. Tarda unos dos minutos en llegar; frente al kiosco se detiene unos segundos y vuelve a empezar desde el atrio.
 
-La mejor forma de verla es con la cámara \tecla{3}, que la acompaña todo el camino. Con \tecla{P} se detiene todo el desfile (los personajes se quedan quietos donde van, como en una foto) y con otra \tecla{P} sigue. Con \tecla{R} regresa al atrio para verlo desde el principio.
+La mejor forma de verla es con la cámara \tecla{3}, que la acompaña todo el camino. Con \tecla{P} el desfile se detiene (los personajes se quedan quietos donde van) y con otra \tecla{P} sigue. Con \tecla{R} regresa al atrio para verlo desde el principio.
 
-\unafoto{desfile/01_salida_atrio}{La calenda saliendo del atrio de Santo Domingo.}
+\unafoto{final/02_salida_atrio}{La calenda saliendo del atrio de Santo Domingo.}
 
 La fila va en este orden:
 
 \begin{enumerate}
-  \item \textbf{Danzante con la marmota.} Abre el desfile. Lleva con las dos manos un palo de casi dos metros con la marmota, un globo grande de manta con banderitas de colores. La marmota da vueltas sobre el palo y el palo se inclina un poco a un lado y al otro.
-  \item \textbf{Cuatro chinas oaxaqueñas}, en dos filas, cada una con la falda de otro color. Cada una lleva su canasta adornada con un corazón de flores sobre la cabeza y la sostiene con la mano izquierda. Con la derecha saca un dulce de la canasta y lo lanza hacia la gente; mientras tanto la falda se mece. Cada una lanza en un momento distinto.
+  \item \textbf{Danzante con la marmota.} Abre el desfile. Lleva con las dos manos un palo largo con la marmota, un globo grande de tela con banderitas de colores, que gira y se mece de un lado a otro.
+  \item \textbf{Cuatro chinas oaxaqueñas}, en dos filas, cada una con la falda de otro color. Llevan sobre la cabeza una canasta adornada con flores y la sostienen con la mano izquierda; con la derecha sacan un dulce y lo lanzan hacia la gente.
   \item \textbf{Tres músicos} con trompeta, que la levantan y la bajan mientras tocan.
   \item \textbf{El torito}, al final. Un danzante carga sobre la cabeza el armazón del toro, que se mece de lado a lado; a los costados tiene dos ruedas de cohetes que giran y echan chispas.
 \end{enumerate}
 
-\dosfotos{desfile/03_marmota}{Danzante con la marmota}{desfile/02_chinas_musicos}{Chinas oaxaqueñas y músicos}{Los personajes del desfile.}
+\dosfotos{final/04_marmota}{Danzante con la marmota}{final/03_chinas_musicos}{Chinas oaxaqueñas y músicos}{Los personajes del desfile.}
 
 \dosfotos{img/musicos_torito}{Músicos y, detrás, el torito}{img/espectadores_globos}{Espectador con globos}{El final de la fila y la gente que lo ve pasar.}
 
-A los lados del andador, en el atrio y en el Zócalo hay espectadores, hombres y mujeres con ropa de diario de distintos colores, que saludan con la mano y voltean la cabeza. Algunos tienen tres globos de colores que suben, se mecen y bajan. Los espectadores siguen saludando aunque el desfile esté detenido.
+A los lados del andador, en el atrio y en el Zócalo hay espectadores que saludan con la mano y voltean la cabeza. Algunos llevan tres globos de colores que suben, bajan y se mecen.
 
 \section{Información cultural: la lotería de la calenda}
 \label{sec:cartas}
 
-La información del recorrido está en diez cartas de lotería repartidas por la escena. Cada carta habla de un personaje o de un lugar y flota cerca de él, girando y subiendo y bajando para que se note. De lejos se ve su reverso, con un signo de interrogación y una pista de dónde está.
+La información del recorrido está en diez cartas de lotería repartidas por la escena. Cada carta habla de un personaje o de un lugar y flota cerca de él, girando para que se note. De lejos se ve su reverso, con un signo de interrogación y una pista de dónde está.
 
 \begin{itemize}
   \item \textbf{Cartas fijas}: la calenda en el atrio, Santo Domingo frente a su puerta, la Sangre de Cristo en la banqueta del andador, los alebrijes sobre su petate en el jardín Labastida, los tapetes junto a los puestos de textiles y el Zócalo frente al kiosco.
@@ -168,34 +166,18 @@ La información del recorrido está en diez cartas de lotería repartidas por la
 \subsection{Cómo se toma una carta}
 
 \begin{enumerate}
-  \item Acercarse a la carta con cualquier cámara. A menos de 8 metros aparece abajo el aviso \textbf{I: tomar la carta}.
-  \item Presionar \tecla{I}. La carta crece en el centro de la pantalla y se ve su frente, con la figura de la lotería. Desde ese momento ya no está en la escena.
-  \item Presionar \tecla{I} otra vez. La carta da media vuelta y muestra su ficha, con un texto corto sobre el tema. Al mismo tiempo se oye la narración del mismo texto y la banda baja su volumen para que se escuche.
+  \item Acercarse a la carta con cualquier cámara. Al estar cerca aparece abajo el aviso \textbf{I: tomar la carta}.
+  \item Presionar \tecla{I}. La carta aparece en grande en el centro de la pantalla, con la figura de la lotería, y desaparece de la escena.
+  \item Presionar \tecla{I} otra vez. La carta se voltea y muestra su ficha, con un texto corto sobre el tema. Al mismo tiempo se oye la narración de ese texto y la música baja para que se escuche.
   \item Presionar \tecla{I} una vez más para guardar la carta y seguir con el recorrido.
 \end{enumerate}
 
-\dosfotos{cartas/01_carta_marmota}{Carta de la marmota junto a su danzante, con el aviso para tomarla}{cartas/02_frente}{Frente de la carta al tomarla}{Al acercarse a una carta y tomarla con la tecla I.}
+\dosfotos{final/05_carta_marmota}{Carta de la marmota junto a su danzante, con el aviso para tomarla}{final/06_carta_frente}{Frente de la carta al tomarla}{Al acercarse a una carta y tomarla con la tecla I.}
 
-\dosfotos{cartas/03_ficha}{Ficha de la marmota, con el aviso para guardarla}{cartas/04_tablero}{Tablero con dos cartas encontradas}{La ficha de una carta y el tablero (tecla L).}
+\dosfotos{final/07_carta_ficha}{Ficha de la marmota, con el aviso para guardarla}{final/08_tablero}{Tablero con la primera carta encontrada}{La ficha de una carta y el tablero (tecla L).}
 
 \subsection{El tablero}
 
 Con \tecla{L} se abre el tablero, con lugar para las diez cartas. Las que ya se tomaron se ven de frente; las que faltan muestran su pista (por ejemplo, ``Echa chispas al final del desfile'' o ``Entre los puestos de textiles''). Otra \tecla{L} lo cierra. Cuando se juntan las diez cartas aparece el letrero de lotería y truena un cohete.
-
-\section{Problemas comunes}
-
-\begin{table}[H]
-  \centering
-  \begin{tabular}{|p{0.35\linewidth}|p{0.55\linewidth}|}
-    \hline
-    \textbf{Qué pasa} & \textbf{Qué hacer} \\ \hline
-    Al compilar sale \texttt{Falta la carpeta Librerias} & Descomprimir \texttt{Librerias.zip} dentro de la carpeta del proyecto (paso 2) \\ \hline
-    La ventana se queda en blanco al abrir & Esperar unos 30 segundos: está cargando los modelos \\ \hline
-    No encuentra modelos o texturas (salen objetos blancos o no salen) & Ejecutar desde Visual Studio, que abre el programa en la carpeta del proyecto. Si se abre el .exe directo, debe estar en una carpeta que tenga \texttt{Models}, \texttt{Textures} y \texttt{shaders} \\ \hline
-    El teclado o el mouse no mueven la cámara & Dar clic dentro de la ventana para que tenga el foco \\ \hline
-    Va lento & Usar la configuración Release en lugar de Debug \\ \hline
-  \end{tabular}
-  \caption{Problemas comunes y cómo resolverlos.}
-\end{table}
 
 \end{document}

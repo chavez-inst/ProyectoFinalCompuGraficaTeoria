@@ -56,3 +56,7 @@ _Papelera/
 
 # temporales de LaTeX de los manuales
 Documentacion/build/
+
+# videos grabados y archivos de la entrega en Classroom (pesan demasiado para GitHub)
+Videos/
+Entregables_Classroom/

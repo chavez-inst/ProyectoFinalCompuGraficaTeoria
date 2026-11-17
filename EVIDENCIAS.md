@@ -244,3 +244,15 @@ En los personajes se veian huecos en el hombro y en el codo al levantar o doblar
 | Tapete de arena con las macetas y los xolos | Altar con las macetas y calaveritas nuevas |
 |---|---|
 | ![Tapete](docs/evidencias/muertos/10_tapete.png) | ![Altar](docs/evidencias/muertos/11_altar.png) |
+
+## Ajustes finales
+
+Las chispas de las ruedas del torito se dibujan sin luz, como las velas, para que brillen de tarde y de noche; cambian de tamano y de amarillo a naranja, como si saltaran, y los cohetes del torito se oyen mas fuerte. A las ofrendas del modo Dia de Muertos se les quitaron las fotos.
+
+Para los manuales se tomaron capturas nuevas con la version final: las chinas con sus faldas de colores, las cartas con el texto actual de las fichas y el kiosco adornado sin los esqueletos.
+
+| Chinas y musicos saliendo del atrio | Kiosco en el modo Dia de Muertos |
+|---|---|
+| ![Chinas](docs/evidencias/final/03_chinas_musicos.png) | ![Kiosco](docs/evidencias/final/11_kiosco_muertos.png) |
+| **Ficha de la marmota** | **Desfile en el andador (tecla 3)** |
+| ![Ficha](docs/evidencias/final/07_carta_ficha.png) | ![Desfile](docs/evidencias/final/04_marmota.png) |

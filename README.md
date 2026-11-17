@@ -17,7 +17,7 @@
      ...
    ```
    Si queda `Librerias/Librerias/...` o las carpetas `glm`, `include`, etc. sueltas afuera, hay que acomodarlo.
-3. Abrir `Proyecto_Final.slnx` con Visual Studio 2026.
+3. Abrir `Proyecto_Final.slnx` con Visual Studio 2026 (con Visual Studio 2022 se abre `Proyecto_Final.vcxproj`).
 4. Arriba revisar que diga **Debug** y **x64**, y darle a **F5** (o al boton verde).
 
 Si al compilar sale `Falta la carpeta Librerias...` es que el paso 2 no quedo bien.
@@ -85,8 +85,12 @@ ProyectoFinalCompuGraficaTeoria/
 |-- Models/                    <- modelos (.obj + .mtl)
 |-- Textures/                  <- TODAS las imagenes (tambien las texturas de los modelos)
 |   |-- plain.png              <- textura blanca, se usa si un modelo no tiene textura (no borrar)
-|   `-- Skybox/                <- las 6 caras del skybox
-|-- Audio/                     <- musica de banda, murmullo, campanas y cohetes (.mp3 y .flac)
+|   |-- cartas/                <- frentes, fichas y pistas de las cartas de loteria
+|   `-- Skybox/                <- las caras de los tres cielos (tarde, noche y Dia de Muertos)
+|-- Audio/                     <- musica de banda, murmullo, campanas, cohetes, chispas del torito
+|                                 y en narracion/ la voz de cada carta (.mp3 y .flac)
+|-- Documentacion/             <- manual de usuario y manual tecnico (LaTeX y PDF)
+|-- docs/evidencias/           <- capturas de cada fase (se ven en EVIDENCIAS.md)
 |
 |-- Librerias/   (NO esta en GitHub, viene en Librerias.zip)
 |   |-- glm/                   <- matematicas (vectores, matrices)
@@ -144,6 +148,8 @@ Modelos y texturas de otras personas que usa el proyecto. Los que tienen licenci
 | Empedrado | `Textures/empedrado.jpg` | "Cobblestone Floor 08" de Poly Haven, https://polyhaven.com/a/cobblestone_floor_08 | CC0 |
 | Aplanado de las fachadas | `Textures/fachada_casa1.jpg`, `fachada_casa2.jpg` | "Plaster001" de ambientCG, https://ambientcg.com/view?id=Plaster001 | CC0 |
 | Madera de las puertas | `Textures/fachada_*.jpg` | "Planks013" de ambientCG, https://ambientcg.com/view?id=Planks013 | CC0 |
+
+La lista completa de creditos y licencias (modelos, texturas, audio y cartas) esta en la seccion 15 del manual tecnico (`Documentacion/manual_tecnico.pdf`).
 
 ---
 
@@ -237,8 +243,9 @@ spotLights[3] = SpotLight(1.0f, 0.5f, 0.0f,      //color r g b
 spotLightCount++;
 ```
 
-- El maximo es 16 puntuales y 4 spotlights (`CommonValues.h`). Las 16 puntuales son las farolas
-  y los spotlights 0, 1 y 2 son los de Santo Domingo, el kiosco y la Sangre de Cristo.
+- El maximo es 40 puntuales y 8 spotlights (`CommonValues.h`). Las 16 primeras puntuales son las farolas
+  y los spotlights 0, 1 y 2 son los de Santo Domingo, el kiosco y la Sangre de Cristo. El modo Dia de
+  Muertos manda su propio arreglo: las farolas, 19 luces de velas y 6 focos de color.
 - Para mover una luz mientras corre el programa, dentro del `while`:
   `spotLights[1].SetPos(nuevaPos);` o `spotLights[1].SetFlash(pos, dir);`
 - Para prender o apagar luces se cambia el contador que se manda en
